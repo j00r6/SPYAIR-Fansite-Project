@@ -1,4 +1,4 @@
-package pair.boardspring;
+package com.pair.boardspring;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
