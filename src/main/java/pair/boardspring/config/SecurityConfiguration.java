@@ -107,7 +107,7 @@ public class SecurityConfiguration {
                  * .cors((cors) -> cors
                  * 				.configurationSource(apiConfigurationSource()))
                  *
-                 * 	위와 같이 메서드 명(apiConfigurationSource)을 구분하여 서로 다른 CORS 설정을 세팅 가능
+                 * 	위와 같이 메서드 명(apiConfigurationSource)을 ㅂ구분하여 서로 다른 CORS 설정을 세팅 가능
                  *
                  * 	공식문서 참조
                  * 	https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html#page-title
@@ -183,9 +183,4 @@ public class SecurityConfiguration {
 //        encoders.put("argon2", new Argon2PasswordEncoder());
         return new DelegatingPasswordEncoder(encodingId, encoders);
     }
-
-
-
-
-
 }
