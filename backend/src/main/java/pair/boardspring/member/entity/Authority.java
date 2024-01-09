@@ -31,3 +31,4 @@ public class Authority {
         this.member = member;
     }
 }
+
