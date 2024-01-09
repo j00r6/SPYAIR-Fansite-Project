@@ -18,7 +18,9 @@ import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -160,7 +162,14 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        return null;
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080","https://ea60-121-162-236-116.ngrok-free.app", "http://3.35.193.208:8080", "chrome-extension://ggnhohnkfcpcanfekomdkjffnfcjnjam", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
+        configuration.setAllowedMethods(Arrays.asList("*")); // 직접입력
+        configuration.setAllowedHeaders(Arrays.asList("*")); // 직접입력
+        configuration.setExposedHeaders(Arrays.asList("*","Authorization","Refresh")); //직접입력
+        configuration.setAllowCredentials(true); // true일 경우 * 가 작동안함
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);//직접입력
+        return source;
     }
 
 

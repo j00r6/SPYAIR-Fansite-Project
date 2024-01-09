@@ -26,7 +26,7 @@ public class MemberController {
                     .body("이메일 중복!");
         }
         // 닉네임 중복 체크
-        if (service.checkNicknameDuplicate(request.getNickName())) {
+        if (service.checkNickNameDuplicate(request.getNickName())) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("닉네임 중복!");
