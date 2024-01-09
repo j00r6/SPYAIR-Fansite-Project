@@ -43,7 +43,7 @@ public class MemberService {
 
 //        Member findMember = repository.findByEmail(request.getEmail());
 //        findMember.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
-
+//
 //        repository.save(request.SignInRequestToEntity(encoder.encode(request.getPassword())));
 
         // 빌더 패턴 활용해 SignInRequestToEntity 메서드 구현하고 Mapper 대체
