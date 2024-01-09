@@ -19,7 +19,7 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity memberSignIn(@RequestBody SignInRequest request) {
 
-        // loginId 중복 체크
+        // 이메일 중복 체크
         if (service.checkLoginIdDuplicate(request.getEmail())) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
