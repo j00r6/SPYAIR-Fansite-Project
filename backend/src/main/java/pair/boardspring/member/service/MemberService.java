@@ -40,11 +40,13 @@ public class MemberService {
     // 가입시 USER 권한 부여
     //PasswordEncoder 로 비밀번호 암호화
     public void signInMember (SignInRequest request) {
+
 //        Member findMember = repository.findByEmail(request.getEmail());
 //        findMember.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
 
 //        repository.save(request.SignInRequestToEntity(encoder.encode(request.getPassword())));
 
+        // 빌더 패턴 활용해 SignInRequestToEntity 메서드 구현하고 Mapper 대체
         Member member = request.SignInRequestToEntity(encoder.encode(request.getPassword()));
 
         // 회원의 권한을 "USER"로 설정
