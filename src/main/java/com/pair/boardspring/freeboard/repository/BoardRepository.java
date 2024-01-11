@@ -1,6 +1,6 @@
-package com.pair.boardspring.board.repository;
+package com.pair.boardspring.freeboard.repository;
 
-import com.pair.boardspring.board.entity.BoardEntity;
+import com.pair.boardspring.freeboard.entity.BoardEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,14 +1,16 @@
-package com.pair.boardspring.board.service;
+package com.pair.boardspring.freeboard.service;
 
-import com.pair.boardspring.board.dto.BoardDto;
-import com.pair.boardspring.board.mapper.BoardMapper;
+import com.pair.boardspring.freeboard.dto.BoardDto;
+import com.pair.boardspring.freeboard.mapper.BoardMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.pair.boardspring.board.entity.BoardEntity;
-import com.pair.boardspring.board.repository.BoardRepository;
+import com.pair.boardspring.freeboard.entity.BoardEntity;
+import com.pair.boardspring.freeboard.repository.BoardRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Service
@@ -18,24 +20,22 @@ public class BoardService {
     private final BoardMapper mapper;
 
     public BoardEntity save(BoardDto.Post postDto){
-        // 예시: 서버 파일 시스템에 저장
-        // 이미지 파일을 저장할 경로 설정
+//         예시: 서버 파일 시스템에 저장
+//         이미지 파일을 저장할 경로 설정
 //        String filePath = "/path/to/save/images/" + postDto.getImgFile().getOriginalFilename();
-//
+////
 //        // 파일 저장
 //        try {
 //            Files.copy(postDto.getImgFile().getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
 //        } catch (IOException e) {
 //            e.printStackTrace();  // 예외 처리 필요
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
 //        }
 //
 //        // 데이터베이스에는 이미지 파일의 경로를 저장
-//        boardEntity.setImagePath(filePath);
-
         BoardEntity createBoardEntity = mapper.boardPostDtoToBoardEntity(postDto);
+//        createBoardEntity.setImgPath(filePath);
         repository.save(createBoardEntity);
+
         return createBoardEntity;
     }
 

@@ -1,9 +1,8 @@
-package com.pair.boardspring.board.entity;
+package com.pair.boardspring.freeboard.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +15,8 @@ public class BoardEntity {
     private Long id;
     private String title;
     private String content;
-    private String imgPath;
+    private String memberId;
+//    private String imgPath;
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
     @Column(name = "updated_at")

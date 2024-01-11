@@ -1,13 +1,13 @@
-package com.pair.boardspring.board.controller;
+package com.pair.boardspring.freeboard.controller;
 
-import com.pair.boardspring.board.dto.BoardDto;
+import com.pair.boardspring.freeboard.dto.BoardDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.pair.boardspring.board.entity.BoardEntity;
-import com.pair.boardspring.board.service.BoardService;
+import com.pair.boardspring.freeboard.entity.BoardEntity;
+import com.pair.boardspring.freeboard.service.BoardService;
 
 import java.util.List;
 

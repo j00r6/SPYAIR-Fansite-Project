@@ -1,7 +1,7 @@
-package com.pair.boardspring.board.mapper;
+package com.pair.boardspring.freeboard.mapper;
 
-import com.pair.boardspring.board.dto.BoardDto;
-import com.pair.boardspring.board.entity.BoardEntity;
+import com.pair.boardspring.freeboard.dto.BoardDto;
+import com.pair.boardspring.freeboard.entity.BoardEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

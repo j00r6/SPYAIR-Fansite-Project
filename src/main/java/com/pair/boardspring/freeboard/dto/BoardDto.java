@@ -1,4 +1,4 @@
-package com.pair.boardspring.board.dto;
+package com.pair.boardspring.freeboard.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ public class BoardDto {
     public static class Patch{
         private String title;
         private String content;
-        private MultipartFile imgFile;
+//        private MultipartFile imgFile;
     }
 
     @Getter
@@ -21,7 +21,8 @@ public class BoardDto {
     public static class Post {
         private String title;
         private String content;
-        private MultipartFile imgFile;
+        private String memberId;
+//        private MultipartFile imgFile;
 
     }
 }
