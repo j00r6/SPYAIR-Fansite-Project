@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder
 @Getter
-@NoArgsConstructor
+@Setter
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "MEMBER")
 public class Member {
     @Id

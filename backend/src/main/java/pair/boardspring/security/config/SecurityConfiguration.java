@@ -1,5 +1,6 @@
-package pair.boardspring.config;
+package pair.boardspring.security.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,18 +17,23 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import pair.boardspring.jwt.JwtFilter;
+import pair.boardspring.jwt.TokenProvider;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfiguration {
+    private final TokenProvider tokenProvider;
+
 //    @Bean
 //    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 //        http
@@ -132,7 +138,7 @@ public class SecurityConfiguration {
                  * ROLE_"권한" 양식을 사용해야 Spring Security 에서 인식을 한다.
                  */
                 .securityMatcher("/api/**", "/app/**")
-
+                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 /**
                  * 다중 필터체인 구현에서 authorizeHttpRequests 와 configurationSource 의 연관관계
                  *
@@ -147,8 +153,12 @@ public class SecurityConfiguration {
                  * configurationSource 는 단순히 CORS 설정을 위한 것
                  */
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .anyRequest().authenticated()
+
+
+
+
                 );
 
 
