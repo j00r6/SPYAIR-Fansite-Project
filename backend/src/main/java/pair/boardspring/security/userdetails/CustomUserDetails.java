@@ -1,8 +1,9 @@
-package pair.boardspring.member.entity;
+package pair.boardspring.security.userdetails;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pair.boardspring.member.entity.Member;
 
 import java.util.ArrayList;
 import java.util.Collection;
