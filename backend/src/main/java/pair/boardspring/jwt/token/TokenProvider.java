@@ -3,7 +3,6 @@ package pair.boardspring.jwt.token;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import pair.boardspring.jwt.dto.TokenDto;
-import pair.boardspring.security.userdetails.CustomUserDetails;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -58,6 +56,8 @@ public class TokenProvider implements InitializingBean {
         Date validity = new Date(now + this.accessTokenTime);
 
         // 토큰에 유저정보 담기
+        Object userDetails = authentication.getPrincipal();
+
 //        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 //        Long memberId = userDetails.getMemberId();
 //        String email = userDetails.getUsername();
