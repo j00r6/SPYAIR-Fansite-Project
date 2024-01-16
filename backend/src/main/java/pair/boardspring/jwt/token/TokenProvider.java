@@ -1,4 +1,4 @@
-package pair.boardspring.jwt;
+package pair.boardspring.jwt.token;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import pair.boardspring.jwt.dto.TokenDto;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -44,21 +45,33 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(Authentication authentication) {
+    public TokenDto createToken(Authentication authentication) {
+        // 권한정보 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        // 토큰의 expire 시간을 설정
+        // 토큰 유효시간 설정
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.accessTokenTime);
 
-        return Jwts.builder()
+        // 토큰에 유저정보 담기
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//        Long memberId = userDetails.getMemberId();
+//        String email = userDetails.getUsername();
+
+        String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities) // 정보 저장
+//                .claim("memberId", memberId)
                 .signWith(key, SignatureAlgorithm.HS512) // 사용할 암호화 알고리즘과 , signature 에 들어갈 secret값 세팅
                 .setExpiration(validity) // set Expire Time 해당 옵션 안넣으면 expire안함
                 .compact();
+
+        return TokenDto.builder()
+                .accessToken(accessToken)
+                .type("Bearer")
+                .build();
     }
 
     // 토큰으로 클레임을 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 authentication 객체를 리턴
@@ -99,4 +112,5 @@ public class TokenProvider implements InitializingBean {
         }
         return false;
     }
+
 }

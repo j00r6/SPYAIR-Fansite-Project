@@ -18,19 +18,19 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long memberId;
 
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column
     public String email;
 
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column
     public String password;
 
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column
     public String nickName;
 
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column
     public String phone;
 
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column
     public String name;
 
     public enum MemberStatus {
