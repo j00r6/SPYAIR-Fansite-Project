@@ -30,3 +30,6 @@ logging:
       springframework:
         orm:
           jpa: DEBUG
+
+file:
+  dir : "/images"
