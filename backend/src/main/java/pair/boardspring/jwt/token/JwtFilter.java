@@ -1,4 +1,4 @@
-package pair.boardspring.jwt;
+package pair.boardspring.jwt.token;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
