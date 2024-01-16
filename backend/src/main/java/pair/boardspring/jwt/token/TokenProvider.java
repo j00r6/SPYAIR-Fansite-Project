@@ -56,8 +56,6 @@ public class TokenProvider implements InitializingBean {
         Date validity = new Date(now + this.accessTokenTime);
 
         // 토큰에 유저정보 담기
-        Object userDetails = authentication.getPrincipal();
-
 //        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 //        Long memberId = userDetails.getMemberId();
 //        String email = userDetails.getUsername();
