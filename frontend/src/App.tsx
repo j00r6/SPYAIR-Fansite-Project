@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styled from "styled-components";
-import Header from "./components/Header";
-import MainPage from "./pages/Mainpage";
+import Header from "./components/Header/Header";
+import MainPage from "./pages/MainPage";
 import Profile from "./pages/Profile";
 import GlobalStyle from "./styles/GlobalStyles";
 
