@@ -1,7 +1,15 @@
+import { useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { responsiveHeaderStyles } from "../styles/GlobalStyles";
+import { responsiveHeaderStyles } from "../../styles/GlobalStyles";
+import Menu from "./Menu";
 
 const Header = () => {
+  const [isMenuOpen, setMenuOpen] = useState(false); // 모달의 열림/닫힘 상태를 관리하는 상태 추가
+
+  const toggleMenu = () => {
+    setMenuOpen(!isMenuOpen); // 모달 상태를 토글
+  };
+
   return (
     <Container>
       <Logo
@@ -10,13 +18,14 @@ const Header = () => {
       />
       <MenuBtnArea>
         <TxtMenu>MENU</TxtMenu>
-        <MenuBtn>
+        <MenuBtn onClick={toggleMenu}>
           <MenuTrigger>
             <Span></Span>
             <Span></Span>
             <Span></Span>
           </MenuTrigger>
         </MenuBtn>
+        <Menu isOpen={isMenuOpen} toggleMenu={toggleMenu} />
       </MenuBtnArea>
     </Container>
   );
