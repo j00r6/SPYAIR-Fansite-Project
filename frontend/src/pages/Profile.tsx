@@ -150,11 +150,25 @@ const Profile = () => {
   return (
     <Container>
       <Title>PROFILE</Title>
+
+      <Img
+        src="http://www.sonymusic.co.jp/adm_image/common/artist_image/70005000/70005313/artist_photo/63360.jpg"
+        alt="Profile Img"
+      />
       <Section>
-        <Img
-          src="http://www.sonymusic.co.jp/adm_image/common/artist_image/70005000/70005313/artist_photo/63360.jpg"
-          alt="Profile Img"
-        />
+        <SubTitle>Member</SubTitle>
+        KENTA (Drums)→ MOMIKEN(Bass)→ YOSUKE (Vocal)→UZ (Guitar & Programming)
+      </Section>
+      <Section>
+        <SubTitle>Information</SubTitle>
+        2005년에 리저널 멤버로 결성.2010년 메이저 데뷔 이후 적극적인 출시와
+        압도적인 라이브 퍼포먼스로 인기를 누린다. 2023년 4월 신보컬에 요스케가
+        가입해 현 체제가 된다. YOSUKE 가입으로부터 불과 4개월 후에는 후지큐
+        하이랜드· 코니퍼 포레스트에서 약 2년만에 7회째가 되는 단독 야외 라이브
+        「JUST LIKE THIS」를 개최. 압권 퍼포먼스로 관객을 사로잡았다.
+      </Section>
+      <Section>
+        <SubTitle>Time Line</SubTitle>
         {data.map((item) => (
           <YearSection key={item.year}>
             <YearContent>
@@ -195,13 +209,20 @@ const Title = styled.h1`
   margin-bottom: 2rem;
 `;
 
+const SubTitle = styled.h2`
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+`;
+
 const Section = styled.div`
   width: 60%;
+  margin-bottom: 2rem;
 `;
 
 const Img = styled.img`
-  width: 100%;
-  margin-bottom: 2rem;
+  width: 60%;
+  margin-bottom: 1.5rem;
 `;
 
 const YearSection = styled.div`
