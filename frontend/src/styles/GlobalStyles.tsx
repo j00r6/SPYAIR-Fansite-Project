@@ -25,10 +25,10 @@ const GlobalStyle = createGlobalStyle`
  
   body {
     font-family: 'Poppins';
-    /* background-color: #111; */
+    background-color: #000000;
     font-weight: 100;
     line-height: 1.5;
-    color: #222;
+    color: #fff;
     word-break: keep-all;
     word-wrap: break-word;
     margin: 0px;
