@@ -23,6 +23,7 @@ const Header = () => {
 };
 
 export default Header;
+
 const logoAnimation = keyframes`
   0%, 100% {
     transform: scale(1);
@@ -43,7 +44,7 @@ const menuBarAnimation = keyframes`
 `;
 
 const Container = styled.div`
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
