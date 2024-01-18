@@ -1,5 +1,6 @@
 package pair.boardspring.security.config;
 
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -154,10 +155,6 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) -> authz
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
-
-
-
-
                 );
 
 

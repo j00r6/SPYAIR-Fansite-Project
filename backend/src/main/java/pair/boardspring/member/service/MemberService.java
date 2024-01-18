@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pair.boardspring.member.dto.SignInRequest;
+import pair.boardspring.member.entity.Authority;
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.repository.MemberRepository;
 
@@ -49,8 +50,8 @@ public class MemberService {
         Member member = request.SignInRequestToEntity(encoder.encode(request.getPassword()));
 
         // 회원의 권한을 "USER"로 설정
-//        Authority userRole = Authority.builder().name("ROLE_USER").build();
-//        member.setRoles(Collections.singletonList(userRole));
+        Authority userRole = Authority.builder().name("ROLE_USER").build();
+        member.setRoles(Collections.singletonList(userRole));
 
         // 회원 정보를 저장
         repository.save(member);
@@ -59,5 +60,14 @@ public class MemberService {
     public Member findVerifyMember(Long memberId) {
         Optional<Member> member = repository.findById(memberId);
         return member.get();
+    }
+
+    public Member findMemberByPrincipal(String principal) {
+        Optional<Member> optionalMember = repository.findByEmail(principal);
+        if (!optionalMember.isPresent()) {
+            return null;
+        }
+        Member member = optionalMember.get();
+        return member;
     }
 }
