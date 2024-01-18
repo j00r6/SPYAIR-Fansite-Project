@@ -1,16 +1,16 @@
 import styled from "styled-components";
-import SignUp from "../components/Account/SignUp";
+import Login from "../components/Account/Login";
 
-const SignUpPage = () => {
+const LoginPage = () => {
   return (
     <Container>
-      <Title>Sign Up</Title>
-      <SignUp />
+      <Title>Login</Title>
+      <Login />
     </Container>
   );
 };
 
-export default SignUpPage;
+export default LoginPage;
 
 const Title = styled.h1`
   font-size: 32px;
