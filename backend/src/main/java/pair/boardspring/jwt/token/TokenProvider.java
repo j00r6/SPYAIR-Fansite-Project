@@ -16,8 +16,6 @@ import org.springframework.stereotype.Component;
 import pair.boardspring.exception.IllegalToken;
 import pair.boardspring.exception.TokenExpiredException;
 import pair.boardspring.jwt.dto.TokenDto;
-import pair.boardspring.jwt.entity.Token;
-import pair.boardspring.security.userdetails.CustomUserDetails;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -51,32 +49,26 @@ public class TokenProvider implements InitializingBean {
     }
 
     public TokenDto createToken(Authentication authentication) {
-
-        String accessToken = createAccessToken(authentication);
-        String refreshToken = createRefreshToken(authentication);
-
-        // TokenDto 생성
-        return new TokenDto("Bearer", accessToken, refreshToken);
-    }
-
-    public String createAccessToken(Authentication authentication) {
-
+        // 권한정보 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        Date actExpiryDate = new Date(new Date().getTime() + accessTokenTime);
+        // 토큰 유효시간 설정
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + this.accessTokenTime);
 
-        return Jwts.builder()
-                .setSubject(customUserDetails.getUsername())
-                .claim("memberId", customUserDetails.getMemberId())
-                .claim("email", customUserDetails.getUsername())
-                .claim("nickName", customUserDetails.getNickName())
-                .claim("auth", authorities)
-                .setIssuedAt(new Date())
-                .setExpiration(actExpiryDate)
-                .signWith(key, SignatureAlgorithm.HS512)
+        // 토큰에 유저정보 담기
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//        Long memberId = userDetails.getMemberId();
+//        String email = userDetails.getUsername();
+
+        String accessToken = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim(AUTHORITIES_KEY, authorities) // 정보 저장
+//                .claim("memberId", memberId)
+                .signWith(key, SignatureAlgorithm.HS512) // 사용할 암호화 알고리즘과 , signature 에 들어갈 secret값 세팅
+                .setExpiration(validity) // set Expire Time 해당 옵션 안넣으면 expire안함
                 .compact();
 
 //        System.out.println("memberId from Token : " + customUserDetails.getMemberId());
@@ -120,8 +112,9 @@ public class TokenProvider implements InitializingBean {
 //                .build();
     }
 
-    public Long getUserIdFromToken(String token) {
-        return Jwts
+    // 토큰으로 클레임을 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 authentication 객체를 리턴
+    public Authentication getAuthentication(String token) {
+        Claims claims = Jwts
                 .parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -141,7 +134,7 @@ public class TokenProvider implements InitializingBean {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        org.springframework.security.core.userdetails.User principal = new User(claims.getSubject(), "", authorities);
+        User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
     }
@@ -156,27 +149,15 @@ public class TokenProvider implements InitializingBean {
 
         } catch (ExpiredJwtException e) {
             //적절한 exception code 활용 "만료된 JWT 토큰입니다."
-            throw new TokenExpiredException("AccessToken 시간 만료!");
+
         } catch (UnsupportedJwtException e) {
             //적절한 exception code 활용 "지원되지 않는 JWT 토큰입니다."
-            log.info("지원되지 않는 JWT 입니다.");
+
         } catch (IllegalArgumentException e) {
             //적절한 exception code 활용 "JWT 토큰이 잘못되었습니다."
-            throw new IllegalToken ("토큰 정보가 잘못됐습니다!");
+
         }
         return false;
-    }
-
-    private Claims parseClaims (String accessToken) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(accessToken)
-                    .getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
     }
 
 }

@@ -67,7 +67,8 @@ public class MemberService {
         if (!optionalMember.isPresent()) {
             return null;
         }
-        return optionalMember.get();
+        Member member = optionalMember.get();
+        return member;
     }
 
 }
