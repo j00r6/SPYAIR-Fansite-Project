@@ -17,8 +17,6 @@ public class SignInRequest {
     public String email;
     public String password;
     public String nickName;
-    public String phone;
-    public String name;
 
     private List<Authority> roles = new ArrayList<>();
 
@@ -28,8 +26,6 @@ public class SignInRequest {
                 .email(this.email)
                 .password(encryptPassword)
                 .nickName(this.nickName)
-                .phone(this.phone)
-                .name(this.name)
                 .roles(this.roles)
                 .build();
     }

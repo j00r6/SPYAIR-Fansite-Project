@@ -5,20 +5,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pair.boardspring.member.entity.Member;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
+
 
 public class CustomUserDetails implements UserDetails {
 
     private final Member member;
 
-    public CustomUserDetails(Member member) {
+    public CustomUserDetails(Member member){
         this.member = member;
-    }
-
-    public final Member getMember() {
-        return member;
     }
 
     @Override
@@ -30,18 +26,20 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return member.getPassword();
+    public String getUsername() {
+        return member.getEmail();
     }
 
     @Override
-    public String getUsername() {
-        return member.getEmail();
+    public String getPassword() {
+        return member.getPassword();
     }
 
     public Long getMemberId() {
         return member.getMemberId();
     }
+
+    public String getNickName() { return member.getNickName(); }
 
     @Override
     public boolean isAccountNonExpired() {

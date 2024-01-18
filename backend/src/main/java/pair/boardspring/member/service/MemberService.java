@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pair.boardspring.exception.BadRequestException;
+//import pair.boardspring.exception.BusinessLogicException;
+import pair.boardspring.exception.LoginIdDuplicateException;
 import pair.boardspring.member.dto.SignInRequest;
+import pair.boardspring.member.entity.Authority;
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.repository.MemberRepository;
 
@@ -39,18 +43,17 @@ public class MemberService {
     // 가입시 USER 권한 부여
     //PasswordEncoder 로 비밀번호 암호화
     public void signInMember (SignInRequest request) {
+        // 이메일 중복검사
+        if (checkLoginIdDuplicate(request.getEmail())) throw new LoginIdDuplicateException("이미 존재하는 이메일입니다.");
 
-//        Member findMember = repository.findByEmail(request.getEmail());
-//        findMember.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
-//
-//        repository.save(request.SignInRequestToEntity(encoder.encode(request.getPassword())));
+//        if (checkNickNameDuplicate(request.getNickName())) throw new BadRequestException("이미 존재하는 닉네임입니다.");
 
         // 빌더 패턴 활용해 SignInRequestToEntity 메서드 구현하고 Mapper 대체
         Member member = request.SignInRequestToEntity(encoder.encode(request.getPassword()));
 
         // 회원의 권한을 "USER"로 설정
-//        Authority userRole = Authority.builder().name("ROLE_USER").build();
-//        member.setRoles(Collections.singletonList(userRole));
+        Authority userRole = Authority.builder().name("ROLE_USER").build();
+        member.setRoles(Collections.singletonList(userRole));
 
         // 회원 정보를 저장
         repository.save(member);
@@ -59,5 +62,13 @@ public class MemberService {
     public Member findVerifyMember(Long memberId) {
         Optional<Member> member = repository.findById(memberId);
         return member.get();
+    }
+
+    public Member findMemberByPrincipal(String principal) {
+        Optional<Member> optionalMember = repository.findByEmail(principal);
+        if (!optionalMember.isPresent()) {
+            return null;
+        }
+        return optionalMember.get();
     }
 }

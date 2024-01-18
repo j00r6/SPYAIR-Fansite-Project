@@ -19,22 +19,7 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity memberSignIn(@RequestBody SignInRequest request) {
 
-        // 이메일 중복 체크
-        if (service.checkLoginIdDuplicate(request.getEmail())) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("이메일 중복!");
-        }
-        // 닉네임 중복 체크
-        if (service.checkNickNameDuplicate(request.getNickName())) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("닉네임 중복!");
-        }
         service.signInMember(request);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body("회원가입 성공!");
+        return new ResponseEntity<>("회원가입 성공!", HttpStatus.OK);
     }
 }
