@@ -2,9 +2,13 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
+
+const api = import.meta.env.VITE_APP_API_ENDPOINT;
+console.log(api);
 
 interface FormValues {
-  username: string;
+  nickname: string;
   email: string;
   password: string;
   passwordConfirmation: string;
@@ -23,16 +27,44 @@ const SignUp = () => {
 
   const watchPassword = watch("password", "");
 
-  const onSubmit = (data: FormValues) => {
-    console.log("회원가입해유:", data.username, data.email, data.password);
+  const onSubmit = async (data: FormValues) => {
+    console.log(data.email, data.password, data.nickname);
+    try {
+      const response = await axios.post(
+        `${api}/members/register`,
+        {
+          email: data.email,
+          password: data.password,
+          nickname: data.nickname,
+        },
+        {
+          headers: {
+            "Content-Type": `application/json`,
+            "ngrok-skip-browser-warning": "69420",
+            // headers: "headers",
+            // withCredentials: true,
+          },
+        }
+      );
+      console.log("서버 응답:", response.data);
+      if (response.status === 200) {
+        console.log("회원가입 성공!야호~");
+        // 성공 시 추가 동작 수행
+      } else {
+        console.log("회원가입 실패ㅜㅜ");
+        // 실패 시 적절한 처리 수행
+      }
+    } catch (error) {
+      console.error("회원가입 에러 발생:", error);
+      // 에러 발생 시 적절한 처리 수행
+    }
   };
 
   return (
     <SignUpContainer>
-      <h2>Sign Up</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Input placeholder="닉네임" {...register("username")} />
-        <Error>{errors.username?.message}</Error>
+        <Input placeholder="닉네임" {...register("nickname")} />
+        <Error>{errors.nickname?.message}</Error>
 
         <Input placeholder="Email" {...register("email")} />
         <Error>{errors.email?.message}</Error>
@@ -58,7 +90,7 @@ const SignUp = () => {
 };
 
 const schema = yup.object().shape({
-  username: yup
+  nickname: yup
     .string()
     .min(2, "닉네임은 2글자 이상이어야 합니다.")
     .required("닉네임은 필수입니다."),
@@ -82,35 +114,35 @@ const schema = yup.object().shape({
 export default SignUp;
 
 const SignUpContainer = styled.div`
-  max-width: 400px;
+  max-width: 520px;
+  min-width: 320px;
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-
-  h2 {
-    text-align: center;
-  }
 `;
 
 const Input = styled.input`
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  color: #d6d6d6;
   padding: 8px;
-  font-size: 16px;
+  background-color: rgba(179, 179, 179, 0.35);
+  border: 1px solid #000000;
+  &::placeholder {
+    color: #d6d6d6;
+  }
 `;
 
 const SignUpButton = styled.button`
   width: 100%;
-  padding: 10px;
-  background-color: #000000;
-  color: #fff;
+  padding: 8px;
+  background-color: #ffffff;
+  color: #000000;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-
+  font-weight: bold;
   &:hover {
-    background-color: #727272;
+    background-color: rgba(179, 179, 179, 0.35);
+    color: #ffffff;
   }
 `;
 
