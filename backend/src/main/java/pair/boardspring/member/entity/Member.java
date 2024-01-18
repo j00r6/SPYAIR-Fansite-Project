@@ -27,9 +27,6 @@ public class Member {
     @Column
     public String nickName;
 
-    @Column
-    public String name;
-
     public enum MemberStatus {
         MEMBER_ACTIVE("활동중"),
         MEMBER_SLEEP("휴면 상태"),
