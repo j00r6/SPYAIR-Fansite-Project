@@ -1,6 +1,7 @@
 package pair.boardspring.security.userdetails;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 @Component("userDetailsService")
 @RequiredArgsConstructor
+@Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository repository;
 
@@ -27,24 +29,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> optionalMember = repository.findByEmail(username);
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-
+        log.info("로그인한 멤버의 멤버 ID " + findMember.getMemberId().toString());
 
         Collection<? extends GrantedAuthority> authorities = findMember.getRoles().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getName()))
                 .toList();
 
-        return new User(findMember.getEmail(), findMember.getPassword(), authorities);
+        return new CustomUserDetails(findMember);
     }
 }
 
-//    private org.springframework.security.core.userdetails.User createMember(Member member) {
-//
-//        List<GrantedAuthority> grantedAuthorities = member.getRoles().stream()
-//                    .map(authority -> new SimpleGrantedAuthority(authority.getName()))
-//                    .collect(Collectors.toList());
-//
-//        return new org.springframework.security.core.userdetails.User(member.getEmail(),
-//                    member.getPassword(),
-//                    grantedAuthorities);
-//    }
 

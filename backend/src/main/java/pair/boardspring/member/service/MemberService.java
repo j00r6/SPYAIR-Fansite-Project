@@ -49,8 +49,8 @@ public class MemberService {
         Member member = request.SignInRequestToEntity(encoder.encode(request.getPassword()));
 
         // 회원의 권한을 "USER"로 설정
-//        Authority userRole = Authority.builder().name("ROLE_USER").build();
-//        member.setRoles(Collections.singletonList(userRole));
+        Authority userRole = Authority.builder().name("ROLE_USER").build();
+        member.setRoles(Collections.singletonList(userRole));
 
         // 회원 정보를 저장
         repository.save(member);
@@ -66,6 +66,8 @@ public class MemberService {
         if (!optionalMember.isPresent()) {
             return null;
         }
-        return optionalMember.get();
+        Member member = optionalMember.get();
+        return member;
     }
+
 }
