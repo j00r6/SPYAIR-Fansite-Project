@@ -29,9 +29,6 @@ public class Member {
     public String nickName;
 
     @Column
-    public String phone;
-
-    @Column
     public String name;
 
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
