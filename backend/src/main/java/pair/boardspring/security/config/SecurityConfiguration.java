@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -113,6 +114,13 @@ public class SecurityConfiguration {
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 
+                /**
+                 * MEMBER 의 인증/인가 구현
+                 * 권한에 따른 페이지 구분을 구현할 경우
+                 * Member Entity 상에서 Enum 으로 구분할 때
+                 * ROLE_"권한" 양식을 사용해야 Spring Security 에서 인식을 한다.
+                 */
+                .securityMatcher("/members/**")
 
                 /**
                  * CORS 설정을 활용하는 방법중 가장 쉬운 방법이 CorsFilter 를 활용하는 방법
@@ -128,16 +136,9 @@ public class SecurityConfiguration {
                  */
 
                 //CORS withDefaults 사용 시 Bean 으로 등록된 corsConfigurationSource 을 사용합니다.
-                // Todo : 1월 8일 회의 이후 CORS 세팅 corsConfigurationSource 구현하기
-                .cors(withDefaults())
+                .cors((cors) -> cors
+                        .configurationSource(corsConfigurationSource()))
 
-                /**
-                 * MEMBER 의 인증/인가 구현
-                 * 권한에 따른 페이지 구분을 구현할 경우
-                 * Member Entity 상에서 Enum 으로 구분할 때
-                 * ROLE_"권한" 양식을 사용해야 Spring Security 에서 인식을 한다.
-                 */
-                .securityMatcher("/api/**", "/app/**")
                 .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 /**
                  * 다중 필터체인 구현에서 authorizeHttpRequests 와 configurationSource 의 연관관계
@@ -152,9 +153,9 @@ public class SecurityConfiguration {
                  * authorizeHttpRequests 은 인증/인가 에 관한 설정을 해주고
                  * configurationSource 는 단순히 CORS 설정을 위한 것
                  */
-                .authorizeHttpRequests((authz) -> authz
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests((auth) -> auth
+                                .requestMatchers(HttpMethod.POST ,"/members/**").permitAll()
+                                .anyRequest().permitAll()
                 );
 
 
@@ -168,8 +169,8 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080","https://704e-121-162-236-116.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
-        configuration.setAllowedMethods(Arrays.asList("*")); // 직접입력
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://dae7-121-162-236-116.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 직접입력
         configuration.setAllowedHeaders(Arrays.asList("*")); // 직접입력
         configuration.setExposedHeaders(Arrays.asList("*","Authorization","Refresh")); //직접입력
         configuration.setAllowCredentials(true); // true일 경우 * 가 작동안함
