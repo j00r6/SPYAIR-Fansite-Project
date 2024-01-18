@@ -102,12 +102,6 @@ public class TokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
-//    private UsernamePasswordAuthenticationToken getAuthenticationFromToken(String token) {
-//        Long userId = tokenProvider.getUserIdFromToken(token);
-//        UserDetails userDetails = detailsService.loadUserById(userId);
-//        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//    }
-
 
     // 토큰의 유효성 검증을 수행
     public boolean validateToken(String token) {
@@ -131,7 +125,11 @@ public class TokenProvider implements InitializingBean {
 
     private Claims parseClaims (String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
