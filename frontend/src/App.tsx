@@ -4,7 +4,7 @@ import Header from "./components/Header/Header";
 import MainPage from "./pages/MainPage";
 import Profile from "./pages/Profile";
 import GlobalStyle from "./styles/GlobalStyles";
-
+import SignUpPage from "./pages/SignUpPage";
 function App() {
   return (
     <Router>
@@ -14,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/signup" element={<SignUpPage />} />
         </Routes>
       </Container>
     </Router>
