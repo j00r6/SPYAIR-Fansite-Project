@@ -2,9 +2,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import Header from "./components/Header/Header";
 import MainPage from "./pages/MainPage";
-import Profile from "./pages/Profile";
+import Profile from "./pages/ProfilePage";
 import GlobalStyle from "./styles/GlobalStyles";
 import SignUpPage from "./pages/SignUpPage";
+import LoginPage from "./pages/LoginPage";
+
 function App() {
   return (
     <Router>
@@ -15,6 +17,7 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </Container>
     </Router>
