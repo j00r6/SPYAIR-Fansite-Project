@@ -43,13 +43,14 @@ const Login = () => {
       if (response.status === 200) {
         console.log("로그인 성공! 야호~");
         // 로그인 성공 시 추가 동작 수행
+        // 토큰을 로컬 스토리지에 저장
+        localStorage.setItem("token", response.data.token);
+        window.location.href = "/";
       } else {
         console.log("로그인 실패ㅜㅜ");
-        // 로그인 실패 시 적절한 처리 수행
       }
     } catch (error) {
       console.error("로그인 에러 발생:", error);
-      // 에러 발생 시 적절한 처리 수행
     }
   };
 
