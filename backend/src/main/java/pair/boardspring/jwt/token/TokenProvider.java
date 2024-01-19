@@ -27,10 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TokenProvider implements InitializingBean {
 
-    private static final String AUTHORITIES_KEY = "auth";
     private Key key;
-
-    private final long exp = 1000L * 60 * 60;
 
     @Getter
     @Value("${jwt.key}")
@@ -51,7 +48,11 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenDto createToken(Authentication authentication) {
+    public TokenDto createAccessToken(Authentication authentication) {
+
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
 
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         Date expiryDate = new Date(new Date().getTime() + accessTokenTime);
@@ -60,10 +61,42 @@ public class TokenProvider implements InitializingBean {
                 .claim("memberId", customUserDetails.getMemberId())
                 .claim("email", customUserDetails.getUsername())
                 .claim("nickName", customUserDetails.getNickName())
+                .claim("auth", authorities)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
+
+        System.out.println("memberId from Token : " + customUserDetails.getMemberId());
+        System.out.println("nickName from Token : " + customUserDetails.getNickName());
+
+        return TokenDto.builder()
+                .accessToken(accessToken)
+                .type("Bearer")
+                .build();
+    }
+
+    public TokenDto createRefreshToken(Authentication authentication) {
+
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        Date expiryDate = new Date(new Date().getTime() + accessTokenTime);
+        String accessToken = Jwts.builder()
+                .setSubject(customUserDetails.getUsername())
+                .claim("memberId", customUserDetails.getMemberId())
+                .claim("email", customUserDetails.getUsername())
+                .claim("nickName", customUserDetails.getNickName())
+                .claim("auth", authorities)
+                .setIssuedAt(new Date())
+                .setExpiration(expiryDate)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        System.out.println("memberId from Token : " + customUserDetails.getMemberId());
+        System.out.println("nickName from Token : " + customUserDetails.getNickName());
 
         return TokenDto.builder()
                 .accessToken(accessToken)
@@ -92,11 +125,10 @@ public class TokenProvider implements InitializingBean {
                 .getBody();
 
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                Arrays.stream(claims.get("auth").toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-        Long memberId = getUserIdFromToken(token);
-        System.out.println("memberId from Token : " + memberId);
+
         org.springframework.security.core.userdetails.User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
@@ -123,12 +155,12 @@ public class TokenProvider implements InitializingBean {
         return false;
     }
 
-    private Claims parseClaims (String accessToken) {
+    private Claims what (String refreshToken) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(accessToken)
+                    .parseClaimsJws(refreshToken)
                     .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();

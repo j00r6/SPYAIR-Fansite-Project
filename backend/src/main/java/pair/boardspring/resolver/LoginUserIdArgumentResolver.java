@@ -30,7 +30,7 @@ public class LoginUserIdArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); // 사용자 인증 정보
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getName(); // 사용자 인증 정보
         log.info(principal.toString() + " principal");
 
         // 익명이면 -1L 리턴

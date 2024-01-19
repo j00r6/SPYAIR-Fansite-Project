@@ -21,9 +21,7 @@ public class TokenController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenDto> memberLogin (@RequestBody LogInRequest request) {
-        String loginId = request.getEmail();
-        String password = request.getPassword();
-        TokenDto tokenDto = service.login(loginId, password);
+        TokenDto tokenDto = service.login(request);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(tokenDto);
