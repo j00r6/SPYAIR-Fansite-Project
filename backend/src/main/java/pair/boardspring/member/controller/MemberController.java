@@ -1,14 +1,19 @@
 package pair.boardspring.member.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pair.boardspring.member.dto.SignInRequest;
+import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.service.MemberService;
+import pair.boardspring.resolver.LoginMemberId;
 
 @RestController
 @RequestMapping("/members")
@@ -21,5 +26,14 @@ public class MemberController {
 
         service.signInMember(request);
         return new ResponseEntity<>("회원가입 성공!", HttpStatus.OK);
+    }
+
+    @PostMapping("/test-resolver")
+    public ResponseEntity resolverTest(@Valid @LoginMemberId @Positive Long memberId ) {
+        Member findMember = service.findVerifyMember(memberId);
+        if (findMember.getMemberId() == memberId) {
+            return new ResponseEntity<>("테스트성공~", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("실패ㅠㅠ", HttpStatus.BAD_REQUEST);
     }
 }
