@@ -5,6 +5,9 @@ const FreeBoardListPage = () => {
   return (
     <Container>
       <Title>FREE BOARD</Title>
+      <Section>
+        <WriteButton>글쓰기</WriteButton>
+      </Section>
       <BoardList></BoardList>
     </Container>
   );
@@ -27,4 +30,23 @@ const Title = styled.h1`
   font-size: 32px;
   font-weight: bold;
   margin-bottom: 2rem;
+`;
+
+const Section = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: end;
+`;
+
+const WriteButton = styled.button`
+  padding: 0.5rem 0.5rem;
+  cursor: pointer;
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid white;
+  margin-bottom: 1rem;
+  &:hover {
+    background-color: #ffffff;
+    color: #000000;
+  }
 `;
