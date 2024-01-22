@@ -1,13 +1,19 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { responsiveHeaderStyles } from "../../styles/GlobalStyles";
 import Menu from "./Menu";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setMenuOpen] = useState(false); // 모달의 열림/닫힘 상태를 관리하는 상태 추가
 
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen); // 모달 상태를 토글
+  };
+
+  const handleLogoClick = () => {
+    navigate("/"); // 메인 페이지 경로 (예시: '/')
   };
 
   return (
@@ -15,6 +21,7 @@ const Header = () => {
       <Logo
         src="https://www.spyair.net/assets/img/common/header/logo_2.png"
         alt="Logo"
+        onClick={handleLogoClick}
       />
       <MenuBtnArea>
         <TxtMenu>MENU</TxtMenu>

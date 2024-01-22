@@ -150,7 +150,6 @@ const Profile = () => {
   return (
     <Container>
       <Title>PROFILE</Title>
-
       <Img
         src="http://www.sonymusic.co.jp/adm_image/common/artist_image/70005000/70005313/artist_photo/63360.jpg"
         alt="Profile Img"
@@ -205,7 +204,6 @@ const Container = styled.div`
 const Title = styled.h1`
   font-size: 32px;
   font-weight: bold;
-  text-align: center;
   margin-bottom: 2rem;
 `;
 
