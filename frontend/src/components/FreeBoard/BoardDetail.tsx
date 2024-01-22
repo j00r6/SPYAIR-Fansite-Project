@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import NavigationButtons from "./NavigationButtons";
 
 const BoardDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const postId = id ? parseInt(id) : 0;
 
@@ -22,6 +23,10 @@ const BoardDetail = () => {
     return <div>로딩 중...</div>;
   }
 
+  const handleEdit = () => {
+    navigate(`/edit/${postId}`); // 수정 페이지로 이동
+  };
+
   return (
     <Container>
       <Title>{post.title}</Title>
@@ -31,7 +36,7 @@ const BoardDetail = () => {
           <Author>{post.author}</Author>
         </CreateSection>
         <EditSection>
-          <EditButton>수정</EditButton>
+          <EditButton onClick={handleEdit}>수정</EditButton>
           <DeleteButton>삭제</DeleteButton>
         </EditSection>
       </Section>
@@ -77,10 +82,12 @@ const EditSection = styled.span`
 const EditButton = styled.span`
   font-size: 12px;
   margin-right: 1rem;
+  cursor: pointer;
 `;
 
 const DeleteButton = styled.span`
   font-size: 12px;
+  cursor: pointer;
 `;
 
 const Content = styled.div`
