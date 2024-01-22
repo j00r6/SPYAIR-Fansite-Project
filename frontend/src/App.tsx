@@ -7,6 +7,7 @@ import GlobalStyle from "./styles/GlobalStyles";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import FreeBoardListPage from "./pages/FreeBoardListPage";
+import FreeBoardDetailPage from "./pages/FreeBoardDetailPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/free-board" element={<FreeBoardListPage />} />
+          <Route path="/free-board/:id" element={<FreeBoardDetailPage />} />
         </Routes>
       </Container>
     </Router>

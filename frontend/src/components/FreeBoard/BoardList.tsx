@@ -1,6 +1,9 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const BoardList = () => {
+  const navigate = useNavigate();
+
   // 임시 데이터
   const posts = [
     {
@@ -23,10 +26,14 @@ const BoardList = () => {
     },
   ];
 
+  const goToPost = (postId: number) => {
+    navigate(`/free-board/${postId}`); // 상세 페이지로 이동
+  };
+
   return (
     <Container>
       {posts.map((post) => (
-        <PostContainer key={post.id}>
+        <PostContainer key={post.id} onClick={() => goToPost(post.id)}>
           <Title>{post.title}</Title>
           <Section>
             <PostTime>{post.createdAt}</PostTime>
@@ -47,7 +54,7 @@ const Container = styled.div`
 const PostContainer = styled.div`
   padding: 1rem 0.3rem;
   border-bottom: 1px solid #333333;
-
+  cursor: pointer;
   &:first-child {
     border-top: 1px solid #333333;
   }
