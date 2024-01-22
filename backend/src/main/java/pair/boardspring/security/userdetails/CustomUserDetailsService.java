@@ -27,9 +27,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository repository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> optionalMember = repository.findByEmail(username);
         Member findMember = optionalMember.orElseThrow(() -> new BadRequestException("존재하지 않는 회원정보 입니다!"));
+
         log.info("로그인한 멤버의 멤버 ID " + findMember.getMemberId().toString());
 
         Collection<? extends GrantedAuthority> authorities = findMember.getRoles().stream()

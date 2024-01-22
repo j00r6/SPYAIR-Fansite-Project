@@ -11,13 +11,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Message> handle(BadRequestException e) {
-        Message message = new Message(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+        Message message = new Message(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(LoginIdDuplicateException.class)
     public ResponseEntity<Message> handle(LoginIdDuplicateException e) {
-        Message message = new Message(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+        Message message = new Message(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<Message> handle(TokenExpiredException e) {
+        Message message = new Message(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalToken.class)
+    public ResponseEntity<Message> handle(IllegalToken e) {
+        Message message = new Message(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 }
