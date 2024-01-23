@@ -51,9 +51,7 @@ const Sns = () => {
 };
 export default Sns;
 
-const Container = styled.div`
-  margin-top: 2rem;
-`;
+const Container = styled.div``;
 
 const SnsItem = styled.a`
   display: inline-block;

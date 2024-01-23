@@ -127,6 +127,7 @@ const MenuItem = styled(Link)`
 
 const Account = styled.div`
   margin-top: 1rem;
+  margin-bottom: 2rem;
 `;
 
 const AccountItem = styled.p`
