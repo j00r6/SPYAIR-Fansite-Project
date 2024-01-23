@@ -15,9 +15,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  redis:
+    host: localhost
+    port: 6379
 jwt:
   key: ${JWT_SECRET_KEY}
-  access-token-expiration-minutes: 40
+  access-token-expiration-minutes: 3600000
   refresh-token-expiration-minutes: 420
 
 logging:

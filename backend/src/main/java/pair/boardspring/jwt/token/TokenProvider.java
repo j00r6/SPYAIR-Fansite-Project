@@ -12,9 +12,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import pair.boardspring.exception.IllegalToken;
+import pair.boardspring.exception.TokenExpiredException;
 import pair.boardspring.jwt.dto.TokenDto;
+import pair.boardspring.jwt.entity.Token;
 import pair.boardspring.security.userdetails.CustomUserDetails;
 
 import java.security.Key;
@@ -27,10 +29,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TokenProvider implements InitializingBean {
 
-    private static final String AUTHORITIES_KEY = "auth";
     private Key key;
-
-    private final long exp = 1000L * 60 * 60;
 
     @Getter
     @Value("${jwt.key}")
@@ -53,22 +52,72 @@ public class TokenProvider implements InitializingBean {
 
     public TokenDto createToken(Authentication authentication) {
 
+        String accessToken = createAccessToken(authentication);
+        String refreshToken = createRefreshToken(authentication);
+
+        // TokenDto 생성
+        return new TokenDto("Bearer", accessToken, refreshToken);
+    }
+
+    public String createAccessToken(Authentication authentication) {
+
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        Date expiryDate = new Date(new Date().getTime() + accessTokenTime);
-        String accessToken = Jwts.builder()
+        Date actExpiryDate = new Date(new Date().getTime() + accessTokenTime);
+
+        return Jwts.builder()
                 .setSubject(customUserDetails.getUsername())
                 .claim("memberId", customUserDetails.getMemberId())
                 .claim("email", customUserDetails.getUsername())
                 .claim("nickName", customUserDetails.getNickName())
+                .claim("auth", authorities)
                 .setIssuedAt(new Date())
-                .setExpiration(expiryDate)
+                .setExpiration(actExpiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
-        return TokenDto.builder()
-                .accessToken(accessToken)
-                .type("Bearer")
-                .build();
+//        System.out.println("memberId from Token : " + customUserDetails.getMemberId());
+//        System.out.println("nickName from Token : " + customUserDetails.getNickName());
+
+//        String refreshToken = Jwts.builder()
+//                .setSubject(customUserDetails.getUsername())
+//                .setIssuedAt(new Date())
+//                .setExpiration(retExpiryDate)
+//                .signWith(key, SignatureAlgorithm.HS512)
+//                .compact();
+
+//        return TokenDto.builder()
+//                .accessToken(accessToken)
+//                .type("Bearer")
+//                .build();
+    }
+
+    public String createRefreshToken(Authentication authentication) {
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        Date retExpiryDate = new Date(new Date().getTime() + refreshTokenTime);
+
+        return Jwts.builder()
+                .setSubject(customUserDetails.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(retExpiryDate)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+//         return Jwts.builder()
+//                .setSubject(customUserDetails.getUsername())
+//                .setIssuedAt(new Date())
+//                .setExpiration(retExpiryDate)
+//                .signWith(key, SignatureAlgorithm.HS512)
+//                .compact();
+
+//        return TokenDto.builder()
+//                .refreshToken(refreshToken)
+//                .type("Bearer")
+//                .build();
     }
 
     public Long getUserIdFromToken(String token) {
@@ -83,42 +132,37 @@ public class TokenProvider implements InitializingBean {
 
 
     // 토큰으로 클레임을 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 authentication 객체를 리턴
-    public Authentication getAuthentication(String token) {
-        Claims claims = Jwts
-                .parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public Authentication getAuthentication(String accessToken) {
+
+        Claims claims = parseClaims(accessToken);
 
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                Arrays.stream(claims.get("auth").toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-        Long memberId = getUserIdFromToken(token);
-        System.out.println("memberId from Token : " + memberId);
+
         org.springframework.security.core.userdetails.User principal = new User(claims.getSubject(), "", authorities);
 
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
     }
 
 
     // 토큰의 유효성 검증을 수행
-    public boolean validateToken(String token) {
+    public boolean validateAcessToken(String accessToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
 
         } catch (ExpiredJwtException e) {
             //적절한 exception code 활용 "만료된 JWT 토큰입니다."
-            log.info("만료된 JWT 토큰입니다.");
+            throw new TokenExpiredException("AccessToken 시간 만료!");
         } catch (UnsupportedJwtException e) {
             //적절한 exception code 활용 "지원되지 않는 JWT 토큰입니다."
-            log.info("지원되지 않는 JWT 토큰입니다.");
+            log.info("지원되지 않는 JWT 입니다.");
         } catch (IllegalArgumentException e) {
             //적절한 exception code 활용 "JWT 토큰이 잘못되었습니다."
-            log.info("JWT 토큰이 잘못되었습니다.");
+            throw new IllegalToken ("토큰 정보가 잘못됐습니다!");
         }
         return false;
     }
