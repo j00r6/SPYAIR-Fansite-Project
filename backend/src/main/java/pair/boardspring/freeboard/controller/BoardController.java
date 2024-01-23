@@ -1,5 +1,6 @@
 package pair.boardspring.freeboard.controller;
 
+import jakarta.validation.constraints.Positive;
 import pair.boardspring.freeboard.dto.BoardDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pair.boardspring.freeboard.entity.BoardEntity;
 import pair.boardspring.freeboard.service.BoardService;
+import pair.boardspring.resolver.LoginMemberId;
 
 import java.util.List;
 

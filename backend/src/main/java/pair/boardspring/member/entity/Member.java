@@ -46,9 +46,6 @@ public class Member {
     @Builder.Default
     private List<Authority> roles = new ArrayList<>();
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
-    private Token token;
-
     public void setRoles(List<Authority> role) {
         this.roles = role;
         role.forEach(o -> o.setMember(this));

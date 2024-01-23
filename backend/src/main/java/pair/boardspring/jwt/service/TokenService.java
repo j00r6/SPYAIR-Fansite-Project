@@ -52,10 +52,9 @@ public class TokenService {
     public void logoutAndRemoveToken (Long memberId) {
         Member findMember = memberService.findVerifyMember(memberId);
         Optional<Token> refreshTokenOptional = tokenRepository.findByMember(findMember);
-
-        log.info("멤버아이디로 찾은 refreshToken : " + refreshTokenOptional.toString());
-
-        refreshTokenOptional.ifPresent(tokenRepository::delete);
+        refreshTokenOptional.ifPresent(refreshToken -> {
+            tokenRepository.delete(refreshToken);
+        });
         SecurityContextHolder.clearContext();
     }
 
