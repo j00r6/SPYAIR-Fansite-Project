@@ -60,4 +60,12 @@ public class MemberService {
         Optional<Member> member = repository.findById(memberId);
         return member.get();
     }
+
+    public Member findMemberByPrincipal(String principal) {
+        Optional<Member> optionalMember = repository.findByEmail(principal);
+        if (!optionalMember.isPresent()) {
+            return null;
+        }
+        return optionalMember.get();
+    }
 }

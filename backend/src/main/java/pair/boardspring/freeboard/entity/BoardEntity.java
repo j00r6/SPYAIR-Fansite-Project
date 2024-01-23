@@ -3,6 +3,7 @@ package pair.boardspring.freeboard.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import pair.boardspring.member.entity.Member;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +16,9 @@ public class BoardEntity {
     private Long id;
     private String title;
     private String content;
-    private String memberId;
+//    @ManyToOne
+//    @JoinColumn(name = "member_id")
+//    private Member member;
 //    private String imgPath;
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
