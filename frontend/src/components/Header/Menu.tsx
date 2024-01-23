@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import Sns from "../Sns";
+
 interface MenuProps {
   isOpen: boolean;
   toggleMenu: () => void;
