@@ -68,7 +68,6 @@ public class TokenProvider implements InitializingBean {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         Date actExpiryDate = new Date(new Date().getTime() + accessTokenTime);
 
-
         return Jwts.builder()
                 .setSubject(customUserDetails.getUsername())
                 .claim("memberId", customUserDetails.getMemberId())
