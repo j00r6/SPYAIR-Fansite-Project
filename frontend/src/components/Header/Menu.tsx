@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import Sns from "../Sns";
+
 interface MenuProps {
   isOpen: boolean;
   toggleMenu: () => void;
@@ -126,6 +127,7 @@ const MenuItem = styled(Link)`
 
 const Account = styled.div`
   margin-top: 1rem;
+  margin-bottom: 2rem;
 `;
 
 const AccountItem = styled.p`
