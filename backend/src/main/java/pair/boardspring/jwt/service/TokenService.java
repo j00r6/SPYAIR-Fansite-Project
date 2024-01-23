@@ -40,8 +40,11 @@ public class TokenService {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
         Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
 
+        Token token = tokenProvider.createToken(authentication).TokenDtoToEntity();
+        token.setMember(member);
+
         if(!checkTokenDuplicate(tokenProvider.createAccessToken(authentication))) {
-            tokenRepository.save(tokenProvider.createToken(authentication).TokenDtoToEntity());
+            tokenRepository.save(token);
         }
         return tokenProvider.createToken(authentication);
     }
@@ -49,6 +52,9 @@ public class TokenService {
     public void logoutAndRemoveToken (Long memberId) {
         Member findMember = memberService.findVerifyMember(memberId);
         Optional<Token> refreshTokenOptional = tokenRepository.findByMember(findMember);
+
+        log.info("멤버아이디로 찾은 refreshToken : " + refreshTokenOptional.toString());
+
         refreshTokenOptional.ifPresent(tokenRepository::delete);
         SecurityContextHolder.clearContext();
     }
