@@ -32,7 +32,10 @@ public class MemberController {
 
     @PostMapping("/test-resolver")
     public ResponseEntity resolverTest(@Valid @LoginMemberId @Positive Long memberId ) {
+
         Member findMember = service.findVerifyMember(memberId);
+        Member hasToken = service.validateAccessToken(memberId);
+
         log.info("잘찾아오니 " + findMember.getEmail());
         if (findMember.getMemberId() == memberId) {
             return new ResponseEntity<>("테스트성공~", HttpStatus.OK);

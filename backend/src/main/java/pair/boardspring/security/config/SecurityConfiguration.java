@@ -120,7 +120,7 @@ public class SecurityConfiguration {
                  * Member Entity 상에서 Enum 으로 구분할 때
                  * ROLE_"권한" 양식을 사용해야 Spring Security 에서 인식을 한다.
                  */
-                .securityMatcher("/**")
+                .securityMatcher("/members/**")
 
                 /**
                  * CORS 설정을 활용하는 방법중 가장 쉬운 방법이 CorsFilter 를 활용하는 방법

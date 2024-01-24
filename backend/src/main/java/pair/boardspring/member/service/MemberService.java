@@ -7,6 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import pair.boardspring.exception.BadRequestException;
 //import pair.boardspring.exception.BusinessLogicException;
 import pair.boardspring.exception.LoginIdDuplicateException;
+import pair.boardspring.exception.TokenExpiredException;
+import pair.boardspring.jwt.entity.Token;
+import pair.boardspring.jwt.repository.TokenRepository;
 import pair.boardspring.member.dto.SignInRequest;
 import pair.boardspring.member.entity.Authority;
 import pair.boardspring.member.entity.Member;
@@ -19,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class MemberService {
+    private final TokenRepository tokenRepository;
     private final MemberRepository repository;
     private final PasswordEncoder encoder;
 
@@ -57,6 +61,17 @@ public class MemberService {
 
         // 회원 정보를 저장
         repository.save(member);
+    }
+
+    public Member validateAccessToken (Long memberId) {
+        Member findMember = findVerifyMember(memberId);
+        Optional<Token> haveAccessToken = tokenRepository.findByMember(findMember);
+
+        if (haveAccessToken.isPresent()) {
+            return null;
+        } else {
+            throw new TokenExpiredException("토큰이 만료되었슴니당!");
+        }
     }
 
     public Member findVerifyMember(Long memberId) {
