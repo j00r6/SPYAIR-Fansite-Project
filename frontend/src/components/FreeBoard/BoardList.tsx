@@ -30,8 +30,21 @@ const BoardList = () => {
     navigate(`/free-board/${postId}`); // 상세 페이지로 이동
   };
 
+  const handleWriteButtonClick = () => {
+    const isLoggedIn = localStorage.getItem("accessToken") !== null;
+
+    if (isLoggedIn) {
+      navigate("/edit/new"); //
+    } else {
+      alert("로그인 후 자유게시판 글을 작성할 수 있습니다."); // 로그인 안내 메시지
+    }
+  };
+
   return (
     <Container>
+      <ButtonWrapper>
+        <WriteButton onClick={handleWriteButtonClick}>글쓰기</WriteButton>
+      </ButtonWrapper>
       {posts.map((post) => (
         <PostContainer key={post.id} onClick={() => goToPost(post.id)}>
           <Title>{post.title}</Title>
@@ -49,6 +62,25 @@ export default BoardList;
 
 const Container = styled.div`
   width: 100%;
+`;
+
+const ButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: end;
+`;
+
+const WriteButton = styled.button`
+  padding: 0.5rem 0.5rem;
+  cursor: pointer;
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid white;
+  margin-bottom: 1rem;
+  &:hover {
+    background-color: #ffffff;
+    color: #000000;
+  }
 `;
 
 const PostContainer = styled.div`
