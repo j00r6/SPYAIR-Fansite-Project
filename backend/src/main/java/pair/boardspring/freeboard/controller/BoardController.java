@@ -21,8 +21,7 @@ public class BoardController {
     private final BoardService service;
 
     @PostMapping
-    public ResponseEntity createBoard(@LoginMemberId Long memberId,
-                                      @RequestBody BoardDto.Post postDto){
+    public ResponseEntity createBoard(@RequestBody BoardDto.Post postDto){
         BoardEntity boardEntity = service.save(postDto);
         return new ResponseEntity<>(boardEntity, HttpStatus.CREATED);
     }
