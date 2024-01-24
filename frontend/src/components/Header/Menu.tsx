@@ -1,7 +1,10 @@
+import axios from "axios";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import Sns from "../Sns";
+
+const api = import.meta.env.VITE_APP_API_ENDPOINT;
 
 interface MenuProps {
   isOpen: boolean;
@@ -20,6 +23,32 @@ const accountList = [
 ];
 
 const Menu = ({ isOpen, toggleMenu }: MenuProps) => {
+  const isLoggedIn = localStorage.getItem("accessToken") !== null;
+  console.log(isLoggedIn);
+
+  const handleLogout = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      try {
+        await axios.post(
+          `${api}/members/logout`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        window.location.href = "/";
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
+    }
+    toggleMenu();
+  };
   return (
     <MenuModal isOpen={isOpen}>
       <BackButton to="#" onClick={toggleMenu}>
@@ -38,16 +67,25 @@ const Menu = ({ isOpen, toggleMenu }: MenuProps) => {
         ))}
       </MenuList>
       <Account>
-        {accountList.map((menuItem) => (
+        {isLoggedIn ? (
           <AccountItem
-            key={menuItem.text}
-            as={Link}
-            to={menuItem.link}
-            onClick={toggleMenu}
+            // as="button" // 링크 대신 버튼으로 변경
+            onClick={handleLogout} // 로그아웃 처리 함수 연결
           >
-            {menuItem.text}
+            Logout
           </AccountItem>
-        ))}
+        ) : (
+          accountList.map((menuItem) => (
+            <AccountItem
+              key={menuItem.text}
+              as={Link}
+              to={menuItem.link}
+              onClick={toggleMenu}
+            >
+              {menuItem.text}
+            </AccountItem>
+          ))
+        )}
       </Account>
 
       <Sns />
