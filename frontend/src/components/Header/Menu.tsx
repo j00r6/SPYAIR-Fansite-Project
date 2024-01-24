@@ -68,12 +68,7 @@ const Menu = ({ isOpen, toggleMenu }: MenuProps) => {
       </MenuList>
       <Account>
         {isLoggedIn ? (
-          <AccountItem
-            // as="button" // 링크 대신 버튼으로 변경
-            onClick={handleLogout} // 로그아웃 처리 함수 연결
-          >
-            Logout
-          </AccountItem>
+          <AccountItem onClick={handleLogout}>Logout</AccountItem>
         ) : (
           accountList.map((menuItem) => (
             <AccountItem
