@@ -1,24 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
 import NavigationButtons from "./NavigationButtons";
+
+const api = import.meta.env.VITE_APP_API_ENDPOINT;
+
+interface Post {
+  boardNum: number;
+  title: string;
+  content: string;
+  memberId: number;
+  nickName: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const BoardDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const postId = id ? parseInt(id) : 0;
+  const [post, setPost] = useState<Post | null>(null);
 
   // 임시 데이터
-  const [post, setPost] = useState({
-    id: id,
-    title: "제목이다킬킬..",
-    content:
-      "안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해. 안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해",
-    createdAt: "2024-01-22T16:04:21.392554",
-    author: "카레맨",
-  });
+  // const [post, setPost] = useState({
+  //   id: id,
+  //   title: "제목이다킬킬..",
+  //   content:
+  //     "안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해. 안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해",
+  //   createdAt: "2024-01-22T16:04:21.392554",
+  //   author: "카레맨",
+  // });
 
-  // 상태 데이터가 없을 때를 대비한 로딩 상태 표시
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`${api}/boards/${id}`);
+        setPost(response.data);
+      } catch (error) {
+        console.error("엥 실패ㅋㅋ:", error);
+        // 에러 처리
+      }
+    };
+    if (id) {
+      fetchPost();
+    }
+  }, [id]);
+
   if (!post) {
     return <div>로딩 중...</div>;
   }
@@ -33,7 +61,7 @@ const BoardDetail = () => {
       <Section>
         <CreateSection>
           <PostTime>{new Date(post.createdAt).toLocaleString()}</PostTime>
-          <Author>{post.author}</Author>
+          {/* <Author>{post.author}</Author> //백엔드 구현 완료되면 추가 */}
         </CreateSection>
         <EditSection>
           <EditButton onClick={handleEdit}>수정</EditButton>
@@ -41,7 +69,7 @@ const BoardDetail = () => {
         </EditSection>
       </Section>
       <Content>{post.content}</Content>
-      <NavigationButtons postId={postId} />
+      <NavigationButtons postId={post.boardNum} />
     </Container>
   );
 };
