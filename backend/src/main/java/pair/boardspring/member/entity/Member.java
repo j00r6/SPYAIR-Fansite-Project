@@ -3,6 +3,8 @@ package pair.boardspring.member.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import pair.boardspring.jwt.entity.Token;
+import pair.boardspring.freeboard.entity.BoardEntity;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,12 @@ public class Member {
 
     @Column
     public String nickName;
+
+    @Column
+    public String name;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<BoardEntity> boardEntity;
 
     public enum MemberStatus {
         MEMBER_ACTIVE("활동중"),
