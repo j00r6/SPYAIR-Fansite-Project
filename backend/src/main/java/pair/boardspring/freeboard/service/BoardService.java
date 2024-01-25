@@ -1,5 +1,6 @@
 package pair.boardspring.freeboard.service;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,55 +31,54 @@ public class BoardService {
     private final BoardMapper mapper;
     private final MemberService memberService;
 
-    public BoardEntity save(BoardDto.Post postDto){
-//         예시: 서버 파일 시스템에 저장
-//         이미지 파일을 저장할 경로 설정
-//        String filePath = "/path/to/save/images/" + postDto.getImgFile().getOriginalFilename();
-////
-//        // 파일 저장
-//        try {
-//            Files.copy(postDto.getImgFile().getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-//        } catch (IOException e) {
-//            e.printStackTrace();  // 예외 처리 필요
-//        }
-//
-//        // 데이터베이스에는 이미지 파일의 경로를 저장
-
-        // 로그인 정보 불러오기
-//        log.info("prcp1");
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        log.info(principal+"prcp2");
-//        Member member = memberService.findMemberByPrincipal(principal.toString());
-        BoardEntity createBoardEntity = mapper.boardPostDtoToBoardEntity(postDto);
-//        createBoardEntity.setMember(member);
-
-//        createBoardEntity.setImgPath(filePath);
+    public void save(BoardDto.Post postDto, Long memberId){
+        Member member = memberService.findVerifyMember(memberId);
+        BoardEntity createBoardEntity = mapper.boardPostDtoToBoardEntity(postDto, member);
+        Long maxBoardNum = repository.findMaxBoardNum();
+        if(maxBoardNum == null){
+            maxBoardNum = 0L;
+        }
+        createBoardEntity.setBoardNum(maxBoardNum+1);
         repository.save(createBoardEntity);
-
-        return createBoardEntity;
     }
 
-    public BoardEntity update(Long id, BoardDto.Patch patch) {
-        BoardEntity updateBoardEntity = mapper.boardPatchDtoToBoardEntity(patch, findBoardById(id));
+    public void update(Long boardNum, BoardDto.Patch patch) {
+        BoardEntity updateBoardEntity = mapper.boardPatchDtoToBoardEntity(patch, repository.findByBoardNum(boardNum));
         repository.save(updateBoardEntity);
-        return updateBoardEntity;
-
     }
 
     public List<BoardEntity> findAll() {
         return repository.findAll();
     }
 
-    public void delete(Long id) {
-        repository.deleteById(id);
+    @Transactional
+    public void delete(Long boardNum) {
+        repository.deleteByBoardNum(boardNum);
+        // 삭제된 이후의 모든 주문을 가져와서 순서를 조정
+        List<BoardEntity> boardEntities = repository.findByBoardNumGreaterThanOrderByBoardNum(boardNum);
+        for(int i=0; i<boardEntities.size(); i++){
+            BoardEntity boardEntity = boardEntities.get(i);
+            boardEntity.setBoardNum(boardNum+i);
+        }
+        // 변경된 순서로 업데이트
+        repository.saveAll(boardEntities);
     }
 
     public BoardEntity findBoardById(Long id){
         return repository.findById(id).orElseThrow();
     }
 
-    public List<BoardDto.GetPage> findBoardPage(int num) {
-        Pageable pageable = PageRequest.of(num-1, 10);
+    public BoardDto.responseDetail findBoardDetail(Long id){
+        BoardEntity findBoard = repository.findById(id).orElseThrow();
+        BoardDto.responseDetail response = mapper.boardResponseDetailDtoToBoardEntity(findBoard);
+        response.setMemberId(findBoard.getMember().getMemberId());
+        response.setNickName(findBoard.getMember().getNickName());
+        return response;
+    }
+
+    public List<BoardDto.GetPage> findBoardPage(Long num) {
+        int intNum = num.intValue();
+        Pageable pageable = PageRequest.of(intNum-1, 10);
 
         Page<BoardEntity> page = findAllPaged(pageable);
         List<BoardDto.GetPage> dtoList = page.getContent().stream()

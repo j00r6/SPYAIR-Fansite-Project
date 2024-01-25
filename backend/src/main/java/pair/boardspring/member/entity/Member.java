@@ -32,8 +32,8 @@ public class Member {
     @Column
     public String name;
 
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//    private List<BoardEntity> boardEntity;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<BoardEntity> boardEntity;
 
     public enum MemberStatus {
         MEMBER_ACTIVE("활동중"),

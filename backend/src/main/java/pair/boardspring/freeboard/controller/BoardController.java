@@ -1,5 +1,7 @@
 package pair.boardspring.freeboard.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.apache.coyote.Response;
 import pair.boardspring.freeboard.dto.BoardDto;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pair.boardspring.freeboard.entity.BoardEntity;
 import pair.boardspring.freeboard.service.BoardService;
+import pair.boardspring.resolver.LoginMemberId;
 
 import java.net.http.HttpResponse;
 import java.util.List;
@@ -24,33 +27,35 @@ public class BoardController {
       member와 연결 해야함
      **/
     @PostMapping
-    public ResponseEntity createBoard(@RequestBody BoardDto.Post postDto){
-        BoardEntity boardEntity = service.save(postDto);
-        return new ResponseEntity<>(boardEntity, HttpStatus.CREATED);
+    public ResponseEntity createBoard(@RequestBody BoardDto.Post postDto,
+                                      @Valid @Positive @LoginMemberId Long memberId){
+        service.save(postDto, memberId);
+//        return new ResponseEntity<>(boardEntity, HttpStatus.CREATED);
+        return new ResponseEntity<>("success",HttpStatus.CREATED);
     }
 
-    @GetMapping("/page/{num}")
-    public ResponseEntity readBoardPage(@PathVariable int num){
-        List<BoardDto.GetPage> dtoList = service.findBoardPage(num);
+    @GetMapping("/page/{pageNum}")
+    public ResponseEntity readBoardPage(@PathVariable Long pageNum){
+        List<BoardDto.GetPage> dtoList = service.findBoardPage(pageNum);
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity readBoardDetail(@PathVariable Long id){
-        BoardEntity responseEntity = service.findBoardById(id);
-        return new ResponseEntity<>(responseEntity, HttpStatus.OK);
+    @GetMapping("/{boardNum}")
+    public ResponseEntity readBoardDetail(@PathVariable Long boardNum){
+        BoardDto.responseDetail response = service.findBoardDetail(boardNum);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity updateBoard(@PathVariable Long id,
+    @PatchMapping("/{boardNum}")
+    public ResponseEntity updateBoard(@PathVariable Long boardNum,
                                       @RequestBody BoardDto.Patch patchDto) {
-        BoardEntity boardEntity = service.update(id, patchDto);
-        return new ResponseEntity<>(boardEntity, HttpStatus.OK);
+        service.update(boardNum, patchDto);
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteBoard(@PathVariable Long id){
-        service.delete(id);
-        return readBoardPage(1);
+    @DeleteMapping("/{boardNum}")
+    public ResponseEntity deleteBoard(@PathVariable Long boardNum){
+        service.delete(boardNum);
+        return new ResponseEntity<>("success",HttpStatus.OK);
     }
 }

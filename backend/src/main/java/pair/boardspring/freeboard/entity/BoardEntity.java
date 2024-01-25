@@ -1,6 +1,7 @@
 package pair.boardspring.freeboard.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import pair.boardspring.member.entity.Member;
@@ -14,11 +15,12 @@ public class BoardEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long boardNum;
     private String title;
     private String content;
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 //    private String imgPath;
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -29,4 +31,5 @@ public class BoardEntity {
     public void setUpdatedAt(){
         this.updatedAt = LocalDateTime.now();
     }
+
 }
