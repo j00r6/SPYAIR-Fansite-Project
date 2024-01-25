@@ -40,7 +40,7 @@ const BoardEdit = () => {
       if (isEditMode && id) {
         // 글 수정 모드일 때의 서버 전송 로직
         await axios.patch(
-          `${api}/boards/${id}`,
+          `${api}/board/${id}`,
           { title, content },
           {
             headers: {
@@ -52,7 +52,7 @@ const BoardEdit = () => {
       } else {
         // 글 작성 모드일 때의 서버 전송 로직
         await axios.post(
-          `${api}/boards`,
+          `${api}/board`,
           { title, content },
           {
             headers: {

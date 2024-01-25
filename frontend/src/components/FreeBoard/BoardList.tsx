@@ -10,19 +10,19 @@ const BoardList = () => {
       id: 1,
       title: "이케형 사랑합니다 아이시떼루",
       createdAt: "2023-01-22 12:00",
-      author: "박진수",
+      nickName: "박진수",
     },
     {
       id: 2,
       title: "SPYAIR 없는 삶은 상상이 안가네요",
       createdAt: "2023-01-23 15:30",
-      author: "전찬혁",
+      nickName: "전찬혁",
     },
     {
       id: 3,
       title: "스파이에어 내한 언제 오나요??????????",
       createdAt: "2023-01-24 15:30",
-      author: "송유정",
+      nickName: "송유정",
     },
   ];
 
@@ -50,7 +50,7 @@ const BoardList = () => {
           <Title>{post.title}</Title>
           <Section>
             <PostTime>{post.createdAt}</PostTime>
-            <Author>{post.author}</Author>
+            <Author>{post.nickName}</Author>
           </Section>
         </PostContainer>
       ))}

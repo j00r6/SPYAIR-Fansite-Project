@@ -5,6 +5,7 @@ import styled from "styled-components";
 import NavigationButtons from "./NavigationButtons";
 
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const accessToken = localStorage.getItem("accessToken");
 
 interface Post {
   boardNum: number;
@@ -23,7 +24,6 @@ const BoardDetail = () => {
   const [currentMemberId, setCurrentMemberId] = useState<number | null>(null);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       const parts = accessToken.split(".");
       if (parts.length === 3) {
@@ -56,6 +56,27 @@ const BoardDetail = () => {
     navigate(`/edit/${post.boardNum}`);
   };
 
+  const handleDelete = async () => {
+    if (!accessToken) {
+      console.error("인증 토큰이 없습니다.");
+      return;
+    }
+
+    if (window.confirm("이 글을 삭제하시겠습니까?")) {
+      try {
+        await axios.delete(`${api}/boards/${post.boardNum}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log("글 삭제 완료");
+        navigate("/"); // 삭제 후 이동할 페이지 (예: 홈 또는 목록 페이지)
+      } catch (error) {
+        console.error("글 삭제 실패:", error);
+      }
+    }
+  };
+
   return (
     <Container>
       <Title>{post.title}</Title>
@@ -67,7 +88,7 @@ const BoardDetail = () => {
         {currentMemberId === post.memberId && ( // memberId가 일치할 때만 수정/삭제 버튼 표시
           <EditSection>
             <EditButton onClick={handleEdit}>수정</EditButton>
-            <DeleteButton>삭제</DeleteButton>
+            <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
           </EditSection>
         )}
       </Section>
