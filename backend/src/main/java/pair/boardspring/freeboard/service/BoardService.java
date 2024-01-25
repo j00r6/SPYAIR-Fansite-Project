@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import pair.boardspring.freeboard.dto.BoardDto;
 import pair.boardspring.freeboard.mapper.BoardMapper;
 import lombok.AllArgsConstructor;
@@ -16,12 +15,7 @@ import pair.boardspring.freeboard.repository.BoardRepository;
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.service.MemberService;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -82,7 +76,7 @@ public class BoardService {
 
         Page<BoardEntity> page = findAllPaged(pageable);
         List<BoardDto.GetPage> dtoList = page.getContent().stream()
-                .map(BoardDto.GetPage::fromEntity)  // YourDTO의 정적 메서드를 사용해서 Entity를 DTO로 변환
+                .map(BoardDto.GetPage::fromEntity)  // 정적 메서드를 사용해서 Entity를 DTO로 변환
                 .toList();
         return dtoList;
     }

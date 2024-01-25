@@ -21,7 +21,6 @@ public class BoardEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-//    private String imgPath;
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
     @Column(name = "updated_at")
