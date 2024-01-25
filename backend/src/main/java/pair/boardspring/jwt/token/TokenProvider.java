@@ -96,17 +96,17 @@ public class TokenProvider implements InitializingBean {
 //                .build();
     }
 
-    public String createRefreshToken(Authentication authentication) {
-
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        Date retExpiryDate = new Date(new Date().getTime() + refreshTokenTime);
-
-        return Jwts.builder()
-                .setSubject(customUserDetails.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(retExpiryDate)
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
+//    public String createRefreshToken(Authentication authentication) {
+//
+//        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+//        Date retExpiryDate = new Date(new Date().getTime() + refreshTokenTime);
+//
+//        return Jwts.builder()
+//                .setSubject(customUserDetails.getUsername())
+//                .setIssuedAt(new Date())
+//                .setExpiration(retExpiryDate)
+//                .signWith(key, SignatureAlgorithm.HS512)
+//                .compact();
 
 //        System.out.println("memberId from Token : " + customUserDetails.getMemberId());
 //        System.out.println("nickName from Token : " + customUserDetails.getNickName());
@@ -122,7 +122,7 @@ public class TokenProvider implements InitializingBean {
 //                .accessToken(accessToken)
 //                .type("Bearer")
 //                .build();
-    }
+//    }
 
     public String createRefreshToken(Authentication authentication) {
 
