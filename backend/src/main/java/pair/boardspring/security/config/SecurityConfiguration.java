@@ -120,7 +120,8 @@ public class SecurityConfiguration {
                  * Member Entity 상에서 Enum 으로 구분할 때
                  * ROLE_"권한" 양식을 사용해야 Spring Security 에서 인식을 한다.
                  */
-                .securityMatcher("/members/**")
+                .securityMatcher("/**")
+
 
                 /**
                  * CORS 설정을 활용하는 방법중 가장 쉬운 방법이 CorsFilter 를 활용하는 방법
@@ -129,7 +130,7 @@ public class SecurityConfiguration {
                  * .cors((cors) -> cors
                  * 				.configurationSource(apiConfigurationSource()))
                  *
-                 * 	위와 같이 메서드 명(apiConfigurationSource)을 ㅂ구분하여 서로 다른 CORS 설정을 세팅 가능
+                 * 	위와 같이 메서드 명(apiConfigurationSource)을 구분하여 서로 다른 CORS 설정을 세팅 가능
                  *
                  * 	공식문서 참조
                  * 	https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html#page-title
@@ -154,7 +155,10 @@ public class SecurityConfiguration {
                  * configurationSource 는 단순히 CORS 설정을 위한 것
                  */
                 .authorizeHttpRequests((auth) -> auth
-                                .requestMatchers(HttpMethod.POST ,"/members/**").permitAll()
+                                .requestMatchers(HttpMethod.POST ,"/**").permitAll()
+                                .requestMatchers(HttpMethod.GET ,"/**").permitAll()
+                                .requestMatchers(HttpMethod.PATCH ,"/**").permitAll()
+                                .requestMatchers(HttpMethod.DELETE ,"/**").permitAll()
                                 .anyRequest().permitAll()
                 );
 

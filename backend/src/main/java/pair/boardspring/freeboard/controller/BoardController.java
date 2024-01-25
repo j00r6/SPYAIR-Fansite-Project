@@ -1,13 +1,15 @@
 package pair.boardspring.freeboard.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import pair.boardspring.freeboard.dto.BoardDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pair.boardspring.freeboard.entity.BoardEntity;
 import pair.boardspring.freeboard.service.BoardService;
+import pair.boardspring.resolver.LoginMemberId;
 
 import java.util.List;
 
@@ -19,27 +21,34 @@ public class BoardController {
     private final BoardService service;
 
     @PostMapping
-    public ResponseEntity createBoard(@RequestBody BoardDto.Post postDto){
-        BoardEntity boardEntity = service.save(postDto);
-        return new ResponseEntity<>(boardEntity, HttpStatus.CREATED);
+    public ResponseEntity createBoard(@RequestBody BoardDto.Post postDto,
+                                      @Valid @Positive @LoginMemberId Long memberId){
+        service.save(postDto, memberId);
+        return new ResponseEntity<>("success",HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity readBoard(){
-        List<BoardEntity> boardEntity = service.findAll();
-        return new ResponseEntity<>(boardEntity, HttpStatus.OK);
+    @GetMapping("/page/{pageNum}")
+    public ResponseEntity readBoardPage(@PathVariable Long pageNum){
+        List<BoardDto.GetPage> dtoList = service.findBoardPage(pageNum);
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity updateBoard(@PathVariable Long id,
+    @GetMapping("/{boardNum}")
+    public ResponseEntity readBoardDetail(@PathVariable Long boardNum){
+        BoardDto.responseDetail response = service.findBoardDetail(boardNum);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PatchMapping("/{boardNum}")
+    public ResponseEntity updateBoard(@PathVariable Long boardNum,
                                       @RequestBody BoardDto.Patch patchDto) {
-        BoardEntity boardEntity = service.update(id, patchDto);
-        return new ResponseEntity<>(boardEntity, HttpStatus.OK);
+        service.update(boardNum, patchDto);
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteBoard(@PathVariable Long id){
-        service.delete(id);
-        return readBoard();
+    @DeleteMapping("/{boardNum}")
+    public ResponseEntity deleteBoard(@PathVariable Long boardNum){
+        service.delete(boardNum);
+        return new ResponseEntity<>("success",HttpStatus.OK);
     }
 }

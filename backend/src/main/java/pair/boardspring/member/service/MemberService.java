@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import pair.boardspring.exception.BadRequestException;
 //import pair.boardspring.exception.BusinessLogicException;
+
 import pair.boardspring.exception.LoginIdDuplicateException;
 import pair.boardspring.member.dto.SignInRequest;
 import pair.boardspring.member.entity.Authority;
@@ -69,6 +71,8 @@ public class MemberService {
         if (!optionalMember.isPresent()) {
             return null;
         }
-        return optionalMember.get();
+        Member member = optionalMember.get();
+        return member;
     }
+
 }
