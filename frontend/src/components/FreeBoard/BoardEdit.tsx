@@ -29,15 +29,43 @@ const BoardEdit = () => {
     }
   }, [id, isEditMode]);
 
-  const handleSubmit = () => {
-    if (isEditMode) {
-      // 글 수정 모드일 때의 서버 전송 로직
-      console.log(`수정 - 제목: ${title}, 내용: ${content}`);
-    } else {
-      // 글 작성 모드일 때의 서버 전송 로직
-      console.log(`작성 - 제목: ${title}, 내용: ${content}`);
+  const handleSubmit = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      console.error("인증 토큰이 없습니다.");
+      return;
     }
-    navigate(-1); // 이전 페이지로 이동
+
+    try {
+      if (isEditMode && id) {
+        // 글 수정 모드일 때의 서버 전송 로직
+        await axios.patch(
+          `${api}/boards/${id}`,
+          { title, content },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        console.log("수정 완료");
+      } else {
+        // 글 작성 모드일 때의 서버 전송 로직
+        await axios.post(
+          `${api}/boards`,
+          { title, content },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        console.log("글 등록 완료");
+      }
+      navigate(-1); // 이전 페이지로 이동
+    } catch (error) {
+      console.error("글 등록/수정 실패:", error);
+    }
   };
 
   return (
