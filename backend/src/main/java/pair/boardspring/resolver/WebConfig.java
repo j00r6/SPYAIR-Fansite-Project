@@ -1,4 +1,4 @@
-package pair.boardspring.security.config;
+package pair.boardspring.resolver;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,5 @@
 package pair.boardspring.jwt.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pair.boardspring.exception.TokenExpiredException;
+import pair.boardspring.exception.BadRequestException;
 import pair.boardspring.jwt.dto.TokenDto;
 import pair.boardspring.jwt.entity.Token;
 import pair.boardspring.jwt.repository.TokenRepository;
@@ -18,7 +17,6 @@ import pair.boardspring.member.dto.LogInRequest;
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.repository.MemberRepository;
 import pair.boardspring.member.service.MemberService;
-import pair.boardspring.security.userdetails.CustomUserDetails;
 
 import java.util.Optional;
 
@@ -45,6 +43,8 @@ public class TokenService {
 
         if(!checkTokenDuplicate(tokenProvider.createAccessToken(authentication))) {
             tokenRepository.save(token);
+        } else {
+            throw new BadRequestException("토큰 중복!");
         }
         return tokenProvider.createToken(authentication);
     }
@@ -53,9 +53,9 @@ public class TokenService {
         Member findMember = memberService.findVerifyMember(memberId);
         Optional<Token> refreshTokenOptional = tokenRepository.findByMember(findMember);
 
-        log.info("멤버아이디로 찾은 refreshToken : " + refreshTokenOptional.toString());
-
-        refreshTokenOptional.ifPresent(tokenRepository::delete);
+        refreshTokenOptional.ifPresent(refreshToken -> {
+            tokenRepository.delete(refreshToken);
+        });
         SecurityContextHolder.clearContext();
     }
 

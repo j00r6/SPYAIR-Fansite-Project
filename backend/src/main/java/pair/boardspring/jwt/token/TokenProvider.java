@@ -73,6 +73,7 @@ public class TokenProvider implements InitializingBean {
                 .claim("memberId", customUserDetails.getMemberId())
                 .claim("email", customUserDetails.getUsername())
                 .claim("nickName", customUserDetails.getNickName())
+                .claim("roles", customUserDetails.getRoles())
                 .claim("auth", authorities)
                 .setIssuedAt(new Date())
                 .setExpiration(actExpiryDate)

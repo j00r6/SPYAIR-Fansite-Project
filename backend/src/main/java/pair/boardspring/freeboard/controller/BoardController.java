@@ -1,6 +1,5 @@
 package pair.boardspring.freeboard.controller;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import pair.boardspring.freeboard.dto.BoardDto;
 import lombok.RequiredArgsConstructor;
