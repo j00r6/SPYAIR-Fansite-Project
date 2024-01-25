@@ -19,29 +19,30 @@ interface Post {
 const BoardDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const postId = id ? parseInt(id) : 0;
   const [post, setPost] = useState<Post | null>(null);
-
-  // 임시 데이터
-  // const [post, setPost] = useState({
-  //   id: id,
-  //   title: "제목이다킬킬..",
-  //   content:
-  //     "안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해. 안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해",
-  //   createdAt: "2024-01-22T16:04:21.392554",
-  //   author: "카레맨",
-  // });
+  const [currentMemberId, setCurrentMemberId] = useState<number | null>(null);
 
   useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      const parts = accessToken.split(".");
+      if (parts.length === 3) {
+        const payload = parts[1];
+        const decodedPayload = atob(payload);
+        const parsedPayload = JSON.parse(decodedPayload);
+        setCurrentMemberId(parsedPayload.memberId);
+      }
+    }
+
     const fetchPost = async () => {
       try {
         const response = await axios.get(`${api}/boards/${id}`);
         setPost(response.data);
       } catch (error) {
         console.error("엥 실패ㅋㅋ:", error);
-        // 에러 처리
       }
     };
+
     if (id) {
       fetchPost();
     }
@@ -52,7 +53,7 @@ const BoardDetail = () => {
   }
 
   const handleEdit = () => {
-    navigate(`/edit/${postId}`); // 수정 페이지로 이동
+    navigate(`/edit/${post.boardNum}`);
   };
 
   return (
@@ -61,12 +62,14 @@ const BoardDetail = () => {
       <Section>
         <CreateSection>
           <PostTime>{new Date(post.createdAt).toLocaleString()}</PostTime>
-          {/* <Author>{post.author}</Author> //백엔드 구현 완료되면 추가 */}
+          <Author>{post.nickName}</Author>
         </CreateSection>
-        <EditSection>
-          <EditButton onClick={handleEdit}>수정</EditButton>
-          <DeleteButton>삭제</DeleteButton>
-        </EditSection>
+        {currentMemberId === post.memberId && ( // memberId가 일치할 때만 수정/삭제 버튼 표시
+          <EditSection>
+            <EditButton onClick={handleEdit}>수정</EditButton>
+            <DeleteButton>삭제</DeleteButton>
+          </EditSection>
+        )}
       </Section>
       <Content>{post.content}</Content>
       <NavigationButtons postId={post.boardNum} />
