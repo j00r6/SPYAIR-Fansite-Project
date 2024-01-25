@@ -22,21 +22,62 @@ const BoardDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post | null>(null);
   const [currentMemberId, setCurrentMemberId] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (accessToken) {
+  if (accessToken) {
+    try {
       const parts = accessToken.split(".");
       if (parts.length === 3) {
-        const payload = parts[1];
+        let payload = parts[1];
+        payload = payload.replace(/-/g, "+").replace(/_/g, "/");
         const decodedPayload = atob(payload);
         const parsedPayload = JSON.parse(decodedPayload);
-        setCurrentMemberId(parsedPayload.memberId);
+        const memberId = parsedPayload.memberId;
+        console.log("Member ID:", memberId);
+      }
+    } catch (error) {
+      console.error("토큰 디코딩 오류:", error);
+    }
+  }
+  useEffect(() => {
+    if (accessToken) {
+      try {
+        const parts = accessToken.split(".");
+        if (parts.length === 3) {
+          let payload = parts[1];
+          payload = payload.replace(/-/g, "+").replace(/_/g, "/");
+          const decodedPayload = atob(payload);
+          const parsedPayload = JSON.parse(decodedPayload);
+          setCurrentMemberId(parsedPayload.memberId);
+          // console.log("Member ID:", currentMemberId);
+        }
+      } catch (error) {
+        console.error("토큰 디코딩 오류:", error);
       }
     }
+    // if (accessToken) {
+    //   try {
+    //     const parts = accessToken.split(".");
+    //     if (parts.length === 3) {
+    //       const payload = parts[1];
+    //       console.log(payload);
+    //       const decodedPayload = atob(payload);
+    //       const parsedPayload = JSON.parse(decodedPayload);
+    //       setCurrentMemberId(parsedPayload.memberId);
+    //     }
+    //   } catch (error) {
+    //     console.error("토큰 디코딩 오류:", error);
+    //     // 적절한 오류 처리 로직
+    //   }
+    // }
 
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${api}/boards/${id}`);
+        const response = await axios.get(`${api}/board/${id}`, {
+          headers: {
+            // "Content-Type": `application/json`,
+            "ngrok-skip-browser-warning": "69420",
+          },
+        });
+        console.log("응답:", response.data);
         setPost(response.data);
       } catch (error) {
         console.error("엥 실패ㅋㅋ:", error);
@@ -64,18 +105,20 @@ const BoardDetail = () => {
 
     if (window.confirm("이 글을 삭제하시겠습니까?")) {
       try {
-        await axios.delete(`${api}/boards/${post.boardNum}`, {
+        await axios.delete(`${api}/board/${post.boardNum}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
         console.log("글 삭제 완료");
-        navigate("/"); // 삭제 후 이동할 페이지 (예: 홈 또는 목록 페이지)
+        navigate("/free-board"); // 삭제 후 이동할 페이지 (예: 홈 또는 목록 페이지)
       } catch (error) {
         console.error("글 삭제 실패:", error);
       }
     }
   };
+
+  console.log("토큰", currentMemberId);
 
   return (
     <Container>

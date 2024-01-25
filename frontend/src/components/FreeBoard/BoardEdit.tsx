@@ -15,7 +15,12 @@ const BoardEdit = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${api}/boards/${id}`);
+        const response = await axios.get(`${api}/board/${id}`, {
+          headers: {
+            "Content-Type": `application/json`,
+            "ngrok-skip-browser-warning": "69420",
+          },
+        });
         const postData = response.data;
         setTitle(postData.title);
         setContent(postData.content);
@@ -44,7 +49,8 @@ const BoardEdit = () => {
           { title, content },
           {
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              // Authorization: `Bearer ${accessToken}`,
+              "ngrok-skip-browser-warning": "69420",
             },
           }
         );
@@ -57,6 +63,7 @@ const BoardEdit = () => {
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
+              "ngrok-skip-browser-warning": "69420",
             },
           }
         );

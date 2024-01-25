@@ -5,6 +5,7 @@ const MainPage = () => {
 
   console.log("Access Token:", accessToken);
   console.log("Refresh Token:", refreshToken);
+
   return <Container>메인페이지</Container>;
 };
 export default MainPage;
