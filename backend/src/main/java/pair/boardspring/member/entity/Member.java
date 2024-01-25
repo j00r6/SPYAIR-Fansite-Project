@@ -5,6 +5,7 @@ import lombok.*;
 import pair.boardspring.jwt.entity.Token;
 import pair.boardspring.freeboard.entity.BoardEntity;
 
+
 import java.util.ArrayList;
 import java.util.List;
 

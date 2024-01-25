@@ -122,6 +122,7 @@ public class SecurityConfiguration {
                  */
                 .securityMatcher("/**")
 
+
                 /**
                  * CORS 설정을 활용하는 방법중 가장 쉬운 방법이 CorsFilter 를 활용하는 방법
                  * corsConfigurationSource 를 Bean 으로 설정함으로써 CorsFilter 를 활용 가능
