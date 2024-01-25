@@ -1,24 +1,31 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
+
+const api = import.meta.env.VITE_APP_API_ENDPOINT;
 
 const BoardEdit = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const isEditMode = id != null; // 글 수정 모드 여부 확인
+  const isEditMode = id !== "new"; // 글 수정 모드 여부 확인
 
   useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`${api}/boards/${id}`);
+        const postData = response.data;
+        setTitle(postData.title);
+        setContent(postData.content);
+      } catch (error) {
+        console.error("글 불러오기 실패:", error);
+      }
+    };
+
     if (isEditMode) {
-      // 글 수정 모드일 때 기존 데이터 불러오기
-      // API 요청을 통해 해당 글 데이터 불러오는 로직 구현
-      setTitle("기존 제목");
-      setContent("기존 내용");
-    } else {
-      // 글 작성 모드일 때 입력창 초기화
-      setTitle("");
-      setContent("");
+      fetchPost();
     }
   }, [id, isEditMode]);
 
