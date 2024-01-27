@@ -1,31 +1,125 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
 import NavigationButtons from "./NavigationButtons";
+
+const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const accessToken = localStorage.getItem("accessToken");
+
+interface Post {
+  boardNum: number;
+  title: string;
+  content: string;
+  memberId: number;
+  nickName: string;
+  createdAt: string;
+  updatedAt: string;
+  totalNum: number;
+}
 
 const BoardDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const postId = id ? parseInt(id) : 0;
+  const [post, setPost] = useState<Post | null>(null);
+  const [currentMemberId, setCurrentMemberId] = useState<number | null>(null);
+  if (accessToken) {
+    try {
+      const parts = accessToken.split(".");
+      if (parts.length === 3) {
+        let payload = parts[1];
+        payload = payload.replace(/-/g, "+").replace(/_/g, "/");
+        const decodedPayload = atob(payload);
+        const parsedPayload = JSON.parse(decodedPayload);
+        const memberId = parsedPayload.memberId;
+        console.log("Member ID:", memberId);
+      }
+    } catch (error) {
+      console.error("토큰 디코딩 오류:", error);
+    }
+  }
+  useEffect(() => {
+    if (accessToken) {
+      try {
+        const parts = accessToken.split(".");
+        if (parts.length === 3) {
+          let payload = parts[1];
+          payload = payload.replace(/-/g, "+").replace(/_/g, "/");
+          const decodedPayload = atob(payload);
+          const parsedPayload = JSON.parse(decodedPayload);
+          setCurrentMemberId(parsedPayload.memberId);
+          // console.log("Member ID:", currentMemberId);
+        }
+      } catch (error) {
+        console.error("토큰 디코딩 오류:", error);
+      }
+    }
+    // if (accessToken) {
+    //   try {
+    //     const parts = accessToken.split(".");
+    //     if (parts.length === 3) {
+    //       const payload = parts[1];
+    //       console.log(payload);
+    //       const decodedPayload = atob(payload);
+    //       const parsedPayload = JSON.parse(decodedPayload);
+    //       setCurrentMemberId(parsedPayload.memberId);
+    //     }
+    //   } catch (error) {
+    //     console.error("토큰 디코딩 오류:", error);
+    //     // 적절한 오류 처리 로직
+    //   }
+    // }
 
-  // 임시 데이터
-  const [post, setPost] = useState({
-    id: id,
-    title: "제목이다킬킬..",
-    content:
-      "안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해. 안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해.안녕안녕 내 저녁은 카레다. 지금 당장 먹고싶지만 일단 조금 참고있긴해",
-    createdAt: "2024-01-22T16:04:21.392554",
-    author: "카레맨",
-  });
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`${api}/board/${id}`, {
+          headers: {
+            // "Content-Type": `application/json`,
+            "ngrok-skip-browser-warning": "69420",
+          },
+        });
+        console.log("응답:", response.data);
+        setPost(response.data);
+      } catch (error) {
+        console.error("엥 실패ㅋㅋ:", error);
+      }
+    };
 
-  // 상태 데이터가 없을 때를 대비한 로딩 상태 표시
+    if (id) {
+      fetchPost();
+    }
+  }, [id]);
+
   if (!post) {
     return <div>로딩 중...</div>;
   }
 
   const handleEdit = () => {
-    navigate(`/edit/${postId}`); // 수정 페이지로 이동
+    navigate(`/edit/${post.boardNum}`);
   };
+
+  const handleDelete = async () => {
+    if (!accessToken) {
+      console.error("인증 토큰이 없습니다.");
+      return;
+    }
+
+    if (window.confirm("이 글을 삭제하시겠습니까?")) {
+      try {
+        await axios.delete(`${api}/board/${post.boardNum}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log("글 삭제 완료");
+        navigate("/free-board"); // 삭제 후 이동할 페이지 (예: 홈 또는 목록 페이지)
+      } catch (error) {
+        console.error("글 삭제 실패:", error);
+      }
+    }
+  };
+
+  console.log("토큰", currentMemberId);
 
   return (
     <Container>
@@ -33,15 +127,17 @@ const BoardDetail = () => {
       <Section>
         <CreateSection>
           <PostTime>{new Date(post.createdAt).toLocaleString()}</PostTime>
-          <Author>{post.author}</Author>
+          <Author>{post.nickName}</Author>
         </CreateSection>
-        <EditSection>
-          <EditButton onClick={handleEdit}>수정</EditButton>
-          <DeleteButton>삭제</DeleteButton>
-        </EditSection>
+        {currentMemberId === post.memberId && ( // memberId가 일치할 때만 수정/삭제 버튼 표시
+          <EditSection>
+            <EditButton onClick={handleEdit}>수정</EditButton>
+            <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
+          </EditSection>
+        )}
       </Section>
       <Content>{post.content}</Content>
-      <NavigationButtons postId={postId} />
+      <NavigationButtons postId={post.boardNum} totalPost={post.totalNum} />
     </Container>
   );
 };

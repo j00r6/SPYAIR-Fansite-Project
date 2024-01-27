@@ -1,36 +1,78 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
+
+const api = import.meta.env.VITE_APP_API_ENDPOINT;
 
 const BoardEdit = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const isEditMode = id != null; // 글 수정 모드 여부 확인
+  const isEditMode = id !== "new"; // 글 수정 모드 여부 확인
 
   useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`${api}/board/${id}`, {
+          headers: {
+            "Content-Type": `application/json`,
+            "ngrok-skip-browser-warning": "69420",
+          },
+        });
+        const postData = response.data;
+        setTitle(postData.title);
+        setContent(postData.content);
+      } catch (error) {
+        console.error("글 불러오기 실패:", error);
+      }
+    };
+
     if (isEditMode) {
-      // 글 수정 모드일 때 기존 데이터 불러오기
-      // API 요청을 통해 해당 글 데이터 불러오는 로직 구현
-      setTitle("기존 제목");
-      setContent("기존 내용");
-    } else {
-      // 글 작성 모드일 때 입력창 초기화
-      setTitle("");
-      setContent("");
+      fetchPost();
     }
   }, [id, isEditMode]);
 
-  const handleSubmit = () => {
-    if (isEditMode) {
-      // 글 수정 모드일 때의 서버 전송 로직
-      console.log(`수정 - 제목: ${title}, 내용: ${content}`);
-    } else {
-      // 글 작성 모드일 때의 서버 전송 로직
-      console.log(`작성 - 제목: ${title}, 내용: ${content}`);
+  const handleSubmit = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      console.error("인증 토큰이 없습니다.");
+      return;
     }
-    navigate(-1); // 이전 페이지로 이동
+
+    try {
+      if (isEditMode && id) {
+        // 글 수정 모드일 때의 서버 전송 로직
+        await axios.patch(
+          `${api}/board/${id}`,
+          { title, content },
+          {
+            headers: {
+              // Authorization: `Bearer ${accessToken}`,
+              "ngrok-skip-browser-warning": "69420",
+            },
+          }
+        );
+        console.log("수정 완료");
+      } else {
+        // 글 작성 모드일 때의 서버 전송 로직
+        await axios.post(
+          `${api}/board`,
+          { title, content },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "ngrok-skip-browser-warning": "69420",
+            },
+          }
+        );
+        console.log("글 등록 완료");
+      }
+      navigate(-1); // 이전 페이지로 이동
+    } catch (error) {
+      console.error("글 등록/수정 실패:", error);
+    }
   };
 
   return (

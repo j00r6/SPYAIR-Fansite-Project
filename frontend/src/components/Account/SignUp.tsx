@@ -8,7 +8,7 @@ const api = import.meta.env.VITE_APP_API_ENDPOINT;
 console.log(api);
 
 interface FormValues {
-  nickname: string;
+  nickName: string;
   email: string;
   password: string;
   passwordConfirmation: string;
@@ -28,14 +28,14 @@ const SignUp = () => {
   const watchPassword = watch("password", "");
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data.email, data.password, data.nickname);
+    console.log(data.email, data.password, data.nickName);
     try {
       const response = await axios.post(
         `${api}/members/register`,
         {
           email: data.email,
           password: data.password,
-          nickname: data.nickname,
+          nickName: data.nickName,
         },
         {
           headers: {
@@ -61,8 +61,8 @@ const SignUp = () => {
   return (
     <SignUpContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Input placeholder="닉네임" {...register("nickname")} />
-        <Error>{errors.nickname?.message}</Error>
+        <Input placeholder="닉네임" {...register("nickName")} />
+        <Error>{errors.nickName?.message}</Error>
 
         <Input placeholder="Email" {...register("email")} />
         <Error>{errors.email?.message}</Error>
@@ -88,7 +88,7 @@ const SignUp = () => {
 };
 
 const schema = yup.object().shape({
-  nickname: yup
+  nickName: yup
     .string()
     .min(2, "닉네임은 2글자 이상이어야 합니다.")
     .required("닉네임은 필수입니다."),
