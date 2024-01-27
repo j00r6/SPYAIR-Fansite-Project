@@ -15,6 +15,7 @@ interface Post {
   nickName: string;
   createdAt: string;
   updatedAt: string;
+  totalNum: number;
 }
 
 const BoardDetail = () => {
@@ -136,7 +137,7 @@ const BoardDetail = () => {
         )}
       </Section>
       <Content>{post.content}</Content>
-      <NavigationButtons postId={post.boardNum} />
+      <NavigationButtons postId={post.boardNum} totalPost={post.totalNum} />
     </Container>
   );
 };

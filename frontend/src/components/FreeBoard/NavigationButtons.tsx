@@ -3,20 +3,30 @@ import styled from "styled-components";
 
 interface NavigationButtonsProps {
   postId: number;
+  totalPost: number;
 }
 
-const NavigationButtons = ({ postId }: NavigationButtonsProps) => {
+const NavigationButtons = ({ postId, totalPost }: NavigationButtonsProps) => {
   const navigate = useNavigate();
-
-  const goToPreviousPost = () => navigate(`/free-board/${postId + 1}`);
-  const goToNextPost = () => navigate(`/free-board/${postId - 1}`);
+  console.log("total", totalPost);
+  console.log("postId", postId);
+  const goToPreviousPost = () => {
+    if (postId < totalPost) {
+      navigate(`/free-board/${postId + 1}`);
+    }
+  };
+  const goToNextPost = () => {
+    if (postId > 1) {
+      navigate(`/free-board/${postId - 1}`);
+    }
+  };
   const goToPostList = () => navigate("/free-board");
 
   return (
     <Navigation>
-      <Button onClick={goToPreviousPost}>이전글</Button>
+      {postId < totalPost && <Button onClick={goToPreviousPost}>이전글</Button>}
       <Button onClick={goToPostList}>글 목록</Button>
-      <Button onClick={goToNextPost}>다음글</Button>
+      {postId > 1 && <Button onClick={goToNextPost}>다음글</Button>}
     </Navigation>
   );
 };
