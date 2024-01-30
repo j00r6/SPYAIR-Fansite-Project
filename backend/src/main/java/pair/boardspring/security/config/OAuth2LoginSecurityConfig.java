@@ -91,8 +91,6 @@ public class OAuth2LoginSecurityConfig {
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 
-
-
                 /**
                  * MEMBER 의 인증/인가 구현
                  * 권한에 따른 페이지 구분을 구현할 경우
@@ -123,10 +121,7 @@ public class OAuth2LoginSecurityConfig {
                 .cors((cors) -> cors
                         .configurationSource(corsConfigurationSource()))
 
-
                 .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
-
-
                 /**
                  * 다중 필터체인 구현에서 authorizeHttpRequests 와 configurationSource 의 연관관계
                  *
@@ -140,7 +135,6 @@ public class OAuth2LoginSecurityConfig {
                  * authorizeHttpRequests 은 인증/인가 에 관한 설정을 해주고
                  * configurationSource 는 단순히 CORS 설정을 위한 것
                  */
-
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(HttpMethod.POST ,"/**").permitAll()
                         .requestMatchers(HttpMethod.GET ,"/**").permitAll()
@@ -156,8 +150,8 @@ public class OAuth2LoginSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://620f-121-162-236-116.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE")); // 직접입력
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://5b37-121-162-236-116.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 직접입력
         configuration.setAllowedHeaders(Arrays.asList("*")); // 직접입력
         configuration.setExposedHeaders(Arrays.asList("*","Authorization","Refresh")); //직접입력
         configuration.setAllowCredentials(true); // true일 경우 * 가 작동안함
