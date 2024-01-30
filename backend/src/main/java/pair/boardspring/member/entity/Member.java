@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import pair.boardspring.jwt.entity.Token;
 import pair.boardspring.freeboard.entity.BoardEntity;
+import pair.boardspring.notice.entity.NoticeEntity;
 
 
 import java.util.ArrayList;
@@ -35,6 +36,10 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<BoardEntity> boardEntity;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<NoticeEntity> noticeEntity;
+
 
     public enum MemberStatus {
         MEMBER_ACTIVE("활동중"),

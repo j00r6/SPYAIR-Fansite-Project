@@ -42,6 +42,7 @@ public class BoardController {
     @PatchMapping("/{boardNum}")
     public ResponseEntity updateBoard(@PathVariable Long boardNum,
                                       @RequestBody BoardDto.Patch patchDto) {
+
         service.update(boardNum, patchDto);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }

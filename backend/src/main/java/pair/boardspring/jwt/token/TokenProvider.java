@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import pair.boardspring.exception.IllegalToken;
 import pair.boardspring.exception.TokenExpiredException;
 import pair.boardspring.jwt.dto.TokenDto;
-import pair.boardspring.jwt.entity.Token;
 import pair.boardspring.security.userdetails.CustomUserDetails;
 
 import java.security.Key;
@@ -79,50 +78,8 @@ public class TokenProvider implements InitializingBean {
                 .setExpiration(actExpiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
-
-//        System.out.println("memberId from Token : " + customUserDetails.getMemberId());
-//        System.out.println("nickName from Token : " + customUserDetails.getNickName());
-
-//        String refreshToken = Jwts.builder()
-//                .setSubject(customUserDetails.getUsername())
-//                .setIssuedAt(new Date())
-//                .setExpiration(retExpiryDate)
-//                .signWith(key, SignatureAlgorithm.HS512)
-//                .compact();
-
-//        return TokenDto.builder()
-//                .accessToken(accessToken)
-//                .type("Bearer")
-//                .build();
     }
 
-//    public String createRefreshToken(Authentication authentication) {
-//
-//        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-//        Date retExpiryDate = new Date(new Date().getTime() + refreshTokenTime);
-//
-//        return Jwts.builder()
-//                .setSubject(customUserDetails.getUsername())
-//                .setIssuedAt(new Date())
-//                .setExpiration(retExpiryDate)
-//                .signWith(key, SignatureAlgorithm.HS512)
-//                .compact();
-
-//        System.out.println("memberId from Token : " + customUserDetails.getMemberId());
-//        System.out.println("nickName from Token : " + customUserDetails.getNickName());
-
-//        String refreshToken = Jwts.builder()
-//                .setSubject(customUserDetails.getUsername())
-//                .setIssuedAt(new Date())
-//                .setExpiration(retExpiryDate)
-//                .signWith(key, SignatureAlgorithm.HS512)
-//                .compact();
-
-//        return TokenDto.builder()
-//                .accessToken(accessToken)
-//                .type("Bearer")
-//                .build();
-//    }
 
     public String createRefreshToken(Authentication authentication) {
 
@@ -135,18 +92,6 @@ public class TokenProvider implements InitializingBean {
                 .setExpiration(retExpiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
-
-//         return Jwts.builder()
-//                .setSubject(customUserDetails.getUsername())
-//                .setIssuedAt(new Date())
-//                .setExpiration(retExpiryDate)
-//                .signWith(key, SignatureAlgorithm.HS512)
-//                .compact();
-
-//        return TokenDto.builder()
-//                .refreshToken(refreshToken)
-//                .type("Bearer")
-//                .build();
     }
 
     public Long getUserIdFromToken(String token) {
