@@ -1,16 +1,23 @@
+import styled from "styled-components";
+
 const YoutubeClip = () => {
   return (
-    <div>
+    <Container>
       <iframe
-        width="560"
-        height="315"
+        width="100%"
+        height="100%"
         src="https://www.youtube.com/embed/amJBEAW9FJQ "
         title="YouTube video player"
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
       ></iframe>
-    </div>
+    </Container>
   );
 };
 export default YoutubeClip;
+
+const Container = styled.div`
+  width: 100%;
+  height: 520px;
+`;
