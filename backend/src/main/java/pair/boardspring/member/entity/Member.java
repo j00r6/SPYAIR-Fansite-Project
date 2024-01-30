@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import pair.boardspring.jwt.entity.Token;
 import pair.boardspring.oauth2.entity.SocialType;
+import pair.boardspring.freeboard.entity.BoardEntity;
+import pair.boardspring.notice.entity.NoticeEntity;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,13 @@ public class Member {
 
     @Column
     public String socialId;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<BoardEntity> boardEntity;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<NoticeEntity> noticeEntity;
+
 
     public enum MemberStatus {
         MEMBER_ACTIVE("활동중"),
