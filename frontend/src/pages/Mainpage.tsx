@@ -1,5 +1,8 @@
+import Banner from "../components/Main/Banner";
 import YoutubeClip from "../components/Main/YoutubeClip";
+
 import styled from "styled-components";
+
 const MainPage = () => {
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
@@ -9,6 +12,7 @@ const MainPage = () => {
 
   return (
     <Container>
+      <Banner />
       <YoutubeClip />
     </Container>
   );
@@ -16,8 +20,8 @@ const MainPage = () => {
 export default MainPage;
 
 const Container = styled.div`
-  width: 80%;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-image: url("https://www.spyair.net/assets/img/common/bg_spyair_2.png");
   background-repeat: no-repeat;
   background-position: center center;

@@ -70,8 +70,8 @@ const Container = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-
   ${responsiveHeaderStyles}
+  z-index:999;
 `;
 
 const Logo = styled.img`
