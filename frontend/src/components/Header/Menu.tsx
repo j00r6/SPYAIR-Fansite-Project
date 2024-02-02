@@ -99,7 +99,7 @@ const MenuModal = styled.div<MenuModalProps>`
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: 11;
+  z-index: 999;
   display: flex;
   flex-direction: column;
   justify-content: center;
