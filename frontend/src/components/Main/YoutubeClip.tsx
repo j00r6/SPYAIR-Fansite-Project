@@ -18,6 +18,6 @@ const YoutubeClip = () => {
 export default YoutubeClip;
 
 const Container = styled.div`
-  width: 80%;
+  width: 70%;
   height: 520px;
 `;
