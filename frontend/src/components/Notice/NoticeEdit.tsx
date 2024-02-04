@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
 
-const BoardEdit = () => {
+const NoticeEdit = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [title, setTitle] = useState("");
@@ -15,7 +15,7 @@ const BoardEdit = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${api}/board/${id}`, {
+        const response = await axios.get(`${api}/notice/${id}`, {
           headers: {
             "Content-Type": `application/json`,
             "ngrok-skip-browser-warning": "69420",
@@ -45,7 +45,7 @@ const BoardEdit = () => {
       if (isEditMode && id) {
         // 글 수정 모드일 때의 서버 전송 로직
         await axios.patch(
-          `${api}/board/${id}`,
+          `${api}/notice/${id}`,
           { title, content },
           {
             headers: {
@@ -57,7 +57,7 @@ const BoardEdit = () => {
       } else {
         // 글 작성 모드일 때의 서버 전송 로직
         await axios.post(
-          `${api}/board`,
+          `${api}/notice`,
           { title, content },
           {
             headers: {
@@ -94,7 +94,7 @@ const BoardEdit = () => {
   );
 };
 
-export default BoardEdit;
+export default NoticeEdit;
 const Container = styled.div`
   width: 100%;
   display: flex;

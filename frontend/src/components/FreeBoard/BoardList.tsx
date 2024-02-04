@@ -34,7 +34,7 @@ const BoardList = () => {
     const isLoggedIn = localStorage.getItem("accessToken") !== null;
 
     if (isLoggedIn) {
-      navigate("/edit/new"); //
+      navigate("/free-board-edit/new"); //
     } else {
       alert("로그인 후 자유게시판 글을 작성할 수 있습니다."); // 로그인 안내 메시지
     }

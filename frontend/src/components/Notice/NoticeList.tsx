@@ -1,8 +1,40 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const NoticeList = () => {
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false); // admin 여부를 저장하기 위한 state
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      try {
+        const parts = accessToken.split(".");
+        if (parts.length === 3) {
+          let payload = parts[1];
+          payload = payload.replace(/-/g, "+").replace(/_/g, "/");
+          const base64DecodedPayload = atob(payload);
+          const utf8Decoder = new TextDecoder(); // UTF-8 디코더 인스턴스 생성
+          const decodedPayload = utf8Decoder.decode(
+            new Uint8Array(
+              [...base64DecodedPayload].map((c) => c.charCodeAt(0))
+            )
+          );
+          const parsedPayload = JSON.parse(decodedPayload);
+          const nickName = parsedPayload.nickName;
+          console.log("Member ID:", nickName);
+
+          if (nickName === "admin") {
+            // nickName이 admin일 경우
+            setIsAdmin(true); // isAdmin을 true로 설정
+          }
+        }
+      } catch (error) {
+        console.error("토큰 디코딩 오류:", error);
+      }
+    }
+  }, []); // 컴포넌트가 마운트될 때 한 번만 실행
 
   // 임시 데이터
   const posts = [
@@ -27,14 +59,14 @@ const NoticeList = () => {
   ];
 
   const goToPost = (postId: number) => {
-    navigate(`/free-board/${postId}`); // 상세 페이지로 이동
+    navigate(`/notice/${postId}`); // 상세 페이지로 이동
   };
 
   const handleWriteButtonClick = () => {
     const isLoggedIn = localStorage.getItem("accessToken") !== null;
 
-    if (isLoggedIn) {
-      navigate("/edit/new"); //
+    if (isLoggedIn && isAdmin) {
+      navigate("/notice-edit/new"); //
     } else {
       alert("로그인 후 자유게시판 글을 작성할 수 있습니다."); // 로그인 안내 메시지
     }
@@ -43,7 +75,9 @@ const NoticeList = () => {
   return (
     <Container>
       <ButtonWrapper>
-        <WriteButton onClick={handleWriteButtonClick}>글쓰기</WriteButton>
+        {isAdmin && (
+          <WriteButton onClick={handleWriteButtonClick}>글쓰기</WriteButton>
+        )}
       </ButtonWrapper>
       {posts.map((post) => (
         <PostContainer key={post.id} onClick={() => goToPost(post.id)}>
