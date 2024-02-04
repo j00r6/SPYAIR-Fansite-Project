@@ -13,7 +13,7 @@ interface MenuProps {
 
 const menuList = [
   { text: "PROFILE", link: "/profile" },
-  { text: "INFORMATION", link: "/information" },
+  { text: "INFORMATION", link: "/notice" },
   { text: "FREE BOARD", link: "/free-board" },
 ];
 

@@ -6,6 +6,7 @@ import NavigationButtons from "../NavigationButtons";
 
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
 const accessToken = localStorage.getItem("accessToken");
+
 interface Post {
   boardNum: number;
   title: string;
@@ -15,14 +16,33 @@ interface Post {
   createdAt: string;
   updatedAt: string;
   totalNum: number;
+  //   roles: string;
 }
 
-const BoardDetail = () => {
+const NoticeDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post | null>(null);
-  const [currentMemberId, setCurrentMemberId] = useState<number | null>(null);
-
+  const [currentRoles, setCurrentRoles] = useState<string | null>(null);
+  //   if (accessToken) {
+  //     try {
+  //       const parts = accessToken.split(".");
+  //       if (parts.length === 3) {
+  //         let payload = parts[1];
+  //         payload = payload.replace(/-/g, "+").replace(/_/g, "/");
+  //         const base64DecodedPayload = atob(payload);
+  //         const utf8Decoder = new TextDecoder(); // UTF-8 디코더 인스턴스 생성
+  //         const decodedPayload = utf8Decoder.decode(
+  //           new Uint8Array([...base64DecodedPayload].map((c) => c.charCodeAt(0)))
+  //         );
+  //         const parsedPayload = JSON.parse(decodedPayload);
+  //         const nickName = parsedPayload.nickName;
+  //         console.log("Member ID:", nickName);
+  //       }
+  //     } catch (error) {
+  //       console.error("토큰 디코딩 오류:", error);
+  //     }
+  //   }
   useEffect(() => {
     if (accessToken) {
       try {
@@ -30,10 +50,15 @@ const BoardDetail = () => {
         if (parts.length === 3) {
           let payload = parts[1];
           payload = payload.replace(/-/g, "+").replace(/_/g, "/");
-          const decodedPayload = atob(payload);
+          const base64DecodedPayload = atob(payload);
+          const utf8Decoder = new TextDecoder(); // UTF-8 디코더 인스턴스 생성
+          const decodedPayload = utf8Decoder.decode(
+            new Uint8Array(
+              [...base64DecodedPayload].map((c) => c.charCodeAt(0))
+            )
+          );
           const parsedPayload = JSON.parse(decodedPayload);
-          setCurrentMemberId(parsedPayload.memberId);
-          // console.log("Member ID:", currentMemberId);
+          setCurrentRoles(parsedPayload.nickName);
         }
       } catch (error) {
         console.error("토큰 디코딩 오류:", error);
@@ -42,7 +67,7 @@ const BoardDetail = () => {
 
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${api}/board/${id}`, {
+        const response = await axios.get(`${api}/notice/${id}`, {
           headers: {
             "ngrok-skip-browser-warning": "69420",
           },
@@ -64,7 +89,7 @@ const BoardDetail = () => {
   }
 
   const handleEdit = () => {
-    navigate(`/free-board-edit/${post.boardNum}`);
+    navigate(`/notice-edit/${post.boardNum}`);
   };
 
   const handleDelete = async () => {
@@ -81,14 +106,14 @@ const BoardDetail = () => {
           },
         });
         console.log("글 삭제 완료");
-        navigate("/free-board"); // 삭제 후 이동할 페이지 (예: 홈 또는 목록 페이지)
+        navigate("/notice"); // 삭제 후 이동할 페이지 (예: 홈 또는 목록 페이지)
       } catch (error) {
         console.error("글 삭제 실패:", error);
       }
     }
   };
 
-  console.log("토큰", currentMemberId);
+  console.log("토큰", currentRoles);
 
   return (
     <Container>
@@ -98,7 +123,7 @@ const BoardDetail = () => {
           <PostTime>{new Date(post.createdAt).toLocaleString()}</PostTime>
           <Author>{post.nickName}</Author>
         </CreateSection>
-        {currentMemberId === post.memberId && ( // memberId가 일치할 때만 수정/삭제 버튼 표시
+        {currentRoles === "admin" && ( // memberId가 일치할 때만 수정/삭제 버튼 표시
           <EditSection>
             <EditButton onClick={handleEdit}>수정</EditButton>
             <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
@@ -111,7 +136,7 @@ const BoardDetail = () => {
   );
 };
 
-export default BoardDetail;
+export default NoticeDetail;
 
 const Container = styled.div``;
 

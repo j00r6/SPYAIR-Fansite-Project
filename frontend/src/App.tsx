@@ -9,7 +9,9 @@ import LoginPage from "./pages/LoginPage";
 import FreeBoardListPage from "./pages/FreeBoardListPage";
 import FreeBoardDetailPage from "./pages/FreeBoardDetailPage";
 import FreeBoardEditPage from "./pages/FreeBoardEditPage";
-import NoticeNoticeListPage from "./pages/NoticeListPage";
+import NoticeListPage from "./pages/NoticeListPage";
+import NoticeDetailPage from "./pages/NoticeDetailPage";
+import NoticeEditPage from "./pages/NoticeEditPage";
 import Footer from "./components/Footer";
 
 function App() {
@@ -25,8 +27,10 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/free-board" element={<FreeBoardListPage />} />
           <Route path="/free-board/:id" element={<FreeBoardDetailPage />} />
-          <Route path="/notice" element={<NoticeNoticeListPage />} />
-          <Route path="/edit/:id" element={<FreeBoardEditPage />} />
+          <Route path="/free-board-edit/:id" element={<FreeBoardEditPage />} />
+          <Route path="/notice" element={<NoticeListPage />} />
+          <Route path="/notice/:id" element={<NoticeDetailPage />} />
+          <Route path="/notice-edit/:id" element={<NoticeEditPage />} />
         </Routes>
         <Footer />
       </Container>
