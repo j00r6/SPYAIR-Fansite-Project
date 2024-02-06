@@ -23,10 +23,10 @@ const NoticeList = () => {
           );
           const parsedPayload = JSON.parse(decodedPayload);
           const roleArray = parsedPayload.roles ?? [];
-          const roles = roleArray.length > 0 ? roleArray[0].name : null;
-          console.log("Member Roles:", roles);
+          const role = roleArray.length > 0 ? roleArray[0].name : null;
+          console.log("Member Roles:", role);
 
-          if (roles === "ROLE_ADMIN") {
+          if (role === "ROLE_ADMIN") {
             setIsAdmin(true);
           }
         }

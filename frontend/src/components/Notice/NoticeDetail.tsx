@@ -8,7 +8,7 @@ const api = import.meta.env.VITE_APP_API_ENDPOINT;
 const accessToken = localStorage.getItem("accessToken");
 
 interface Post {
-  boardNum: number;
+  noticeNum: number;
   title: string;
   content: string;
   memberId: number;
@@ -16,33 +16,14 @@ interface Post {
   createdAt: string;
   updatedAt: string;
   totalNum: number;
-  //   roles: string;
 }
 
 const NoticeDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post | null>(null);
-  const [currentRoles, setCurrentRoles] = useState<string | null>(null);
-  //   if (accessToken) {
-  //     try {
-  //       const parts = accessToken.split(".");
-  //       if (parts.length === 3) {
-  //         let payload = parts[1];
-  //         payload = payload.replace(/-/g, "+").replace(/_/g, "/");
-  //         const base64DecodedPayload = atob(payload);
-  //         const utf8Decoder = new TextDecoder(); // UTF-8 디코더 인스턴스 생성
-  //         const decodedPayload = utf8Decoder.decode(
-  //           new Uint8Array([...base64DecodedPayload].map((c) => c.charCodeAt(0)))
-  //         );
-  //         const parsedPayload = JSON.parse(decodedPayload);
-  //         const nickName = parsedPayload.nickName;
-  //         console.log("Member ID:", nickName);
-  //       }
-  //     } catch (error) {
-  //       console.error("토큰 디코딩 오류:", error);
-  //     }
-  //   }
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
     if (accessToken) {
       try {
@@ -58,7 +39,13 @@ const NoticeDetail = () => {
             )
           );
           const parsedPayload = JSON.parse(decodedPayload);
-          setCurrentRoles(parsedPayload.nickName);
+          const roleArray = parsedPayload.roles ?? [];
+          const role = roleArray.length > 0 ? roleArray[0].name : null;
+          console.log("Member Role:", role);
+
+          if (role === "ROLE_ADMIN") {
+            setIsAdmin(true);
+          }
         }
       } catch (error) {
         console.error("토큰 디코딩 오류:", error);
@@ -89,7 +76,7 @@ const NoticeDetail = () => {
   }
 
   const handleEdit = () => {
-    navigate(`/notice-edit/${post.boardNum}`);
+    navigate(`/notice-edit/${post.noticeNum}`);
   };
 
   const handleDelete = async () => {
@@ -100,20 +87,18 @@ const NoticeDetail = () => {
 
     if (window.confirm("이 글을 삭제하시겠습니까?")) {
       try {
-        await axios.delete(`${api}/board/${post.boardNum}`, {
+        await axios.delete(`${api}/notice/${post.noticeNum}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
         console.log("글 삭제 완료");
-        navigate("/notice"); // 삭제 후 이동할 페이지 (예: 홈 또는 목록 페이지)
+        navigate("/notice");
       } catch (error) {
         console.error("글 삭제 실패:", error);
       }
     }
   };
-
-  console.log("토큰", currentRoles);
 
   return (
     <Container>
@@ -123,7 +108,7 @@ const NoticeDetail = () => {
           <PostTime>{new Date(post.createdAt).toLocaleString()}</PostTime>
           <Author>{post.nickName}</Author>
         </CreateSection>
-        {currentRoles === "admin" && ( // memberId가 일치할 때만 수정/삭제 버튼 표시
+        {isAdmin && (
           <EditSection>
             <EditButton onClick={handleEdit}>수정</EditButton>
             <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
@@ -131,7 +116,7 @@ const NoticeDetail = () => {
         )}
       </Section>
       <Content>{post.content}</Content>
-      <NavigationButtons postId={post.boardNum} totalPost={post.totalNum} />
+      <NavigationButtons postId={post.noticeNum} totalPost={post.totalNum} />
     </Container>
   );
 };

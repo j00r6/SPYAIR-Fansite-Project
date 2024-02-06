@@ -27,7 +27,7 @@ const BoardList = () => {
   ];
 
   const goToPost = (postId: number) => {
-    navigate(`/free-board/${postId}`); // 상세 페이지로 이동
+    navigate(`/free-board/${postId}`);
   };
 
   const handleWriteButtonClick = () => {
@@ -36,7 +36,7 @@ const BoardList = () => {
     if (isLoggedIn) {
       navigate("/free-board-edit/new"); //
     } else {
-      alert("로그인 후 자유게시판 글을 작성할 수 있습니다."); // 로그인 안내 메시지
+      alert("로그인 후 자유게시판 글을 작성할 수 있습니다.");
     }
   };
 

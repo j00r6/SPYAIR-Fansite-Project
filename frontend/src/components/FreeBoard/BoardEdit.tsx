@@ -10,7 +10,7 @@ const BoardEdit = () => {
   const { id } = useParams<{ id: string }>();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const isEditMode = id !== "new"; // 글 수정 모드 여부 확인
+  const isEditMode = id !== "new";
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -68,7 +68,7 @@ const BoardEdit = () => {
         );
         console.log("글 등록 완료");
       }
-      navigate(-1); // 이전 페이지로 이동
+      navigate(-1);
     } catch (error) {
       console.error("글 등록/수정 실패:", error);
     }

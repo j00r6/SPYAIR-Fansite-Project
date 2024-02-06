@@ -33,7 +33,6 @@ const BoardDetail = () => {
           const decodedPayload = atob(payload);
           const parsedPayload = JSON.parse(decodedPayload);
           setCurrentMemberId(parsedPayload.memberId);
-          // console.log("Member ID:", currentMemberId);
         }
       } catch (error) {
         console.error("토큰 디코딩 오류:", error);
@@ -81,7 +80,7 @@ const BoardDetail = () => {
           },
         });
         console.log("글 삭제 완료");
-        navigate("/free-board"); // 삭제 후 이동할 페이지 (예: 홈 또는 목록 페이지)
+        navigate("/free-board");
       } catch (error) {
         console.error("글 삭제 실패:", error);
       }
@@ -98,7 +97,7 @@ const BoardDetail = () => {
           <PostTime>{new Date(post.createdAt).toLocaleString()}</PostTime>
           <Author>{post.nickName}</Author>
         </CreateSection>
-        {currentMemberId === post.memberId && ( // memberId가 일치할 때만 수정/삭제 버튼 표시
+        {currentMemberId === post.memberId && (
           <EditSection>
             <EditButton onClick={handleEdit}>수정</EditButton>
             <DeleteButton onClick={handleDelete}>삭제</DeleteButton>
