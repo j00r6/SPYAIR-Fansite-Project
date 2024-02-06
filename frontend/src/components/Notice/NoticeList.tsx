@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 const NoticeList = () => {
   const navigate = useNavigate();
-  const [isAdmin, setIsAdmin] = useState(false); // admin 여부를 저장하기 위한 state
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -22,19 +22,19 @@ const NoticeList = () => {
             )
           );
           const parsedPayload = JSON.parse(decodedPayload);
-          const nickName = parsedPayload.nickName;
-          console.log("Member ID:", nickName);
+          const roleArray = parsedPayload.roles ?? [];
+          const roles = roleArray.length > 0 ? roleArray[0].name : null;
+          console.log("Member Roles:", roles);
 
-          if (nickName === "admin") {
-            // nickName이 admin일 경우
-            setIsAdmin(true); // isAdmin을 true로 설정
+          if (roles === "ROLE_ADMIN") {
+            setIsAdmin(true);
           }
         }
       } catch (error) {
         console.error("토큰 디코딩 오류:", error);
       }
     }
-  }, []); // 컴포넌트가 마운트될 때 한 번만 실행
+  }, []);
 
   // 임시 데이터
   const posts = [
@@ -59,7 +59,7 @@ const NoticeList = () => {
   ];
 
   const goToPost = (postId: number) => {
-    navigate(`/notice/${postId}`); // 상세 페이지로 이동
+    navigate(`/notice/${postId}`);
   };
 
   const handleWriteButtonClick = () => {
@@ -68,7 +68,7 @@ const NoticeList = () => {
     if (isLoggedIn && isAdmin) {
       navigate("/notice-edit/new"); //
     } else {
-      alert("로그인 후 자유게시판 글을 작성할 수 있습니다."); // 로그인 안내 메시지
+      alert("로그인 후 자유게시판 글을 작성할 수 있습니다.");
     }
   };
 
