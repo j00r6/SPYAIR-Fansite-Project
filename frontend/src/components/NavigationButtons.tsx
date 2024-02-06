@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 interface NavigationButtonsProps {
@@ -8,19 +8,24 @@ interface NavigationButtonsProps {
 
 const NavigationButtons = ({ postId, totalPost }: NavigationButtonsProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const basePath = location.pathname.split("/").slice(0, -1).join("/");
+
   console.log("total", totalPost);
   console.log("postId", postId);
+  console.log("기본 경로:", basePath);
+
   const goToPreviousPost = () => {
     if (postId < totalPost) {
-      navigate(`/free-board/${postId + 1}`);
+      navigate(`${basePath}/${postId + 1}`);
     }
   };
   const goToNextPost = () => {
     if (postId > 1) {
-      navigate(`/free-board/${postId - 1}`);
+      navigate(`${basePath}/${postId - 1}`);
     }
   };
-  const goToPostList = () => navigate("/free-board");
+  const goToPostList = () => navigate(basePath);
 
   return (
     <Navigation>
