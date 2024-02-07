@@ -63,8 +63,10 @@ public class BoardService {
     }
 
     public BoardDto.responseDetail findBoardDetail(Long id){
-        BoardEntity findBoard = repository.findById(id).orElseThrow();
+        BoardEntity findBoard = repository.findByBoardNum(id);
         BoardDto.responseDetail response = mapper.boardResponseDetailDtoToBoardEntity(findBoard);
+        Long totalNum = repository.findMaxBoardNum();
+        response.setTotalNum(totalNum);
         response.setMemberId(findBoard.getMember().getMemberId());
         response.setNickName(findBoard.getMember().getNickName());
         return response;

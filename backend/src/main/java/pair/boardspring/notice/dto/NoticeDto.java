@@ -1,19 +1,14 @@
-package pair.boardspring.freeboard.dto;
+package pair.boardspring.notice.dto;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
-import pair.boardspring.freeboard.entity.BoardEntity;
-import pair.boardspring.member.entity.Member;
+import pair.boardspring.notice.entity.NoticeEntity;
 
 import java.time.LocalDateTime;
 
-public class BoardDto {
+public class NoticeDto {
     @Getter
     @Setter
     public static class Patch{
@@ -32,7 +27,7 @@ public class BoardDto {
     @Getter
     @Setter
     public static class responseDetail{
-        private Long boardNum;
+        private Long noticeNum;
         private String title;
         private String content;
         private Long memberId;
@@ -46,7 +41,7 @@ public class BoardDto {
     @Setter
     @AllArgsConstructor
     public static class GetPage{
-        private Long boardNum;
+        private Long noticeNum;
         private String title;
         private String nickName;
         private LocalDateTime createdAt;
@@ -55,9 +50,9 @@ public class BoardDto {
 
         }
 
-        public static GetPage fromEntity(BoardEntity entity) {
+        public static GetPage fromEntity(NoticeEntity entity) {
             GetPage dto = new GetPage();
-            dto.setBoardNum(entity.getBoardNum());
+            dto.setNoticeNum(entity.getNoticeNum());
             dto.setTitle(entity.getTitle());
             dto.setCreatedAt(entity.getCreatedAt());
             dto.setNickName(entity.getMember().getNickName());
