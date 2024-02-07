@@ -14,6 +14,8 @@ import pair.boardspring.freeboard.entity.BoardEntity;
 import pair.boardspring.freeboard.repository.BoardRepository;
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.service.MemberService;
+import pair.boardspring.notice.dto.NoticeDto;
+import pair.boardspring.notice.entity.NoticeEntity;
 
 import java.util.List;
 
@@ -39,6 +41,12 @@ public class BoardService {
     public void update(Long boardNum, BoardDto.Patch patch) {
         BoardEntity updateBoardEntity = mapper.boardPatchDtoToBoardEntity(patch, repository.findByBoardNum(boardNum));
         repository.save(updateBoardEntity);
+    }
+
+    public List<BoardDto.GetPage> findAllBoard() {
+        Sort sort = Sort.by(Sort.Direction.DESC, "boardNum");
+        List<BoardEntity> findAllBoard = repository.findAll(sort);
+        return mapper.boardGetPageDtoListToBoardEntityList(findAllBoard);
     }
 
     public List<BoardEntity> findAll() {
@@ -83,8 +91,17 @@ public class BoardService {
         return dtoList;
     }
 
+    public List<BoardDto.GetPage> findBoardPageSize(int page, int size) {
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<BoardEntity> pageList = findAllPaged(pageable);
+        List<BoardDto.GetPage> dtoList = pageList.getContent().stream()
+                .map(BoardDto.GetPage::fromEntity)
+                .toList();
+        return dtoList;
+    }
+
     public Page<BoardEntity> findAllPaged(Pageable pageable) {
-        return repository.findAll(PageRequest.of(pageable.getPageNumber(), 10, Sort.by("id").descending()));
+        return repository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending()));
     }
 
 
