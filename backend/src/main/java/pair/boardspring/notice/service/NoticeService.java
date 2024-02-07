@@ -41,6 +41,12 @@ public class NoticeService {
         repository.save(updateNoticeEntity);
     }
 
+    public List<NoticeDto.GetPage> findAllNotice() {
+        Sort sort = Sort.by(Sort.Direction.DESC, "noticeNum");
+        List<NoticeEntity> findAllNotice = repository.findAll(sort);
+        return mapper.noticeGetPageDtoListToNoticeEntityList(findAllNotice);
+    }
+
     public List<NoticeEntity> findAll() {
         return repository.findAll();
     }
@@ -83,9 +89,17 @@ public class NoticeService {
         return dtoList;
     }
 
-    public Page<NoticeEntity> findAllPaged(Pageable pageable) {
-        return repository.findAll(PageRequest.of(pageable.getPageNumber(), 10, Sort.by("id").descending()));
+    public List<NoticeDto.GetPage> findNoticePageSize(int page, int size) {
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<NoticeEntity> pageList = findAllPaged(pageable);
+        List<NoticeDto.GetPage> dtoList = pageList.getContent().stream()
+                .map(NoticeDto.GetPage::fromEntity)
+                .toList();
+        return dtoList;
     }
 
+    public Page<NoticeEntity> findAllPaged(Pageable pageable) {
+        return repository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending()));
+    }
 
 }
