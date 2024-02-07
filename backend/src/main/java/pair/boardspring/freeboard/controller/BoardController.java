@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pair.boardspring.freeboard.service.BoardService;
+import pair.boardspring.notice.dto.NoticeDto;
 import pair.boardspring.resolver.LoginMemberId;
 
 import java.util.List;
@@ -30,6 +31,19 @@ public class BoardController {
     @GetMapping("/page/{pageNum}")
     public ResponseEntity readBoardPage(@PathVariable Long pageNum){
         List<BoardDto.GetPage> dtoList = service.findBoardPage(pageNum);
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("/page")
+    public ResponseEntity readBoardPageSize(@Positive @RequestParam int page,
+                                             @Positive @RequestParam int size){
+        List<BoardDto.GetPage> dtoList = service.findBoardPageSize(page, size);
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity readAllBoard(){
+        List<BoardDto.GetPage> dtoList = service.findAllBoard();
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 

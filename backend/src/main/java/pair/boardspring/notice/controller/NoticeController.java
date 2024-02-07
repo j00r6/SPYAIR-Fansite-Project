@@ -33,6 +33,19 @@ public class NoticeController {
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
+    @GetMapping("/page")
+    public ResponseEntity readNoticePageSize(@Positive @RequestParam int page,
+                                             @Positive @RequestParam int size){
+        List<NoticeDto.GetPage> dtoList = service.findNoticePageSize(page, size);
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity readAllNotice(){
+        List<NoticeDto.GetPage> dtoList = service.findAllNotice();
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
+    }
+
     @GetMapping("/{noticeNum}")
     public ResponseEntity readNoticeDetail(@PathVariable Long noticeNum){
         NoticeDto.responseDetail response = service.findNoticeDetail(noticeNum);
