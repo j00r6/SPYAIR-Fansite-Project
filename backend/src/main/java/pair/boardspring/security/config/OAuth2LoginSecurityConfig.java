@@ -49,8 +49,6 @@ public class OAuth2LoginSecurityConfig {
      * 원문 참조 링크
      * https://docs.spring.io/spring-security/reference/migration-7/configuration.html#_use_the_lambda_dsl
      */
-
-
     @Bean
     public SecurityFilterChain basicConfig (HttpSecurity http) throws Exception {
         http
@@ -150,8 +148,8 @@ public class OAuth2LoginSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://5b37-121-162-236-116.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 직접입력
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://51f6-221-141-15-253.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE")); // 직접입력
         configuration.setAllowedHeaders(Arrays.asList("*")); // 직접입력
         configuration.setExposedHeaders(Arrays.asList("*","Authorization","Refresh")); //직접입력
         configuration.setAllowCredentials(true); // true일 경우 * 가 작동안함
