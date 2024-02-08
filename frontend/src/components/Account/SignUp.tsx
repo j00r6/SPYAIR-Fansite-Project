@@ -114,7 +114,6 @@ export default SignUp;
 const SignUpContainer = styled.div`
   max-width: 520px;
   min-width: 320px;
-  margin: 0 auto;
   padding: 20px;
 `;
 
