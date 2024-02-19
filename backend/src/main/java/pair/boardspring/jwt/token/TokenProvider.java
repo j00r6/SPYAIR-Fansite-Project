@@ -79,6 +79,7 @@ public class TokenProvider implements InitializingBean {
                 .compact();
     }
 
+
     public String createRefreshToken(Authentication authentication) {
 
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
