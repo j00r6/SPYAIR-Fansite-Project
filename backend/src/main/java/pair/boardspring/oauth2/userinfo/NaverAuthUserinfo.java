@@ -19,13 +19,13 @@ public class NaverAuthUserinfo extends OauthUserInfo {
     }
 
     @Override
-    public String getNickname() {
+    public String getNickName() {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         if (response == null) {
             return null;
         }
 
-        return (String) response.get("nickname");
+        return (String) response.get("NickName");
     }
 }

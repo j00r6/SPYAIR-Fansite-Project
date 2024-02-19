@@ -14,7 +14,7 @@ public class KaKaoAuthUserinfo extends OauthUserInfo {
     }
 
     @Override
-    public String getNickname() {
+    public String getNickName() {
         Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) account.get("profile");
 

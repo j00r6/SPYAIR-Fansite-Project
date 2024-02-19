@@ -1,12 +1,14 @@
 package pair.boardspring.oauth2.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Component;
 import pair.boardspring.member.entity.Authority;
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.repository.MemberRepository;
@@ -17,8 +19,9 @@ import pair.boardspring.oauth2.oauthUser.CustomOauth2User;
 import java.util.Collections;
 import java.util.Map;
 
+@Component
 @RequiredArgsConstructor
-public class OauthService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final MemberRepository memberRepository;
 
@@ -45,7 +48,8 @@ public class OauthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
                 attributes,
                 extractAttributes.getNameAttributeKey(),
                 createdMember.getEmail(),
-                (Authority) createdMember.getRoles()
+                createdMember.getRoles(),
+                createdMember.getNickName()
         );
     }
 

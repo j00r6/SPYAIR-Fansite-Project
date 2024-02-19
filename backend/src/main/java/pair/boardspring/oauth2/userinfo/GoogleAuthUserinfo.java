@@ -13,7 +13,7 @@ public class GoogleAuthUserinfo extends OauthUserInfo{
     }
 
     @Override
-    public String getNickname() {
+    public String getNickName() {
         return (String) attributes.get("name");
     }
 }
