@@ -1,4 +1,4 @@
-package pair.boardspring.exception;
+package pair.boardspring.global.exception;
 
 public class TokenExpiredException extends RuntimeException {
     public TokenExpiredException(String message) {

@@ -3,8 +3,7 @@ package pair.boardspring.member.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import pair.boardspring.jwt.entity.Token;
-import pair.boardspring.freeboard.entity.BoardEntity;
-
+import pair.boardspring.oauth2.entity.SocialType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +30,7 @@ public class Member {
     public String nickName;
 
     @Column
-    public String name;
-
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<BoardEntity> boardEntity;
+    public String socialId;
 
     public enum MemberStatus {
         MEMBER_ACTIVE("활동중"),
@@ -53,6 +49,9 @@ public class Member {
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Builder.Default
     private List<Authority> roles = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
 
     public void setRoles(List<Authority> role) {
         this.roles = role;

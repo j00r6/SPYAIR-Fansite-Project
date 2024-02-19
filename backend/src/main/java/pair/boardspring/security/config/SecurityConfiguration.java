@@ -35,31 +35,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
     private final TokenProvider tokenProvider;
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-//        http
-//                .headers()
-//                .frameOptions()
-//                .disable()
-//                .and()
-//                .csrf().disable()
-//                .cors().configurationSource(corsConfigurationSource())
-//                .and()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .formLogin().disable()
-//                .httpBasic().disable()
-//                .apply(new CustomFilterConfigurer())
-//                .and()
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .antMatchers(HttpMethod.POST, "/members/**").permitAll()
-//                        .antMatchers(HttpMethod.PATCH, "/members/**").permitAll()
-//                        .antMatchers(HttpMethod.DELETE, "/members/**").permitAll()
-//                        .antMatchers(HttpMethod.GET, "/members/**").permitAll()
-//                        .anyRequest().permitAll());
-//        return http.build();
-//    }
-
     /**
      * 필터체인 각 메서드 별 설명 참조 사이트
      * https://jwlim94.tistory.com/15
@@ -114,6 +89,12 @@ public class SecurityConfiguration {
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 
+//                .oauth2Login((auth) -> auth
+//                        .userInfoEndpoint((userInfo) -> userInfo
+//                                .userService(oauthService)
+//                )
+//                .userInfoEndpoint().userService(oauthService) // customUserService 설정
+
                 /**
                  * MEMBER 의 인증/인가 구현
                  * 권한에 따른 페이지 구분을 구현할 경우
@@ -140,6 +121,8 @@ public class SecurityConfiguration {
                         .configurationSource(corsConfigurationSource()))
 
                 .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+
+
                 /**
                  * 다중 필터체인 구현에서 authorizeHttpRequests 와 configurationSource 의 연관관계
                  *
@@ -153,13 +136,13 @@ public class SecurityConfiguration {
                  * authorizeHttpRequests 은 인증/인가 에 관한 설정을 해주고
                  * configurationSource 는 단순히 CORS 설정을 위한 것
                  */
+
                 .authorizeHttpRequests((auth) -> auth
-                                .requestMatchers(HttpMethod.POST ,"/**").permitAll()
-                                .requestMatchers(HttpMethod.GET ,"/**").permitAll()
-                                .requestMatchers(HttpMethod.PATCH ,"/**").permitAll()
-                                .requestMatchers(HttpMethod.DELETE ,"/**").permitAll()
-                                .anyRequest().permitAll()
-                );
+                        .requestMatchers(HttpMethod.POST ,"/**").permitAll()
+                        .requestMatchers(HttpMethod.GET ,"/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH ,"/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE ,"/**").permitAll()
+                        .anyRequest().authenticated());
 
 
         return http.build();
@@ -173,7 +156,7 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://620f-121-162-236-116.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 직접입력
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE")); // 직접입력
         configuration.setAllowedHeaders(Arrays.asList("*")); // 직접입력
         configuration.setExposedHeaders(Arrays.asList("*","Authorization","Refresh")); //직접입력
         configuration.setAllowCredentials(true); // true일 경우 * 가 작동안함
