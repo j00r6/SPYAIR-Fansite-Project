@@ -1,4 +1,4 @@
-package pair.boardspring.exception;
+package pair.boardspring.global.exception;
 
 import lombok.Getter;
 
