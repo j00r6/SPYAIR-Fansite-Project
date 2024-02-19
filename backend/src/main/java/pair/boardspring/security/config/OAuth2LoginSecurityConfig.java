@@ -1,54 +1,39 @@
-package pair.boardspring.config;
+package pair.boardspring.security.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import pair.boardspring.jwt.token.JwtFilter;
+import pair.boardspring.jwt.token.TokenProvider;
+import pair.boardspring.oauth2.service.OAuth2Service;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
+@RequiredArgsConstructor
 @Configuration
-public class SecurityConfiguration {
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-//        http
-//                .headers()
-//                .frameOptions()
-//                .disable()
-//                .and()
-//                .csrf().disable()
-//                .cors().configurationSource(corsConfigurationSource())
-//                .and()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .formLogin().disable()
-//                .httpBasic().disable()
-//                .apply(new CustomFilterConfigurer())
-//                .and()
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .antMatchers(HttpMethod.POST, "/members/**").permitAll()
-//                        .antMatchers(HttpMethod.PATCH, "/members/**").permitAll()
-//                        .antMatchers(HttpMethod.DELETE, "/members/**").permitAll()
-//                        .antMatchers(HttpMethod.GET, "/members/**").permitAll()
-//                        .anyRequest().permitAll());
-//        return http.build();
-//    }
+@EnableWebSecurity
+public class OAuth2LoginSecurityConfig {
+    private final TokenProvider tokenProvider;
+    private final OAuth2Service oauthService;
 
     /**
      * 필터체인 각 메서드 별 설명 참조 사이트
@@ -64,6 +49,8 @@ public class SecurityConfiguration {
      * 원문 참조 링크
      * https://docs.spring.io/spring-security/reference/migration-7/configuration.html#_use_the_lambda_dsl
      */
+
+
     @Bean
     public SecurityFilterChain basicConfig (HttpSecurity http) throws Exception {
         http
@@ -85,12 +72,17 @@ public class SecurityConfiguration {
                  *
                  * 로그인 인증 기능은 반드시 UsernamePasswordAuthenticationFilter만 이용해서 구현해야 한다고 정해져 있는 건 아니다.
                  * 예를 들어 OncePerRequestFilter 같은 Filter를 이용해서 구현할 수도 있으며,
-                 * Controller에서 API 엔드포인트로 구현하는 방법도 많이 사용하는 방법이다.
+                 * Controller 에서 API 엔드포인트로 구현하는 방법도 많이 사용하는 방법이다.
                  */
                 .formLogin(AbstractHttpConfigurer::disable)
                 // formLogin 비활성화 대체 가능 .formLogin((formLogin) -> formLogin.disable())
-                // 로컬 개발일 경우 sameorigin 사용하여 동일출처 허용
+                // 로컬 개발일 경우 sameOrigin 사용하여 동일출처 허용
                 .httpBasic(AbstractHttpConfigurer::disable) //
+
+                //토큰 방식 활용을 위해 Session Stateless 설정
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
 
                 /**
                  * frameOptions 설정은 HTML 에서 <frame>, <iframe>, <object> 등의 태그를 활용하여
@@ -100,22 +92,6 @@ public class SecurityConfiguration {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 
 
-                /**
-                 * CORS 설정을 활용하는 방법중 가장 쉬운 방법이 CorsFilter 를 활용하는 방법
-                 * corsConfigurationSource 를 Bean 으로 설정함으로써 CorsFilter 를 활용 가능
-                 *
-                 * .cors((cors) -> cors
-                 * 				.configurationSource(apiConfigurationSource()))
-                 *
-                 * 	위와 같이 메서드 명(apiConfigurationSource)을 ㅂ구분하여 서로 다른 CORS 설정을 세팅 가능
-                 *
-                 * 	공식문서 참조
-                 * 	https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html#page-title
-                 */
-
-                //CORS withDefaults 사용 시 Bean 으로 등록된 corsConfigurationSource 을 사용합니다.
-                // Todo : 1월 8일 회의 이후 CORS 세팅 corsConfigurationSource 구현하기
-                .cors(withDefaults())
 
                 /**
                  * MEMBER 의 인증/인가 구현
@@ -123,7 +99,33 @@ public class SecurityConfiguration {
                  * Member Entity 상에서 Enum 으로 구분할 때
                  * ROLE_"권한" 양식을 사용해야 Spring Security 에서 인식을 한다.
                  */
-                .securityMatcher("/api/**", "/app/**")
+                .securityMatcher("/**")
+
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oauthService)
+                        ))
+
+                /**
+                 * CORS 설정을 활용하는 방법중 가장 쉬운 방법이 CorsFilter 를 활용하는 방법
+                 * corsConfigurationSource 를 Bean 으로 설정함으로써 CorsFilter 를 활용 가능
+                 *
+                 * .cors((cors) -> cors
+                 * 				.configurationSource(apiConfigurationSource()))
+                 *
+                 * 	위와 같이 메서드 명(apiConfigurationSource)을 구분하여 서로 다른 CORS 설정을 세팅 가능
+                 *
+                 * 	공식문서 참조
+                 * 	https://docs.spring.io/spring-security/reference/servlet/integrations/cors.html#page-title
+                 */
+
+                //CORS withDefaults 사용 시 Bean 으로 등록된 corsConfigurationSource 을 사용합니다.
+                .cors((cors) -> cors
+                        .configurationSource(corsConfigurationSource()))
+
+
+                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+
 
                 /**
                  * 다중 필터체인 구현에서 authorizeHttpRequests 와 configurationSource 의 연관관계
@@ -138,8 +140,12 @@ public class SecurityConfiguration {
                  * authorizeHttpRequests 은 인증/인가 에 관한 설정을 해주고
                  * configurationSource 는 단순히 CORS 설정을 위한 것
                  */
-                .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers(HttpMethod.POST ,"/**").permitAll()
+                        .requestMatchers(HttpMethod.GET ,"/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH ,"/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE ,"/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
@@ -147,14 +153,17 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-
-    /**
-     * TODO : MEMBER 에 권한정보를 부여할지 말지 결정 그에 따라 다중 필터체인 적용 여부를 확인
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        return null;
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://620f-121-162-236-116.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE")); // 직접입력
+        configuration.setAllowedHeaders(Arrays.asList("*")); // 직접입력
+        configuration.setExposedHeaders(Arrays.asList("*","Authorization","Refresh")); //직접입력
+        configuration.setAllowCredentials(true); // true일 경우 * 가 작동안함
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);//직접입력
+        return source;
     }
 
 
