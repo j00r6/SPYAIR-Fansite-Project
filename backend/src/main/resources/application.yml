@@ -1,4 +1,12 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: email
   datasource:
     url: jdbc:h2:mem:test
     driver-class-name: org.h2.Driver

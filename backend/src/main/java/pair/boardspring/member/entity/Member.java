@@ -7,6 +7,7 @@ import pair.boardspring.oauth2.entity.SocialType;
 import pair.boardspring.freeboard.entity.BoardEntity;
 import pair.boardspring.notice.entity.NoticeEntity;
 
+import pair.boardspring.oauth2.entity.SocialType;
 
 import java.util.ArrayList;
 import java.util.List;
