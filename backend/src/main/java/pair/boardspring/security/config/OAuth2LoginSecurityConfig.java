@@ -1,6 +1,5 @@
 package pair.boardspring.security.config;
 
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,17 +22,18 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pair.boardspring.jwt.token.JwtFilter;
 import pair.boardspring.jwt.token.TokenProvider;
+import pair.boardspring.oauth2.service.OAuth2Service;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration {
+public class OAuth2LoginSecurityConfig {
     private final TokenProvider tokenProvider;
+    private final OAuth2Service oauthService;
 
     /**
      * 필터체인 각 메서드 별 설명 참조 사이트
@@ -49,6 +49,8 @@ public class SecurityConfiguration {
      * 원문 참조 링크
      * https://docs.spring.io/spring-security/reference/migration-7/configuration.html#_use_the_lambda_dsl
      */
+
+
     @Bean
     public SecurityFilterChain basicConfig (HttpSecurity http) throws Exception {
         http
@@ -89,11 +91,7 @@ public class SecurityConfiguration {
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 
-//                .oauth2Login((auth) -> auth
-//                        .userInfoEndpoint((userInfo) -> userInfo
-//                                .userService(oauthService)
-//                )
-//                .userInfoEndpoint().userService(oauthService) // customUserService 설정
+
 
                 /**
                  * MEMBER 의 인증/인가 구현
@@ -102,6 +100,11 @@ public class SecurityConfiguration {
                  * ROLE_"권한" 양식을 사용해야 Spring Security 에서 인식을 한다.
                  */
                 .securityMatcher("/**")
+
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oauthService)
+                        ))
 
                 /**
                  * CORS 설정을 활용하는 방법중 가장 쉬운 방법이 CorsFilter 를 활용하는 방법
@@ -119,6 +122,7 @@ public class SecurityConfiguration {
                 //CORS withDefaults 사용 시 Bean 으로 등록된 corsConfigurationSource 을 사용합니다.
                 .cors((cors) -> cors
                         .configurationSource(corsConfigurationSource()))
+
 
                 .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
 
@@ -142,16 +146,13 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET ,"/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH ,"/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE ,"/**").permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated()
+                );
 
 
         return http.build();
     }
 
-
-    /**
-     * TODO : MEMBER 에 권한정보를 부여할지 말지 결정 그에 따라 다중 필터체인 적용 여부를 확인
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
