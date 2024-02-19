@@ -1,4 +1,4 @@
-package pair.boardspring.exception;
+package pair.boardspring.global.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

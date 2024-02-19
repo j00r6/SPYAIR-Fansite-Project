@@ -1,6 +1,5 @@
 package pair.boardspring.security.config;
 
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,42 +22,18 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pair.boardspring.jwt.token.JwtFilter;
 import pair.boardspring.jwt.token.TokenProvider;
+import pair.boardspring.oauth2.service.OAuth2Service;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration {
+public class OAuth2LoginSecurityConfig {
     private final TokenProvider tokenProvider;
-
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-//        http
-//                .headers()
-//                .frameOptions()
-//                .disable()
-//                .and()
-//                .csrf().disable()
-//                .cors().configurationSource(corsConfigurationSource())
-//                .and()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .formLogin().disable()
-//                .httpBasic().disable()
-//                .apply(new CustomFilterConfigurer())
-//                .and()
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .antMatchers(HttpMethod.POST, "/members/**").permitAll()
-//                        .antMatchers(HttpMethod.PATCH, "/members/**").permitAll()
-//                        .antMatchers(HttpMethod.DELETE, "/members/**").permitAll()
-//                        .antMatchers(HttpMethod.GET, "/members/**").permitAll()
-//                        .anyRequest().permitAll());
-//        return http.build();
-//    }
+    private final OAuth2Service oauthService;
 
     /**
      * 필터체인 각 메서드 별 설명 참조 사이트
@@ -122,6 +97,11 @@ public class SecurityConfiguration {
                  */
                 .securityMatcher("/**")
 
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oauthService)
+                        ))
+
                 /**
                  * CORS 설정을 활용하는 방법중 가장 쉬운 방법이 CorsFilter 를 활용하는 방법
                  * corsConfigurationSource 를 Bean 으로 설정함으로써 CorsFilter 를 활용 가능
@@ -154,26 +134,22 @@ public class SecurityConfiguration {
                  * configurationSource 는 단순히 CORS 설정을 위한 것
                  */
                 .authorizeHttpRequests((auth) -> auth
-                                .requestMatchers(HttpMethod.POST ,"/**").permitAll()
-                                .requestMatchers(HttpMethod.GET ,"/**").permitAll()
-                                .requestMatchers(HttpMethod.PATCH ,"/**").permitAll()
-                                .requestMatchers(HttpMethod.DELETE ,"/**").permitAll()
-                                .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST ,"/**").permitAll()
+                        .requestMatchers(HttpMethod.GET ,"/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH ,"/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE ,"/**").permitAll()
+                        .anyRequest().authenticated()
                 );
 
 
         return http.build();
     }
 
-
-    /**
-     * TODO : MEMBER 에 권한정보를 부여할지 말지 결정 그에 따라 다중 필터체인 적용 여부를 확인
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://00bf-221-141-15-253.ngrok-free.app/", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE")); // 직접입력
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://620f-121-162-236-116.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 직접입력
         configuration.setAllowedHeaders(Arrays.asList("*")); // 직접입력
         configuration.setExposedHeaders(Arrays.asList("*","Authorization","Refresh")); //직접입력
         configuration.setAllowCredentials(true); // true일 경우 * 가 작동안함

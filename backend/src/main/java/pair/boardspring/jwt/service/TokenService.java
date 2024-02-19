@@ -6,9 +6,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pair.boardspring.exception.BadRequestException;
+import pair.boardspring.global.exception.BadRequestException;
+import pair.boardspring.global.exception.MemberNotFoundException;
 import pair.boardspring.jwt.dto.TokenDto;
 import pair.boardspring.jwt.entity.Token;
 import pair.boardspring.jwt.repository.TokenRepository;
@@ -30,10 +30,10 @@ public class TokenService {
     private final AuthenticationManagerBuilder managerBuilder;
     private final TokenProvider tokenProvider;
 
-    public TokenDto login(LogInRequest request) {
+    public TokenDto.response login(LogInRequest request) {
         //Controller 에서 LoginRequest 를 통해 전달받은 ID(email)와 Password 객체 생성
         Member member = memberRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("이메일 정보를 찾을수 없습니다! : " + request.getEmail()));
+                .orElseThrow(() -> new MemberNotFoundException("계정 정보를 찾을수 없습니다! : " + request.getEmail()));
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
         Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
@@ -52,6 +52,10 @@ public class TokenService {
     public void logoutAndRemoveToken (Long memberId) {
         Member findMember = memberService.findVerifyMember(memberId);
         Optional<Token> refreshTokenOptional = tokenRepository.findByMember(findMember);
+
+        Token token = refreshTokenOptional.get();
+        String accessToken = token.getAccessToken();
+        log.info("accessToken?" + accessToken);
 
         refreshTokenOptional.ifPresent(refreshToken -> {
             tokenRepository.delete(refreshToken);

@@ -4,12 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import pair.boardspring.exception.BadRequestException;
-//import pair.boardspring.exception.BusinessLogicException;
-
-import pair.boardspring.exception.LoginIdDuplicateException;
-import pair.boardspring.exception.TokenExpiredException;
+import pair.boardspring.global.exception.BadRequestException;
+import pair.boardspring.global.exception.LoginIdDuplicateException;
+import pair.boardspring.global.exception.TokenExpiredException;
 import pair.boardspring.jwt.entity.Token;
 import pair.boardspring.jwt.repository.TokenRepository;
 import pair.boardspring.member.dto.SignInRequest;
@@ -52,7 +49,7 @@ public class MemberService {
         // 이메일 중복검사
         if (checkLoginIdDuplicate(request.getEmail())) throw new LoginIdDuplicateException("이미 존재하는 이메일입니다.");
 
-//        if (checkNickNameDuplicate(request.getNickName())) throw new BadRequestException("이미 존재하는 닉네임입니다.");
+        if (checkNickNameDuplicate(request.getNickName())) throw new BadRequestException("이미 존재하는 닉네임입니다.");
 
         // 빌더 패턴 활용해 SignInRequestToEntity 메서드 구현하고 Mapper 대체
         Member member = request.SignInRequestToEntity(encoder.encode(request.getPassword()));
@@ -86,8 +83,6 @@ public class MemberService {
         if (!optionalMember.isPresent()) {
             return null;
         }
-        Member member = optionalMember.get();
-        return member;
+        return optionalMember.get();
     }
-
 }

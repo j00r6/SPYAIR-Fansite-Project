@@ -15,13 +15,21 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            scope: profile, email
   redis:
     host: localhost
     port: 6379
 jwt:
-  key: ${JWT_SECRET_KEY}
   access-token-expiration-minutes: 3600000
-  refresh-token-expiration-minutes: 420
+  refresh-token-expiration-minutes: 14400000
 
 logging:
   pattern:
@@ -31,6 +39,7 @@ logging:
     jpa: DEBUG
     org:
       springframework:
+        security: DEBUG
         orm:
           jpa: DEBUG
 

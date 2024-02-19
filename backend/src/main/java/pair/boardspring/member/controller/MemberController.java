@@ -6,11 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pair.boardspring.member.dto.SignInRequest;
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.service.MemberService;
@@ -42,4 +38,13 @@ public class MemberController {
         }
         return new ResponseEntity<>("실패ㅠㅠ", HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/{member-id}")
+    public ResponseEntity findMember(@PathVariable("member-id") @LoginMemberId Long memberId) {
+        Member findMember = service.findVerifyMember(memberId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(findMember);
+    }
+
 }

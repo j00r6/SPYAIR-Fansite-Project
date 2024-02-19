@@ -13,8 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
-import pair.boardspring.exception.IllegalToken;
-import pair.boardspring.exception.TokenExpiredException;
+import pair.boardspring.global.exception.IllegalToken;
+import pair.boardspring.global.exception.TokenExpiredException;
 import pair.boardspring.jwt.dto.TokenDto;
 import pair.boardspring.security.userdetails.CustomUserDetails;
 
@@ -42,20 +42,19 @@ public class TokenProvider implements InitializingBean {
     @Value("${jwt.refresh-token-expiration-minutes}")
     private int refreshTokenTime;
 
-    // 빈이 생성되고 주입을 받은 후에 secret값을 Base64 Decode해서 key 변수에 할당하기 위해
     @Override
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenDto createToken(Authentication authentication) {
+    public TokenDto.response createToken(Authentication authentication) {
 
         String accessToken = createAccessToken(authentication);
         String refreshToken = createRefreshToken(authentication);
 
         // TokenDto 생성
-        return new TokenDto("Bearer", accessToken, refreshToken);
+        return new TokenDto.response("Bearer", accessToken, refreshToken);
     }
 
     public String createAccessToken(Authentication authentication) {
