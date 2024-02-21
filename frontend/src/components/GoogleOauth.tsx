@@ -1,40 +1,21 @@
-import {
-  GoogleLogin,
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-} from "react-google-login";
 import styled from "styled-components";
-import axios from "axios";
-
-const clientId = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
+// import axios from "axios";
 
 const GoogleOauth = () => {
-  const handleGoogleLogin = async (
-    response: GoogleLoginResponse | GoogleLoginResponseOffline
-  ) => {
-    if ("tokenId" in response) {
-      try {
-        const { tokenId } = response;
-        const res = await axios.post("/api/auth/google", { token: tokenId }); //임시 엔드포인트
-        console.log("서버 응답:", res.data);
-        console.log("로그인 성공");
-        // console.log("사용자 이름: " + response.profileObj.name);
-        // console.log("이메일: " + response.profileObj.email);
-      } catch (error) {
-        console.error("서버 인증 실패: ", error);
-      }
-    } else {
-      console.log("로그인 실패: 응답에 tokenId가 없음");
-    }
+  const clientId = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
+  const redirectUri = "http://localhost:5173/login/oauth2/code/google";
+
+  const handleGoogleLogin = () => {
+    const scope = "email profile";
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(
+      redirectUri
+    )}&scope=${encodeURIComponent(scope)}`;
+    window.location.href = authUrl;
   };
+
   return (
     <Container>
-      <StyledGoogleLogin
-        clientId={clientId}
-        onSuccess={handleGoogleLogin}
-        onFailure={handleGoogleLogin}
-        // cookiePolicy={"single_host_origin"}
-      >
+      <StyledGoogleLogin onClick={handleGoogleLogin}>
         <Text>Google로 로그인</Text>
       </StyledGoogleLogin>
     </Container>
@@ -49,7 +30,7 @@ const Container = styled.div`
   padding: 20px;
 `;
 
-const StyledGoogleLogin = styled(GoogleLogin)`
+const StyledGoogleLogin = styled.button`
   cursor: pointer;
   border-radius: 4px;
   width: 100%;
