@@ -1,9 +1,12 @@
+import { useEffect } from "react";
+import axios from "axios";
 import styled from "styled-components";
-// import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const GoogleOauth = () => {
   const clientId = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
   const redirectUri = "http://localhost:5173/login/oauth2/code/google";
+  const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
     const scope = "email profile";
@@ -11,6 +14,30 @@ const GoogleOauth = () => {
       redirectUri
     )}&scope=${encodeURIComponent(scope)}`;
     window.location.href = authUrl;
+  };
+
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get("code");
+    console.log("code:", code);
+    if (code) {
+      exchangeCodeForToken(code);
+    }
+  }, []);
+
+  const exchangeCodeForToken = async (code: string) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5173/api/auth/google",
+        {
+          code,
+        }
+      );
+      // 액세스 토큰 처리 로직 (예: 상태 업데이트, 로컬 스토리지 저장 등)
+      console.log("Access Token:", response.data.accessToken);
+      navigate("/");
+    } catch (error) {
+      console.error("Error exchanging code for token:", error);
+    }
   };
 
   return (
