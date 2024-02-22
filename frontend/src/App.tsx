@@ -13,6 +13,7 @@ import NoticeListPage from "./pages/NoticeListPage";
 import NoticeDetailPage from "./pages/NoticeDetailPage";
 import NoticeEditPage from "./pages/NoticeEditPage";
 import Footer from "./components/Footer";
+import RedirectPage from "./pages/RedirectPage";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/notice" element={<NoticeListPage />} />
           <Route path="/notice/:id" element={<NoticeDetailPage />} />
           <Route path="/notice-edit/:id" element={<NoticeEditPage />} />
+          <Route path="/login/oauth2/code/google" element={<RedirectPage />} />
         </Routes>
         <Footer />
       </Container>

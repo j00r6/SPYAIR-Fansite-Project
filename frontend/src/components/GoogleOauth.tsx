@@ -32,7 +32,6 @@ const GoogleOauth = () => {
           code,
         }
       );
-      // 액세스 토큰 처리 로직 (예: 상태 업데이트, 로컬 스토리지 저장 등)
       console.log("Access Token:", response.data.accessToken);
       navigate("/");
     } catch (error) {
