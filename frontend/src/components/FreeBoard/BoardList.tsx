@@ -1,33 +1,40 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const api = import.meta.env.VITE_APP_API_ENDPOINT;
+type Post = {
+  boardNum: number;
+  title: string;
+  createdAt: string;
+  nickName: string;
+};
 
 const BoardList = () => {
   const navigate = useNavigate();
+  const [posts, setPosts] = useState<Post[]>([]);
 
-  // 임시 데이터
-  const posts = [
-    {
-      id: 1,
-      title: "이케형 사랑합니다 아이시떼루",
-      createdAt: "2023-01-22 12:00",
-      nickName: "박진수",
-    },
-    {
-      id: 2,
-      title: "SPYAIR 없는 삶은 상상이 안가네요",
-      createdAt: "2023-01-23 15:30",
-      nickName: "전찬혁",
-    },
-    {
-      id: 3,
-      title: "스파이에어 내한 언제 오나요??????????",
-      createdAt: "2023-01-24 15:30",
-      nickName: "송유정",
-    },
-  ];
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(`${api}/board`, {
+          headers: {
+            "ngrok-skip-browser-warning": "69420",
+          },
+        });
+        setPosts(response.data);
+        console.log("응답", response.data);
+      } catch (error) {
+        console.error("게시물 불러오기 실패", error);
+      }
+    };
+    fetchPosts();
+  }, []);
 
   const goToPost = (postId: number) => {
     navigate(`/free-board/${postId}`);
+    console.log("postId", postId);
   };
 
   const handleWriteButtonClick = () => {
@@ -46,7 +53,10 @@ const BoardList = () => {
         <WriteButton onClick={handleWriteButtonClick}>글쓰기</WriteButton>
       </ButtonWrapper>
       {posts.map((post) => (
-        <PostContainer key={post.id} onClick={() => goToPost(post.id)}>
+        <PostContainer
+          key={post.boardNum}
+          onClick={() => goToPost(post.boardNum)}
+        >
           <Title>{post.title}</Title>
           <Section>
             <PostTime>{post.createdAt}</PostTime>
