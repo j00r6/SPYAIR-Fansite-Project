@@ -52,18 +52,22 @@ const BoardList = () => {
       <ButtonWrapper>
         <WriteButton onClick={handleWriteButtonClick}>글쓰기</WriteButton>
       </ButtonWrapper>
-      {posts.map((post) => (
-        <PostContainer
-          key={post.boardNum}
-          onClick={() => goToPost(post.boardNum)}
-        >
-          <Title>{post.title}</Title>
-          <Section>
-            <PostTime>{post.createdAt}</PostTime>
-            <Author>{post.nickName}</Author>
-          </Section>
-        </PostContainer>
-      ))}
+      {posts.length > 0 ? (
+        posts.map((post) => (
+          <PostContainer
+            key={post.boardNum}
+            onClick={() => goToPost(post.boardNum)}
+          >
+            <Title>{post.title}</Title>
+            <Section>
+              <PostTime>{post.createdAt}</PostTime>
+              <Author>{post.nickName}</Author>
+            </Section>
+          </PostContainer>
+        ))
+      ) : (
+        <NoPostMessage>아직 작성된 글이 없어요!</NoPostMessage>
+      )}
     </Container>
   );
 };
@@ -116,4 +120,11 @@ const PostTime = styled.p`
 
 const Author = styled.p`
   font-size: 12px;
+`;
+
+const NoPostMessage = styled.div`
+  margin-top: 3em;
+  text-align: center;
+  font-size: 24px;
+  color: #ffffff;
 `;
