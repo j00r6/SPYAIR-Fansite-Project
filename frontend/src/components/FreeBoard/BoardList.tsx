@@ -18,7 +18,6 @@ const BoardList = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]); // 게시물 상태
   const [page, setPage] = useState(1); // 페이지 상태
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
   const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 확인하는 상태
   const [totalBoard, setTotalBoard] = useState(0);
   useEffect(() => {
@@ -113,7 +112,6 @@ const BoardList = () => {
         next={loadMoreData}
         hasMore={hasMore}
         loader={<Loader>Loading...</Loader>}
-        style={{ height: "auto", overflow: "unset" }}
       >
         {posts.length > 0 ? (
           posts.map((post) => (

@@ -26,6 +26,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* position: fixed; */
+  bottom: 0;
 `;
 
 const StyledSns = styled(Sns)`
