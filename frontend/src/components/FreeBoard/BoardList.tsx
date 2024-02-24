@@ -61,7 +61,7 @@ const BoardList = () => {
   const loadMoreData = async () => {
     const startIndex = page * 5;
     const endIndex = startIndex + 5;
-
+    console.log("total", totalBoard);
     if (startIndex >= totalBoard) {
       // 모든 데이터를 로드한 경우 hasMore를 false로 설정하여 스크롤 중단
       setHasMore(false);
@@ -85,6 +85,7 @@ const BoardList = () => {
         console.error("데이터를 불러오는 중 오류가 발생했습니다.", error);
       }
     }
+    console.log(hasMore);
   };
 
   // 게시물 클릭 이벤트 핸들러
@@ -111,7 +112,7 @@ const BoardList = () => {
         dataLength={posts.length}
         next={loadMoreData}
         hasMore={hasMore}
-        loader={<Loader>Loading...</Loader>}
+        loader={hasMore ? <Loader>Loading...</Loader> : <></>}
       >
         {posts.length > 0 ? (
           posts.map((post) => (
@@ -138,6 +139,7 @@ export default BoardList;
 
 const Container = styled.div`
   width: 100%;
+  height: 100%;
 `;
 
 const ButtonWrapper = styled.div`
