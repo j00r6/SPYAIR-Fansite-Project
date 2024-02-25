@@ -4,9 +4,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT; // API 엔드포인트 설정
+const api = import.meta.env.VITE_APP_API_ENDPOINT;
 
-// 게시물 타입 정의
 type Post = {
   boardNum: number;
   title: string;
@@ -19,73 +18,63 @@ const BoardList = () => {
   const [posts, setPosts] = useState<Post[]>([]); // 게시물 상태
   const [page, setPage] = useState(1); // 페이지 상태
   const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 확인하는 상태
-  const [totalBoard, setTotalBoard] = useState(0);
+  const [loading, setLoading] = useState(false); //로딩 상태
+
+  //초기 데이터
   useEffect(() => {
     const fetchPosts = async () => {
-      // if (!hasMore || isLoading) return;
-
-      // setIsLoading(true);
-      const requestUrl = `${api}/board/page`;
-      try {
-        const response = await axios.get(requestUrl, {
-          headers: {
-            "ngrok-skip-browser-warning": "69420",
-          },
-          params: {
-            page: page,
-            size: 5,
-          },
-        });
-        const responseData = response.data;
-        console.log("초기 응답 데이터: ", responseData);
-        if (!responseData) {
-          throw new Error("서버 응답 데이터가 올바르지 않습니다.");
-        }
-
-        // 첫 페이지 로드 시 기존 데이터를 유지할 필요가 없으므로, 직접 설정
-        if (page === 1) {
-          setPosts(responseData);
-        } else {
-          // 추가 페이지 로드 시 기존 데이터에 새 데이터 추가
-          setPosts((prevPosts) => [...prevPosts, ...responseData]);
-        }
-        setTotalBoard(responseData.totalBoard);
-      } catch (error) {
-        console.error("데이터를 불러오는 중 오류가 발생했습니다.", error);
-      }
-    };
-
-    fetchPosts();
-  }, [page]);
-
-  const loadMoreData = async () => {
-    const startIndex = page * 5;
-    const endIndex = startIndex + 5;
-    console.log("total", totalBoard);
-    if (startIndex >= totalBoard) {
-      // 모든 데이터를 로드한 경우 hasMore를 false로 설정하여 스크롤 중단
-      setHasMore(false);
-    } else {
+      if (page !== 1) return; // 첫 페이지가 아니면 실행하지 않음
+      setLoading(true);
       try {
         const response = await axios.get(`${api}/board/page`, {
           headers: {
             "ngrok-skip-browser-warning": "69420",
           },
           params: {
-            page: page + 1, // 다음 페이지 요청
+            page,
             size: 5,
           },
         });
-
         const responseData = response.data;
-        const newData = responseData.slice(startIndex, endIndex);
-        setPosts((prevData) => [...prevData, ...newData]);
-        setPage(page + 1);
+        setPosts(responseData);
+        if (responseData.length < 5) {
+          setHasMore(false);
+        }
       } catch (error) {
         console.error("데이터를 불러오는 중 오류가 발생했습니다.", error);
+      } finally {
+        setLoading(false);
       }
+    };
+
+    fetchPosts();
+  }, []);
+
+  const loadMoreData = async () => {
+    if (loading || !hasMore) return; // 로딩 중이거나 더 불러올 데이터가 없으면 실행하지 않음
+    setLoading(true);
+    try {
+      const nextPage = page + 1;
+      const response = await axios.get(`${api}/board/page`, {
+        headers: {
+          "ngrok-skip-browser-warning": "69420",
+        },
+        params: {
+          page: nextPage,
+          size: 5,
+        },
+      });
+      const responseData = response.data;
+      setPosts((prevData) => [...prevData, ...responseData]);
+      setPage(nextPage);
+      if (responseData.length < 5) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("데이터를 불러오는 중 오류가 발생했습니다.", error);
+    } finally {
+      setLoading(false);
     }
-    console.log(hasMore);
   };
 
   // 게시물 클릭 이벤트 핸들러
@@ -111,6 +100,7 @@ const BoardList = () => {
       <InfiniteScroll
         dataLength={posts.length}
         next={loadMoreData}
+        scrollThreshold={0.9}
         hasMore={hasMore}
         loader={hasMore ? <Loader>Loading...</Loader> : <></>}
       >
@@ -140,6 +130,7 @@ export default BoardList;
 const Container = styled.div`
   width: 100%;
   height: 100%;
+  margin-bottom: 3em;
 `;
 
 const ButtonWrapper = styled.div`
