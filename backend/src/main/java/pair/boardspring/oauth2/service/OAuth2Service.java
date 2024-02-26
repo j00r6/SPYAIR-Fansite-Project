@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
+
 import pair.boardspring.member.entity.Authority;
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.repository.MemberRepository;
@@ -52,7 +53,6 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
                 createdMember.getNickName()
         );
     }
-
     private SocialType getSocialType(String registrationId) {
         if(NAVER.equals(registrationId)) {
             return SocialType.NAVER;
@@ -75,6 +75,11 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
 
     private Member saveMember(OAuthAttributes attributes, SocialType socialType) {
         Member createMember = attributes.toEntity(socialType, attributes.getOauthUserInfo());
+        Authority userRole = Authority.builder().name("ROLE_SOCIAL").build();
+
+        if (socialType != null) {
+            createMember.setRoles(Collections.singletonList(userRole));
+        }
         return memberRepository.save(createMember);
     }
 }

@@ -35,13 +35,13 @@ logging:
   pattern:
     console: "%white([%d{yyyy-MM-dd HH:mm:ss}]) %yellow([%thread]) %highlight([%-5level]) %white([%-35logger{35}]) %white(%msg  %n)"
   level:
-    root: DEBUG
-    jpa: DEBUG
+#    root: DEBUG
+#    jpa: DEBUG
     org:
       springframework:
         security: DEBUG
-        orm:
-          jpa: DEBUG
+#        orm:
+#          jpa: DEBUG
 
 file:
   dir : "/images"

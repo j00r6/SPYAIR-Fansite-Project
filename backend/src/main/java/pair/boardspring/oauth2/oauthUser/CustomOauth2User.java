@@ -3,6 +3,7 @@ package pair.boardspring.oauth2.oauthUser;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.stereotype.Component;
 import pair.boardspring.member.entity.Authority;
 
 import java.util.Collection;

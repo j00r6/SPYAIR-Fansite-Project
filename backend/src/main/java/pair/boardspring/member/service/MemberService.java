@@ -15,6 +15,7 @@ import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.repository.MemberRepository;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -84,5 +85,11 @@ public class MemberService {
             return null;
         }
         return optionalMember.get();
+    }
+
+    public void giveAdmin(Long memberId) {
+        Member findMember = repository.findByMemberId(memberId);
+        Authority giveAdmin = Authority.builder().name("ROLE_ADMIN").build();
+        findMember.setRoles(Collections.singletonList(giveAdmin));
     }
 }

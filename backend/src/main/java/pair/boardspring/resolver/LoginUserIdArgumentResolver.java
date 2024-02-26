@@ -3,6 +3,7 @@ package pair.boardspring.resolver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -11,8 +12,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.service.MemberService;
 
-@Component
+
 @Slf4j
+@Component
 public class LoginUserIdArgumentResolver implements HandlerMethodArgumentResolver {
     private final MemberService memberService;
 

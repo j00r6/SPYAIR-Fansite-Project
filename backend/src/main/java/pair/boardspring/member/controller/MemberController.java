@@ -47,4 +47,12 @@ public class MemberController {
                 .body(findMember);
     }
 
+    @PatchMapping("admin/{member-id}")
+    public ResponseEntity giveAdmin(@PathVariable("member-id") @LoginMemberId Long memberId) {
+        service.giveAdmin(memberId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("권한 부여 완료");
+    }
+
 }
