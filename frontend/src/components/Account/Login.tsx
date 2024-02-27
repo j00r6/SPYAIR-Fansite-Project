@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-
+import { useState, useEffect } from "react";
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
 console.log(api);
 
@@ -13,15 +13,25 @@ interface FormValues {
 }
 
 const Login = () => {
+  const [loginError, setLoginError] = useState("");
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
+    setValue,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onBlur",
   });
-
+  const email = watch("email");
+  const password = watch("password");
+  useEffect(() => {
+    if (email || password) {
+      setLoginError("");
+    }
+  }, [email, password]);
   const onSubmit = async (data: FormValues) => {
     console.log(data.email, data.password);
     try {
@@ -49,23 +59,36 @@ const Login = () => {
         console.log("로그인 실패ㅜㅜ");
       }
     } catch (error) {
-      console.error("로그인 에러 발생:", error);
+      if (axios.isAxiosError(error)) {
+        // Axios 에러 객체인 경우
+        const message =
+          error.response?.data.message || "로그인 중 문제가 발생했습니다.";
+        console.error("로그인 에러 발생:", message);
+        setLoginError(message);
+      } else {
+        setLoginError("로그인 요청 중 문제가 발생했습니다.");
+      }
     }
   };
 
   return (
     <LoginContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Input placeholder="Email" {...register("email")} />
-        <Error>{errors.email?.message}</Error>
-
+        <Input
+          placeholder="Email"
+          {...register("email", {
+            onChange: () => setLoginError(""),
+          })}
+        />
+        <Error>
+          {errors.email?.message || (loginError && <span>{loginError}</span>)}
+        </Error>
         <Input
           type="password"
           placeholder="Password"
           {...register("password")}
         />
         <Error>{errors.password?.message}</Error>
-
         <LoginButton type="submit">로그인</LoginButton>
       </form>
     </LoginContainer>
