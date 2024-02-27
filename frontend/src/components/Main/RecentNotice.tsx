@@ -105,19 +105,25 @@ const WriteButton = styled.button`
 const PostSection = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
 `;
 
 const PostContainer = styled.div`
   display: flex;
   padding: 1rem 0.3rem;
-  border-right: 1px solid #333333;
   cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  &:not(:last-child) {
+    border-right: 1px solid #ffffff; /* 이전 지시에 잘못된 부분, 올바른 위치가 아닙니다 */
+  }
 `;
 
 const Title = styled.div``;
 
 const Section = styled.div`
   display: flex;
-  /* justify-content: center; */
+  justify-content: center;
+  align-items: center;
 `;
