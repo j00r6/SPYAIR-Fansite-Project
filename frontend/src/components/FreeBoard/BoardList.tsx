@@ -23,7 +23,7 @@ const BoardList = () => {
   //초기 데이터
   useEffect(() => {
     const fetchPosts = async () => {
-      if (page !== 1) return; // 첫 페이지가 아니면 실행하지 않음
+      if (page !== 1) return;
       setLoading(true);
       try {
         const response = await axios.get(`${api}/board/page`, {
@@ -41,7 +41,7 @@ const BoardList = () => {
           setHasMore(false);
         }
       } catch (error) {
-        console.error("데이터를 불러오는 중 오류가 발생했습니다.", error);
+        console.error("데이터를 불러오는 중 오류 발생", error);
       } finally {
         setLoading(false);
       }
