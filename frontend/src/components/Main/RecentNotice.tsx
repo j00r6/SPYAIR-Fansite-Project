@@ -1,32 +1,45 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+const api = import.meta.env.VITE_APP_API_ENDPOINT;
+
+type Post = {
+  boardNum: number;
+  title: string;
+  createdAt: string;
+  nickName: string;
+};
 
 const RecentNotice = () => {
   const navigate = useNavigate();
-  //임시데이터
-  const posts = [
-    {
-      boardNum: 1,
-      title: "이케형 사랑합니다 아이시떼루",
-      createdAt: "2023-01-22 12:00",
-      nickName: "박진수",
-    },
-    {
-      boardNum: 2,
-      title: "SPYAIR 없는 삶은 상상이 안가네요",
-      createdAt: "2023-01-23 15:30",
-      nickName: "전찬혁",
-    },
-    {
-      boardNum: 3,
-      title: "스파이에어 내한 언제 오나요??????????",
-      createdAt: "2023-01-24 15:30",
-      nickName: "송유정",
-    },
-  ];
+  const [posts, setPosts] = useState<Post[]>([]);
+  const page = 1;
 
-  const goToPost = (postId: number) => {
-    navigate(`/notice/${postId}`);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(`${api}/notice/page`, {
+          headers: {
+            "ngrok-skip-browser-warning": "69420",
+          },
+          params: {
+            page,
+            size: 3,
+          },
+        });
+        const responseData = response.data;
+        setPosts(responseData);
+      } catch (error) {
+        console.error("데이터를 불러오는 중 오류 발생", error);
+      }
+    };
+    fetchPosts();
+  }, []);
+
+  const goToPost = (boardNum: number) => {
+    navigate(`/notice/${boardNum}`);
   };
 
   const handleWriteButtonClick = () => {
