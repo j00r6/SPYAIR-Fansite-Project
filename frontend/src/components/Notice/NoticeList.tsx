@@ -5,7 +5,6 @@ import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
-
 type Post = {
   noticeNum: number;
   title: string;
@@ -65,6 +64,7 @@ const NoticeList = () => {
         });
         const responseData = response.data;
         console.log("응답", responseData);
+
         setPosts(responseData);
         if (responseData.length < 5) {
           setHasMore(false);
