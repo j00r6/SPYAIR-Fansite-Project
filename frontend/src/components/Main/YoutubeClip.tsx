@@ -20,5 +20,5 @@ export default YoutubeClip;
 const Container = styled.div`
   width: 70%;
   height: 520px;
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
 `;

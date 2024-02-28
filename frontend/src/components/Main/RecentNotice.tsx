@@ -74,7 +74,7 @@ const Container = styled.div`
   flex-direction: column;
   width: 70%;
   align-items: center;
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
 `;
 
 const SectionTitle = styled.text`

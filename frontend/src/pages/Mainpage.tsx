@@ -13,8 +13,8 @@ const MainPage = () => {
   return (
     <Container>
       <Banner />
-      <YoutubeClip />
       <RecentNotice />
+      <YoutubeClip />
     </Container>
   );
 };

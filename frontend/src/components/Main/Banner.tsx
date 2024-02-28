@@ -41,7 +41,7 @@ export default Banner;
 
 const Container = styled.div`
   overflow: hidden;
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
 `;
 
 const ImagesContainer = styled.div<{
