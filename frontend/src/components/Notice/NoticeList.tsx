@@ -7,7 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
 
 type Post = {
-  boardNum: number;
+  noticeNum: number;
   title: string;
   createdAt: string;
   nickName: string;
@@ -64,6 +64,7 @@ const NoticeList = () => {
           },
         });
         const responseData = response.data;
+        console.log("응답", responseData);
         setPosts(responseData);
         if (responseData.length < 5) {
           setHasMore(false);
@@ -134,8 +135,8 @@ const NoticeList = () => {
       >
         {posts.map((post) => (
           <PostContainer
-            key={post.boardNum}
-            onClick={() => goToPost(post.boardNum)}
+            key={post.noticeNum}
+            onClick={() => goToPost(post.noticeNum)}
           >
             <Title>{post.title}</Title>
             <Section>

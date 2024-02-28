@@ -6,7 +6,7 @@ import axios from "axios";
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
 
 type Post = {
-  boardNum: number;
+  noticeNum: number;
   title: string;
   createdAt: string;
   nickName: string;
@@ -38,8 +38,8 @@ const RecentNotice = () => {
     fetchPosts();
   }, []);
 
-  const goToPost = (boardNum: number) => {
-    navigate(`/notice/${boardNum}`);
+  const goToPost = (noticeNum: number) => {
+    navigate(`/notice/${noticeNum}`);
   };
 
   const handleWriteButtonClick = () => {
@@ -55,8 +55,8 @@ const RecentNotice = () => {
       <PostSection>
         {posts.map((post) => (
           <PostContainer
-            key={post.boardNum}
-            onClick={() => goToPost(post.boardNum)}
+            key={post.noticeNum}
+            onClick={() => goToPost(post.noticeNum)}
           >
             <Section>
               <Title>{post.title}</Title>
