@@ -140,7 +140,7 @@ const NoticeList = () => {
           >
             <Title>{post.title}</Title>
             <Section>
-              <PostTime>{post.createdAt}</PostTime>
+              <PostTime>{new Date(post.createdAt).toLocaleString()}</PostTime>
               <Author>{post.nickName}</Author>
             </Section>
           </PostContainer>
