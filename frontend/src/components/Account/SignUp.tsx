@@ -1,11 +1,12 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
-console.log(api);
 
 interface FormValues {
   nickName: string;
@@ -15,20 +16,22 @@ interface FormValues {
 }
 
 const SignUp = () => {
+  const navigate = useNavigate();
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
+  const [userName, setUserName] = useState("");
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onBlur",
   });
 
-  const watchPassword = watch("password", "");
-
   const onSubmit = async (data: FormValues) => {
     console.log(data.email, data.password, data.nickName);
+
     try {
       const response = await axios.post(
         `${api}/members/register`,
@@ -47,16 +50,32 @@ const SignUp = () => {
       console.log("서버 응답:", response.data);
       if (response.status === 200) {
         console.log("회원가입 성공!야호~");
-        // 성공 시 추가 동작 수행
+        setSignUpSuccess(true);
+        setUserName(data.nickName);
       } else {
         console.log("회원가입 실패ㅜㅜ");
-        // 실패 시 적절한 처리 수행
       }
     } catch (error) {
       console.error("회원가입 에러 발생:", error);
-      // 에러 발생 시 적절한 처리 수행
     }
   };
+
+  const goToLoginPage = () => {
+    navigate("/login"); // '/login'은 로그인 페이지의 경로에 맞게 조정해야 합니다.
+  };
+
+  if (signUpSuccess) {
+    return (
+      <CongratsContainer>
+        <CongratsContainer>
+          {userName}님, 회원가입을 축하드립니다!
+          <LoginButton onClick={goToLoginPage}>
+            로그인 페이지로 이동
+          </LoginButton>
+        </CongratsContainer>
+      </CongratsContainer>
+    );
+  }
 
   return (
     <SignUpContainer>
@@ -148,4 +167,31 @@ const Error = styled.div`
   color: #ffffff;
   font-size: 12px;
   margin-bottom: 10px;
+`;
+
+const CongratsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-width: 520px;
+  min-width: 320px;
+  margin: 0 auto;
+  padding: 20px;
+  font-size: 20px;
+  text-align: center;
+  color: #d6d6d6;
+  font-weight: bold;
+`;
+
+const LoginButton = styled.button`
+  margin-top: 2rem;
+  padding: 0.5rem 0.5rem;
+  cursor: pointer;
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid white;
+  margin-bottom: 1rem;
+  &:hover {
+    background-color: #ffffff;
+    color: #000000;
+  }
 `;
