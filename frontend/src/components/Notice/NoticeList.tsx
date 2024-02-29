@@ -154,6 +154,9 @@ export default NoticeList;
 
 const Container = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 뷰포트 높이의 100% */
 `;
 
 const ButtonWrapper = styled.div`

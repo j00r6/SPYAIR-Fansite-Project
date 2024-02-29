@@ -129,8 +129,9 @@ export default BoardList;
 
 const Container = styled.div`
   width: 100%;
-  height: 100%;
-  margin-bottom: 3em;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 `;
 
 const ButtonWrapper = styled.div`
