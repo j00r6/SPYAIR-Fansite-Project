@@ -133,18 +133,22 @@ const NoticeList = () => {
         hasMore={hasMore}
         loader={hasMore ? <Loader>Loading...</Loader> : <></>}
       >
-        {posts.map((post) => (
-          <PostContainer
-            key={post.noticeNum}
-            onClick={() => goToPost(post.noticeNum)}
-          >
-            <Title>{post.title}</Title>
-            <Section>
-              <PostTime>{new Date(post.createdAt).toLocaleString()}</PostTime>
-              <Author>{post.nickName}</Author>
-            </Section>
-          </PostContainer>
-        ))}
+        {posts.length > 0
+          ? posts.map((post) => (
+              <PostContainer
+                key={post.noticeNum}
+                onClick={() => goToPost(post.noticeNum)}
+              >
+                <Title>{post.title}</Title>
+                <Section>
+                  <PostTime>
+                    {new Date(post.createdAt).toLocaleString()}
+                  </PostTime>
+                  <Author>{post.nickName}</Author>
+                </Section>
+              </PostContainer>
+            ))
+          : !loading && <NoPostMessage>아직 작성된 글이 없어요!</NoPostMessage>}
       </InfiniteScroll>
     </Container>
   );
@@ -156,7 +160,7 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* 뷰포트 높이의 100% */
+  min-height: 100vh;
 `;
 
 const ButtonWrapper = styled.div`
@@ -209,4 +213,11 @@ const Loader = styled.div`
   align-items: center;
   height: 50px;
   font-size: 16px;
+`;
+
+const NoPostMessage = styled.div`
+  margin-top: 3em;
+  text-align: center;
+  font-size: 24px;
+  color: #ffffff;
 `;
