@@ -112,7 +112,7 @@ const BoardList = () => {
             >
               <Title>{post.title}</Title>
               <Section>
-                <PostTime>{post.createdAt}</PostTime>
+                <PostTime>{new Date(post.createdAt).toLocaleString()}</PostTime>
                 <Author>{post.nickName}</Author>
               </Section>
             </PostContainer>
@@ -129,8 +129,9 @@ export default BoardList;
 
 const Container = styled.div`
   width: 100%;
-  height: 100%;
-  margin-bottom: 3em;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 `;
 
 const ButtonWrapper = styled.div`

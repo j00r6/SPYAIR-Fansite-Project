@@ -29,9 +29,23 @@ const NavigationButtons = ({ postId, totalPost }: NavigationButtonsProps) => {
 
   return (
     <Navigation>
-      {postId < totalPost && <Button onClick={goToPreviousPost}>이전글</Button>}
-      <Button onClick={goToPostList}>글 목록</Button>
-      {postId > 1 && <Button onClick={goToNextPost}>다음글</Button>}
+      <LeftSection>
+        {postId < totalPost ? (
+          <Button onClick={goToPreviousPost}>이전글</Button>
+        ) : (
+          <Placeholder />
+        )}
+      </LeftSection>
+      <CenterSection>
+        <Button onClick={goToPostList}>글 목록</Button>
+      </CenterSection>
+      <RightSection>
+        {postId > 1 ? (
+          <Button onClick={goToNextPost}>다음글</Button>
+        ) : (
+          <Placeholder />
+        )}
+      </RightSection>
     </Navigation>
   );
 };
@@ -40,7 +54,6 @@ export default NavigationButtons;
 
 const Navigation = styled.div`
   display: flex;
-  justify-content: space-between;
   padding-top: 1rem;
 `;
 
@@ -50,4 +63,24 @@ const Button = styled.button`
   background-color: transparent;
   color: white;
   cursor: pointer;
+`;
+
+const LeftSection = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+`;
+const CenterSection = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+`;
+const RightSection = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const Placeholder = styled.div`
+  flex: 1;
 `;

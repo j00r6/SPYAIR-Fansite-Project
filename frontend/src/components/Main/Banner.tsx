@@ -1,80 +1,100 @@
-import { useState } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect, useRef } from "react";
+import styled, { keyframes } from "styled-components";
 
-const Banner = () => {
-  const [actIndex, setactIndex] = useState(0);
-  const images = [
-    "https://www.spyair.net/assets/img/top/slide/main_55.jpg",
-    "https://www.spyair.net/assets/img/top/slide/main_54.jpg",
-    "https://www.spyair.net/assets/img/top/slide/main_53.jpg",
-  ];
+const images = [
+  "https://www.spyair.net/assets/img/top/slide/main_55.jpg",
+  "https://www.spyair.net/assets/img/top/slide/main_54.jpg",
+  "https://www.spyair.net/assets/img/top/slide/main_53.jpg",
+];
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+const ImageSlider: React.FC = () => {
+  const [index, setIndex] = useState(0);
+  const slideRef = useRef<HTMLDivElement>(null);
 
-  const handleDotClick = (index: number) => {
-    setactIndex(index);
+  const goToSlide = (slideIndex: number) => {
+    setIndex(slideIndex);
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <Container>
-      <ImagesContainer activeIndex={actIndex} imagesCount={images.length}>
-        {images.map((image, index) => (
-          <Image
-            key={index}
-            src={image}
-            alt={`Image ${index + 1}`}
-            active={index === actIndex}
-          />
+    <SliderContainer>
+      <ImageWrapper index={index} ref={slideRef}>
+        {images.map((img, i) => (
+          <ImageBox key={i}>
+            <img src={img} alt={`Slide ${i}`} />
+          </ImageBox>
         ))}
-      </ImagesContainer>
+      </ImageWrapper>
       <Dots>
-        {images.map((_, index) => (
-          <Dot
-            key={index}
-            onClick={() => handleDotClick(index)}
-            active={index === actIndex}
-          />
+        {images.map((_, i) => (
+          <Dot key={i} active={index === i} onClick={() => goToSlide(i)} />
         ))}
       </Dots>
-    </Container>
+    </SliderContainer>
   );
 };
-export default Banner;
 
-const Container = styled.div`
+export default ImageSlider;
+
+const SliderContainer = styled.div`
+  width: 70%;
   overflow: hidden;
-  margin-bottom: 3rem;
-`;
-
-const ImagesContainer = styled.div<{
-  activeIndex: number;
-  imagesCount: number;
-}>`
+  position: relative;
   display: flex;
-  transition: transform 0.8s ease;
-  width: 60vw;
-  width: calc(70% * ${({ imagesCount }) => imagesCount});
-  transform: ${({ activeIndex }) =>
-    `translateX(${-70 * activeIndex + (100 - 70) / 2}vw)`};
-  margin-bottom: 1rem;
+  flex-direction: column;
+  margin-bottom: 5rem;
 `;
 
-const Image = styled.img<{ active: boolean }>`
+const ImageWrapper = styled.div<{ index: number }>`
+  display: flex;
   width: 100%;
-  height: auto;
-  opacity: ${({ active }) => (active ? 1 : 0.4)};
-  transition: opacity 0.5s ease; // 부드러운 전환 효과를 위해 transition 추가
+  transform: translateX(${(props) => -props.index * 100}%);
+  transition: transform 0.5s ease-in-out;
+  margin-bottom: 2rem;
+  animation: ${fadeIn} 1.5s ease-out;
+`;
+
+const ImageBox = styled.div`
+  flex: none;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    max-width: 100%;
+    max-height: 100vh;
+    object-fit: cover;
+  }
 `;
 
 const Dots = styled.div`
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 10px;
+  width: 100%;
   display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Dot = styled.div<{ active: boolean }>`
-  padding: 5px;
-  margin: 0 5px;
-  border-radius: 50%;
-  background-color: ${({ active }) => (active ? "white" : "gray")};
+  padding: 4px;
+  margin-right: 5px;
   cursor: pointer;
+  border-radius: 50%;
+  background: ${(props) =>
+    props.active ? "white" : "rgba(255, 255, 255, 0.5)"};
 `;

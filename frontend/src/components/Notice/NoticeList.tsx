@@ -5,7 +5,6 @@ import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
-
 type Post = {
   noticeNum: number;
   title: string;
@@ -65,6 +64,7 @@ const NoticeList = () => {
         });
         const responseData = response.data;
         console.log("응답", responseData);
+
         setPosts(responseData);
         if (responseData.length < 5) {
           setHasMore(false);
@@ -133,18 +133,22 @@ const NoticeList = () => {
         hasMore={hasMore}
         loader={hasMore ? <Loader>Loading...</Loader> : <></>}
       >
-        {posts.map((post) => (
-          <PostContainer
-            key={post.noticeNum}
-            onClick={() => goToPost(post.noticeNum)}
-          >
-            <Title>{post.title}</Title>
-            <Section>
-              <PostTime>{post.createdAt}</PostTime>
-              <Author>{post.nickName}</Author>
-            </Section>
-          </PostContainer>
-        ))}
+        {posts.length > 0
+          ? posts.map((post) => (
+              <PostContainer
+                key={post.noticeNum}
+                onClick={() => goToPost(post.noticeNum)}
+              >
+                <Title>{post.title}</Title>
+                <Section>
+                  <PostTime>
+                    {new Date(post.createdAt).toLocaleString()}
+                  </PostTime>
+                  <Author>{post.nickName}</Author>
+                </Section>
+              </PostContainer>
+            ))
+          : !loading && <NoPostMessage>아직 작성된 글이 없어요!</NoPostMessage>}
       </InfiniteScroll>
     </Container>
   );
@@ -154,6 +158,9 @@ export default NoticeList;
 
 const Container = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 `;
 
 const ButtonWrapper = styled.div`
@@ -206,4 +213,11 @@ const Loader = styled.div`
   align-items: center;
   height: 50px;
   font-size: 16px;
+`;
+
+const NoPostMessage = styled.div`
+  margin-top: 3em;
+  text-align: center;
+  font-size: 24px;
+  color: #ffffff;
 `;

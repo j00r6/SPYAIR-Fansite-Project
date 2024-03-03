@@ -20,18 +20,23 @@ function App() {
       <Container>
         <GlobalStyle />
         <Header />
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/free-board" element={<FreeBoardListPage />} />
-          <Route path="/free-board/:id" element={<FreeBoardDetailPage />} />
-          <Route path="/free-board-edit/:id" element={<FreeBoardEditPage />} />
-          <Route path="/notice" element={<NoticeListPage />} />
-          <Route path="/notice/:id" element={<NoticeDetailPage />} />
-          <Route path="/notice-edit/:id" element={<NoticeEditPage />} />
-        </Routes>
+        <Main>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/free-board" element={<FreeBoardListPage />} />
+            <Route path="/free-board/:id" element={<FreeBoardDetailPage />} />
+            <Route
+              path="/free-board-edit/:id"
+              element={<FreeBoardEditPage />}
+            />
+            <Route path="/notice" element={<NoticeListPage />} />
+            <Route path="/notice/:id" element={<NoticeDetailPage />} />
+            <Route path="/notice-edit/:id" element={<NoticeEditPage />} />
+          </Routes>
+        </Main>
         <Footer />
       </Container>
     </Router>
@@ -42,12 +47,13 @@ export default App;
 
 const Container = styled.div`
   width: 100vw;
-  height: 100%;
+`;
+
+const Main = styled.div`
+  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* background-image: url("https://www.spyair.net/assets/img/common/bg_spyair_2.png");
-  background-size: cover; // 배경 이미지를 컨테이너에 맞게 조절
-  background-position: center center; // 배경 이미지를 가운데 정렬 */
 `;
