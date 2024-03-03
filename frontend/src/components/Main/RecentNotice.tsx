@@ -31,6 +31,7 @@ const RecentNotice = () => {
         });
         const responseData = response.data;
         setPosts(responseData);
+        console.log("데이터", responseData);
       } catch (error) {
         console.error("데이터를 불러오는 중 오류 발생", error);
       }
@@ -53,12 +54,13 @@ const RecentNotice = () => {
         <WriteButton onClick={handleWriteButtonClick}>more</WriteButton>
       </ButtonWrapper>
       <PostSection>
-        {posts.map((post) => (
+        {posts.map((post, index) => (
           <PostContainer
             key={post.noticeNum}
             onClick={() => goToPost(post.noticeNum)}
           >
             <Section>
+              <PostNum>{index + 1}</PostNum>
               <Title>{post.title}</Title>
             </Section>
           </PostContainer>
@@ -75,9 +77,15 @@ const Container = styled.div`
   width: 70%;
   align-items: center;
   margin-bottom: 5rem;
+
+  /* @media (max-width: 768px) {
+    width: 100%; 
+    padding: 0 10px; 
+  } */
 `;
 
 const SectionTitle = styled.text`
+  margin-bottom: 1rem;
   font-size: 28px;
   font-weight: bold;
   border-bottom: 1px solid #ffffff;
@@ -87,6 +95,7 @@ const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: end;
+  margin-bottom: 1rem;
 `;
 
 const WriteButton = styled.button`
@@ -95,7 +104,7 @@ const WriteButton = styled.button`
   background-color: #000000;
   color: #ffffff;
   border: 1px solid white;
-  margin-bottom: 1rem;
+  transition: background-color 0.8s ease;
   &:hover {
     background-color: #ffffff;
     color: #000000;
@@ -103,27 +112,39 @@ const WriteButton = styled.button`
 `;
 
 const PostSection = styled.div`
-  display: flex;
   width: 100%;
+  display: flex;
   justify-content: center;
 `;
 
 const PostContainer = styled.div`
-  display: flex;
-  padding: 1rem 0.3rem;
-  cursor: pointer;
-  justify-content: center;
-  align-items: center;
   width: 100%;
+  padding: 1rem 0;
+  cursor: pointer;
   &:not(:last-child) {
-    border-right: 1px solid #ffffff; /* 이전 지시에 잘못된 부분, 올바른 위치가 아닙니다 */
+    border-right: 1px solid #3f3f3f;
   }
 `;
 
-const Title = styled.div``;
-
 const Section = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+const PostNum = styled.div`
+  font-size: 28px;
+  font-weight: bold;
+  width: 32px;
+  margin: 0 1rem;
+`;
+
+const Title = styled.div`
+  overflow: hidden;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  margin-right: 1rem;
 `;
