@@ -77,11 +77,6 @@ const Container = styled.div`
   width: 70%;
   align-items: center;
   margin-bottom: 5rem;
-
-  /* @media (max-width: 768px) {
-    width: 100%; 
-    padding: 0 10px; 
-  } */
 `;
 
 const SectionTitle = styled.text`
@@ -89,6 +84,10 @@ const SectionTitle = styled.text`
   font-size: 28px;
   font-weight: bold;
   border-bottom: 1px solid #ffffff;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -115,14 +114,26 @@ const PostSection = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  @media (max-width: 768px) {
+    /* font-size: 20px; */
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const PostContainer = styled.div`
   width: 100%;
   padding: 1rem 0;
   cursor: pointer;
+
   &:not(:last-child) {
     border-right: 1px solid #3f3f3f;
+  }
+  @media (max-width: 768px) {
+    &:not(:last-child) {
+      border-right: none;
+      border-bottom: 1px solid #3f3f3f;
+    }
   }
 `;
 
