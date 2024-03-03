@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const data = [
   {
@@ -189,6 +189,15 @@ const Profile = () => {
 
 export default Profile;
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -221,6 +230,7 @@ const Section = styled.div`
 const Img = styled.img`
   width: 60%;
   margin-bottom: 1.5rem;
+  animation: ${fadeIn} 1.5s ease-out;
 `;
 
 const YearSection = styled.div`
