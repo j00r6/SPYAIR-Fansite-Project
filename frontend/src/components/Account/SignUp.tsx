@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -130,11 +130,21 @@ const schema = yup.object().shape({
 
 export default SignUp;
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const SignUpContainer = styled.div`
   max-width: 520px;
   min-width: 320px;
   margin: 0 auto;
   padding: 20px;
+  animation: ${fadeIn} 1.5s ease-out;
 `;
 
 const Input = styled.input`
@@ -180,6 +190,7 @@ const CongratsContainer = styled.div`
   text-align: center;
   color: #d6d6d6;
   font-weight: bold;
+  animation: ${fadeIn} 1.5s ease-out;
 `;
 
 const LoginButton = styled.button`

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -20,7 +20,7 @@ const Login = () => {
     handleSubmit,
     watch,
     formState: { errors },
-    setValue,
+    // setValue,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onBlur",
@@ -60,7 +60,6 @@ const Login = () => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // Axios 에러 객체인 경우
         const message =
           error.response?.data.message || "로그인 중 문제가 발생했습니다.";
         console.error("로그인 에러 발생:", message);
@@ -111,11 +110,21 @@ const schema = yup.object().shape({
 
 export default Login;
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const LoginContainer = styled.div`
   max-width: 520px;
   min-width: 320px;
   margin: 0 auto;
   padding: 20px;
+  animation: ${fadeIn} 1.5s ease-out;
 `;
 
 const Input = styled.input`
