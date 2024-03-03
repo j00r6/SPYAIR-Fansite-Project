@@ -1,12 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const images = [
   "https://www.spyair.net/assets/img/top/slide/main_55.jpg",
   "https://www.spyair.net/assets/img/top/slide/main_54.jpg",
   "https://www.spyair.net/assets/img/top/slide/main_53.jpg",
 ];
-
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
 const ImageSlider: React.FC = () => {
   const [index, setIndex] = useState(0);
   const slideRef = useRef<HTMLDivElement>(null);
@@ -57,6 +64,7 @@ const ImageWrapper = styled.div<{ index: number }>`
   transform: translateX(${(props) => -props.index * 100}%);
   transition: transform 0.5s ease-in-out;
   margin-bottom: 2rem;
+  animation: ${fadeIn} 1.5s ease-out;
 `;
 
 const ImageBox = styled.div`
