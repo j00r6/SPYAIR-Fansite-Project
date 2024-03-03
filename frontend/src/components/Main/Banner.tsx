@@ -82,10 +82,16 @@ const ImageBox = styled.div`
   align-items: center;
 
   img {
-    max-width: 100%;
-    max-height: 100vh;
-    object-fit: cover;
+    width: 100%;
+    height: auto;
   }
+
+  /* @media (max-width: 768px) {
+    img {
+      max-width: 100%;
+      object-fit: cover;
+    }
+  } */
 `;
 
 const Dots = styled.div`

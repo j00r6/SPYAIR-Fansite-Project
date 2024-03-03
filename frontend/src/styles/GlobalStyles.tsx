@@ -51,4 +51,5 @@ export const responsiveHeaderStyles = css`
     height: 70px;
   }
 `;
+
 export default GlobalStyle;
