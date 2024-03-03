@@ -47,8 +47,9 @@ export const responsiveHeaderStyles = css`
     height: 100px;
   }
 
-  @media screen and (max-width: 769px) {
+  @media screen and (max-width: 768px) {
     height: 70px;
   }
 `;
+
 export default GlobalStyle;

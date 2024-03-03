@@ -20,14 +20,18 @@ export default YoutubeClip;
 const Container = styled.div`
   width: 70%;
   padding-top: 39.25%;
-  position: relative; /* iframe을 절대 위치로 배치하기 위해 필요 */
+  position: relative;
   margin-bottom: 5rem;
 
   iframe {
     position: absolute;
     top: 0;
     left: 0;
-    /* width: 100%; */
-    /* height: 100%; */
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding-top: 55%;
+    margin-bottom: rem;
   }
 `;

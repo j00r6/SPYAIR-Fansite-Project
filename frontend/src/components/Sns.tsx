@@ -51,18 +51,33 @@ const Sns = () => {
 };
 export default Sns;
 
-const Container = styled.div``;
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+`;
 
 const SnsItem = styled.a`
-  display: inline-block;
-  margin-right: 1rem;
   cursor: pointer;
   img {
-    width: 80%;
-    height: 80%;
+    transition: transform 0.3s ease;
+    width: 40px;
+    height: 40px;
   }
 
   &:hover {
     opacity: 0.7;
+    img {
+      transform: scale(1.1);
+    }
+  }
+
+  @media (max-width: 768px) {
+    img {
+      width: 30px;
+      height: 30px;
+    }
   }
 `;
