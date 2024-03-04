@@ -1,8 +1,12 @@
 import styled from "styled-components";
 
-const YoutubeClip = () => {
+interface YoutubeMusicPlayerProps {
+  isMusicPlaying: boolean;
+}
+
+const YoutubeMusicPlayer = ({ isMusicPlaying }: YoutubeMusicPlayerProps) => {
   return (
-    <Container>
+    <Container isMusicPlaying={isMusicPlaying}>
       <iframe
         width="0"
         height="0"
@@ -14,6 +18,9 @@ const YoutubeClip = () => {
     </Container>
   );
 };
-export default YoutubeClip;
+export default YoutubeMusicPlayer;
 
-const Container = styled.div``;
+const Container = styled.div<{ isMusicPlaying: boolean }>`
+  ${({ isMusicPlaying }) =>
+    isMusicPlaying ? "display: none;" : "visibility: hidden;"};
+`;

@@ -5,6 +5,7 @@ import { responsiveHeaderStyles } from "../../styles/GlobalStyles";
 import Menu from "./Menu";
 import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import YoutubeMusicPlayer from "./YoutubeMusicPlayer";
+
 const Header = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -32,7 +33,10 @@ const Header = () => {
         <SpeakerIcon onClick={toggleSpeaker}>
           {isMusicPlaying ? <FaVolumeUp /> : <FaVolumeMute />}
         </SpeakerIcon>
-        {isMusicPlaying && <YoutubeMusicPlayer />}
+        {isMusicPlaying && (
+          <YoutubeMusicPlayer isMusicPlaying={isMusicPlaying} />
+        )}
+
         <TxtMenu>MENU</TxtMenu>
         <MenuBtn onClick={toggleMenu}>
           <MenuTrigger>
