@@ -3,17 +3,23 @@ import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { responsiveHeaderStyles } from "../../styles/GlobalStyles";
 import Menu from "./Menu";
+import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [isMenuOpen, setMenuOpen] = useState(false); // 모달의 열림/닫힘 상태를 관리하는 상태 추가
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isSpeakerOn, setSpeakerOn] = useState(false);
 
   const toggleMenu = () => {
-    setMenuOpen(!isMenuOpen); // 모달 상태를 토글
+    setMenuOpen(!isMenuOpen);
+  };
+
+  const toggleSpeaker = () => {
+    setSpeakerOn(!isSpeakerOn); // 스피커 상태를 토글
   };
 
   const handleLogoClick = () => {
-    navigate("/"); // 메인 페이지 경로 (예시: '/')
+    navigate("/");
   };
 
   return (
@@ -24,6 +30,10 @@ const Header = () => {
         onClick={handleLogoClick}
       />
       <MenuBtnArea>
+        <SpeakerIcon onClick={toggleSpeaker}>
+          {isSpeakerOn ? <FaVolumeUp /> : <FaVolumeMute />}{" "}
+          {/* 스피커 상태에 따라 아이콘 변경 */}
+        </SpeakerIcon>
         <TxtMenu>MENU</TxtMenu>
         <MenuBtn onClick={toggleMenu}>
           <MenuTrigger>
@@ -81,6 +91,15 @@ const Logo = styled.img`
   align-items: center;
   margin-left: 2.5em;
   animation: ${logoAnimation} 0.75s forwards;
+`;
+
+const SpeakerIcon = styled.div`
+  font-size: 24px;
+  margin-right: 20px;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
 `;
 
 const MenuBtnArea = styled.div`
