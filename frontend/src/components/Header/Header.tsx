@@ -103,6 +103,10 @@ const SpeakerIcon = styled.div`
   color: #fff;
   display: flex;
   align-items: center;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const MenuBtnArea = styled.div`
