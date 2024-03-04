@@ -32,11 +32,6 @@ const Container = styled.div`
 const StyledSns = styled(Sns)`
   width: 50%;
   height: 50%;
-
-  @media (max-width: 768px) {
-    width: 20%;
-    height: 20%;
-  }
 `;
 
 const LinkSection = styled.div`

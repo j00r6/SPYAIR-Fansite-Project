@@ -3,17 +3,23 @@ import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { responsiveHeaderStyles } from "../../styles/GlobalStyles";
 import Menu from "./Menu";
+import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
+import YoutubeMusicPlayer from "./YoutubeMusicPlayer";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [isMenuOpen, setMenuOpen] = useState(false); // 모달의 열림/닫힘 상태를 관리하는 상태 추가
-
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isMusicPlaying, setMusicPlaying] = useState(false);
   const toggleMenu = () => {
-    setMenuOpen(!isMenuOpen); // 모달 상태를 토글
+    setMenuOpen(!isMenuOpen);
+  };
+
+  const toggleSpeaker = () => {
+    setMusicPlaying(!isMusicPlaying);
   };
 
   const handleLogoClick = () => {
-    navigate("/"); // 메인 페이지 경로 (예시: '/')
+    navigate("/");
   };
 
   return (
@@ -24,6 +30,13 @@ const Header = () => {
         onClick={handleLogoClick}
       />
       <MenuBtnArea>
+        <SpeakerIcon onClick={toggleSpeaker}>
+          {isMusicPlaying ? <FaVolumeUp /> : <FaVolumeMute />}
+        </SpeakerIcon>
+        {isMusicPlaying && (
+          <YoutubeMusicPlayer isMusicPlaying={isMusicPlaying} />
+        )}
+
         <TxtMenu>MENU</TxtMenu>
         <MenuBtn onClick={toggleMenu}>
           <MenuTrigger>
@@ -81,6 +94,19 @@ const Logo = styled.img`
   align-items: center;
   margin-left: 2.5em;
   animation: ${logoAnimation} 0.75s forwards;
+`;
+
+const SpeakerIcon = styled.div`
+  font-size: 24px;
+  margin-right: 20px;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const MenuBtnArea = styled.div`

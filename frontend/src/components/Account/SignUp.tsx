@@ -142,7 +142,6 @@ const fadeIn = keyframes`
 const SignUpContainer = styled.div`
   max-width: 520px;
   min-width: 320px;
-  margin: 0 auto;
   padding: 20px;
   animation: ${fadeIn} 1.5s ease-out;
 `;

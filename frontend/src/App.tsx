@@ -13,6 +13,7 @@ import NoticeListPage from "./pages/NoticeListPage";
 import NoticeDetailPage from "./pages/NoticeDetailPage";
 import NoticeEditPage from "./pages/NoticeEditPage";
 import Footer from "./components/Footer";
+import RedirectPage from "./pages/RedirectPage";
 
 function App() {
   return (
@@ -21,21 +22,19 @@ function App() {
         <GlobalStyle />
         <Header />
         <Main>
-          <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/free-board" element={<FreeBoardListPage />} />
-            <Route path="/free-board/:id" element={<FreeBoardDetailPage />} />
-            <Route
-              path="/free-board-edit/:id"
-              element={<FreeBoardEditPage />}
-            />
-            <Route path="/notice" element={<NoticeListPage />} />
-            <Route path="/notice/:id" element={<NoticeDetailPage />} />
-            <Route path="/notice-edit/:id" element={<NoticeEditPage />} />
-          </Routes>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/free-board" element={<FreeBoardListPage />} />
+          <Route path="/free-board/:id" element={<FreeBoardDetailPage />} />
+          <Route path="/free-board-edit/:id" element={<FreeBoardEditPage />} />
+          <Route path="/notice" element={<NoticeListPage />} />
+          <Route path="/notice/:id" element={<NoticeDetailPage />} />
+          <Route path="/notice-edit/:id" element={<NoticeEditPage />} />
+          <Route path="/login/oauth2/code/google" element={<RedirectPage />} />
+        </Routes>
         </Main>
         <Footer />
       </Container>
