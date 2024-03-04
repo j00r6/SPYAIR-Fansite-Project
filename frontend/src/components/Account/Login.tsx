@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-
+import { useState, useEffect } from "react";
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
 console.log(api);
 
@@ -13,15 +13,25 @@ interface FormValues {
 }
 
 const Login = () => {
+  const [loginError, setLoginError] = useState("");
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
+    // setValue,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onBlur",
   });
-
+  const email = watch("email");
+  const password = watch("password");
+  useEffect(() => {
+    if (email || password) {
+      setLoginError("");
+    }
+  }, [email, password]);
   const onSubmit = async (data: FormValues) => {
     console.log(data.email, data.password);
     try {
@@ -49,23 +59,35 @@ const Login = () => {
         console.log("로그인 실패ㅜㅜ");
       }
     } catch (error) {
-      console.error("로그인 에러 발생:", error);
+      if (axios.isAxiosError(error)) {
+        const message =
+          error.response?.data.message || "로그인 중 문제가 발생했습니다.";
+        console.error("로그인 에러 발생:", message);
+        setLoginError(message);
+      } else {
+        setLoginError("로그인 요청 중 문제가 발생했습니다.");
+      }
     }
   };
 
   return (
     <LoginContainer>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Input placeholder="Email" {...register("email")} />
-        <Error>{errors.email?.message}</Error>
-
+        <Input
+          placeholder="Email"
+          {...register("email", {
+            onChange: () => setLoginError(""),
+          })}
+        />
+        <Error>
+          {errors.email?.message || (loginError && <span>{loginError}</span>)}
+        </Error>
         <Input
           type="password"
           placeholder="Password"
           {...register("password")}
         />
         <Error>{errors.password?.message}</Error>
-
         <LoginButton type="submit">로그인</LoginButton>
       </form>
     </LoginContainer>
@@ -88,11 +110,21 @@ const schema = yup.object().shape({
 
 export default Login;
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 const LoginContainer = styled.div`
   max-width: 520px;
   min-width: 320px;
   margin: 0 auto;
   padding: 20px;
+  animation: ${fadeIn} 1.5s ease-out;
 `;
 
 const Input = styled.input`

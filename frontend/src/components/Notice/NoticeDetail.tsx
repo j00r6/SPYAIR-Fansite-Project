@@ -40,7 +40,7 @@ const NoticeDetail = () => {
           );
           const parsedPayload = JSON.parse(decodedPayload);
           const roleArray = parsedPayload.roles ?? [];
-          const role = roleArray.length > 0 ? roleArray[0].name : null;
+          const role = roleArray.length > 0 ? roleArray[1].name : null;
           console.log("Member Role:", role);
 
           if (role === "ROLE_ADMIN") {
@@ -51,7 +51,7 @@ const NoticeDetail = () => {
         console.error("토큰 디코딩 오류:", error);
       }
     }
-
+    console.log("어드민", isAdmin);
     const fetchPost = async () => {
       try {
         const response = await axios.get(`${api}/notice/${id}`, {

@@ -128,7 +128,7 @@ const ContentInput = styled.textarea`
 `;
 
 const SubmitButton = styled.button`
-  width: 15%;
+  width: 8rem;
   padding: 0.5rem 0.5rem;
   cursor: pointer;
   background-color: #000000;

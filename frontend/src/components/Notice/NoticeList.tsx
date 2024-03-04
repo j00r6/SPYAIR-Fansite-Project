@@ -1,10 +1,24 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import axios from "axios";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+const api = import.meta.env.VITE_APP_API_ENDPOINT;
+type Post = {
+  noticeNum: number;
+  title: string;
+  createdAt: string;
+  nickName: string;
+};
 
 const NoticeList = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]); // 게시물 상태
+  const [page, setPage] = useState(1); // 페이지 상태
+  const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 확인하는 상태
+  const [loading, setLoading] = useState(false); //로딩 상태
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -23,8 +37,8 @@ const NoticeList = () => {
           );
           const parsedPayload = JSON.parse(decodedPayload);
           const roleArray = parsedPayload.roles ?? [];
-          const role = roleArray.length > 0 ? roleArray[0].name : null;
-          console.log("Member Roles:", role);
+          const role = roleArray.length > 0 ? roleArray[1].name : null;
+          console.log("Member Roles:", roleArray);
 
           if (role === "ROLE_ADMIN") {
             setIsAdmin(true);
@@ -34,29 +48,62 @@ const NoticeList = () => {
         console.error("토큰 디코딩 오류:", error);
       }
     }
+
+    const fetchPosts = async () => {
+      if (page !== 1) return;
+      setLoading(true);
+      try {
+        const response = await axios.get(`${api}/notice/page`, {
+          headers: {
+            "ngrok-skip-browser-warning": "69420",
+          },
+          params: {
+            page,
+            size: 5,
+          },
+        });
+        const responseData = response.data;
+        console.log("응답", responseData);
+
+        setPosts(responseData);
+        if (responseData.length < 5) {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("데이터를 불러오는 중 오류 발생", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
   }, []);
 
-  // 임시 데이터
-  const posts = [
-    {
-      id: 1,
-      title: "이케형 사랑합니다 아이시떼루",
-      createdAt: "2023-01-22 12:00",
-      nickName: "박진수",
-    },
-    {
-      id: 2,
-      title: "SPYAIR 없는 삶은 상상이 안가네요",
-      createdAt: "2023-01-23 15:30",
-      nickName: "전찬혁",
-    },
-    {
-      id: 3,
-      title: "스파이에어 내한 언제 오나요??????????",
-      createdAt: "2023-01-24 15:30",
-      nickName: "송유정",
-    },
-  ];
+  const loadMoreData = async () => {
+    if (loading || !hasMore) return; // 로딩 중이거나 더 불러올 데이터가 없으면 실행하지 않음
+    setLoading(true);
+    try {
+      const nextPage = page + 1;
+      const response = await axios.get(`${api}/notice/page`, {
+        headers: {
+          "ngrok-skip-browser-warning": "69420",
+        },
+        params: {
+          page: nextPage,
+          size: 5,
+        },
+      });
+      const responseData = response.data;
+      setPosts((prevData) => [...prevData, ...responseData]);
+      setPage(nextPage);
+      if (responseData.length < 5) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("데이터를 불러오는 중 오류가 발생했습니다.", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const goToPost = (postId: number) => {
     navigate(`/notice/${postId}`);
@@ -79,15 +126,30 @@ const NoticeList = () => {
           <WriteButton onClick={handleWriteButtonClick}>글쓰기</WriteButton>
         )}
       </ButtonWrapper>
-      {posts.map((post) => (
-        <PostContainer key={post.id} onClick={() => goToPost(post.id)}>
-          <Title>{post.title}</Title>
-          <Section>
-            <PostTime>{post.createdAt}</PostTime>
-            <Author>{post.nickName}</Author>
-          </Section>
-        </PostContainer>
-      ))}
+      <InfiniteScroll
+        dataLength={posts.length}
+        next={loadMoreData}
+        scrollThreshold={0.9}
+        hasMore={hasMore}
+        loader={hasMore ? <Loader>Loading...</Loader> : <></>}
+      >
+        {posts.length > 0
+          ? posts.map((post) => (
+              <PostContainer
+                key={post.noticeNum}
+                onClick={() => goToPost(post.noticeNum)}
+              >
+                <Title>{post.title}</Title>
+                <Section>
+                  <PostTime>
+                    {new Date(post.createdAt).toLocaleString()}
+                  </PostTime>
+                  <Author>{post.nickName}</Author>
+                </Section>
+              </PostContainer>
+            ))
+          : !loading && <NoPostMessage>아직 작성된 글이 없어요!</NoPostMessage>}
+      </InfiniteScroll>
     </Container>
   );
 };
@@ -96,6 +158,9 @@ export default NoticeList;
 
 const Container = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 `;
 
 const ButtonWrapper = styled.div`
@@ -140,4 +205,19 @@ const PostTime = styled.p`
 
 const Author = styled.p`
   font-size: 12px;
+`;
+
+const Loader = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  font-size: 16px;
+`;
+
+const NoPostMessage = styled.div`
+  margin-top: 3em;
+  text-align: center;
+  font-size: 24px;
+  color: #ffffff;
 `;

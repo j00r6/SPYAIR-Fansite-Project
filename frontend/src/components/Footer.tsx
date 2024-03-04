@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Sns from "./Sns";
+
 const Footer = () => {
   return (
     <Container>

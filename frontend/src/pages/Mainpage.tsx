@@ -1,6 +1,6 @@
 import Banner from "../components/Main/Banner";
 import YoutubeClip from "../components/Main/YoutubeClip";
-
+import RecentNotice from "../components/Main/RecentNotice";
 import styled from "styled-components";
 
 const MainPage = () => {
@@ -13,6 +13,7 @@ const MainPage = () => {
   return (
     <Container>
       <Banner />
+      <RecentNotice />
       <YoutubeClip />
     </Container>
   );
