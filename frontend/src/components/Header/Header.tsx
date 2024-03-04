@@ -4,18 +4,17 @@ import styled, { keyframes } from "styled-components";
 import { responsiveHeaderStyles } from "../../styles/GlobalStyles";
 import Menu from "./Menu";
 import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
-
+import YoutubeMusicPlayer from "./YoutubeMusicPlayer";
 const Header = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [isSpeakerOn, setSpeakerOn] = useState(false);
-
+  const [isMusicPlaying, setMusicPlaying] = useState(false);
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen);
   };
 
   const toggleSpeaker = () => {
-    setSpeakerOn(!isSpeakerOn); // 스피커 상태를 토글
+    setMusicPlaying(!isMusicPlaying);
   };
 
   const handleLogoClick = () => {
@@ -31,9 +30,9 @@ const Header = () => {
       />
       <MenuBtnArea>
         <SpeakerIcon onClick={toggleSpeaker}>
-          {isSpeakerOn ? <FaVolumeUp /> : <FaVolumeMute />}{" "}
-          {/* 스피커 상태에 따라 아이콘 변경 */}
+          {isMusicPlaying ? <FaVolumeUp /> : <FaVolumeMute />}
         </SpeakerIcon>
+        {isMusicPlaying && <YoutubeMusicPlayer />}
         <TxtMenu>MENU</TxtMenu>
         <MenuBtn onClick={toggleMenu}>
           <MenuTrigger>
