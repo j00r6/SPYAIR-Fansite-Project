@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
 
 const RedirectPage = () => {
@@ -13,11 +14,12 @@ const RedirectPage = () => {
     console.log("code: ", code);
     if (code) {
       axios
-        .post("${api}/auth/google", { code })
+        .post(`${api}/auth/google`, { code })
         .then((response) => {
           console.log("로그인 성공! : ", response.data);
-          localStorage.setItem("accessToken", response.data.accessToken);
-          navigate("/");
+          // localStorage.setItem("accessToken", response.data.accessToken);
+          localStorage.setItem("jwtToken", response.data.jwtToken);
+          // navigate("/");
         })
         .catch((error) => {
           console.error("로그인 실패: ", error);
