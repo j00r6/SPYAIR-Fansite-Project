@@ -11,10 +11,6 @@ const NavigationButtons = ({ postId, totalPost }: NavigationButtonsProps) => {
   const location = useLocation();
   const basePath = location.pathname.split("/").slice(0, -1).join("/");
 
-  console.log("total", totalPost);
-  console.log("postId", postId);
-  console.log("기본 경로:", basePath);
-
   const goToPreviousPost = () => {
     if (postId < totalPost) {
       navigate(`${basePath}/${postId + 1}`);

@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import Header from "./components/Header/Header";
-import MainPage from "./pages/MainPage";
+import MainPage from "./pages/MainPage.tsx";
 import Profile from "./pages/ProfilePage";
 import GlobalStyle from "./styles/GlobalStyles";
 import SignUpPage from "./pages/SignUpPage";
@@ -13,7 +13,6 @@ import NoticeListPage from "./pages/NoticeListPage";
 import NoticeDetailPage from "./pages/NoticeDetailPage";
 import NoticeEditPage from "./pages/NoticeEditPage";
 import Footer from "./components/Footer";
-import RedirectPage from "./pages/RedirectPage";
 
 function App() {
   return (
@@ -36,10 +35,6 @@ function App() {
             <Route path="/notice" element={<NoticeListPage />} />
             <Route path="/notice/:id" element={<NoticeDetailPage />} />
             <Route path="/notice-edit/:id" element={<NoticeEditPage />} />
-            <Route
-              path="/login/oauth2/code/google"
-              element={<RedirectPage />}
-            />
           </Routes>
         </Main>
         <Footer />

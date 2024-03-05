@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import SignUp from "../components/Account/SignUp";
-import GoogleOauth from "../components/GoogleOauth";
+
 const SignUpPage = () => {
   return (
     <Container>
       <Title>Sign Up</Title>
       <SignUp />
-      <GoogleOauth />
     </Container>
   );
 };

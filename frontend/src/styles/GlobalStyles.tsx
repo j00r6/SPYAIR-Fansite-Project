@@ -2,7 +2,6 @@ import { createGlobalStyle, css } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
    @media screen and (max-width:1799px) {
-  /* 데스크탑 */
     * {
       box-sizing: border-box;
       margin: 0px;
@@ -13,7 +12,6 @@ const GlobalStyle = createGlobalStyle`
 
 
   @media screen and (max-width:769px) {
-  /* 모바일 */
   * {
       box-sizing: border-box;
       margin: 0px;
@@ -24,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
 
  
   body {
-    font-family: 'Poppins';
+    font-family: 'Roboto Condensed', sans-serif; 
     background-color: #000000;
     font-weight: 100;
     line-height: 1.5;
