@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
 interface FormValues {
   email: string;
@@ -51,7 +51,7 @@ const Login = () => {
   const onSubmit = async (data: FormValues) => {
     try {
       const response = await axios.post(
-        `${api}/members/login`,
+        `${API_ENDPOINT}/members/login`,
         {
           email: data.email,
           password: data.password,
