@@ -5,6 +5,7 @@ import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
+
 type Post = {
   noticeNum: number;
   title: string;
@@ -15,10 +16,10 @@ type Post = {
 const NoticeList = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [posts, setPosts] = useState<Post[]>([]); // 게시물 상태
-  const [page, setPage] = useState(1); // 페이지 상태
-  const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 확인하는 상태
-  const [loading, setLoading] = useState(false); //로딩 상태
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -29,7 +30,7 @@ const NoticeList = () => {
           let payload = parts[1];
           payload = payload.replace(/-/g, "+").replace(/_/g, "/");
           const base64DecodedPayload = atob(payload);
-          const utf8Decoder = new TextDecoder(); // UTF-8 디코더 인스턴스 생성
+          const utf8Decoder = new TextDecoder();
           const decodedPayload = utf8Decoder.decode(
             new Uint8Array(
               [...base64DecodedPayload].map((c) => c.charCodeAt(0))
@@ -38,7 +39,6 @@ const NoticeList = () => {
           const parsedPayload = JSON.parse(decodedPayload);
           const roleArray = parsedPayload.roles ?? [];
           const role = roleArray.length > 0 ? roleArray[1].name : null;
-          console.log("Member Roles:", roleArray);
 
           if (role === "ROLE_ADMIN") {
             setIsAdmin(true);
@@ -59,13 +59,12 @@ const NoticeList = () => {
           },
           params: {
             page,
-            size: 5,
+            size: 10,
           },
         });
         const responseData = response.data;
-        console.log("응답", responseData);
-
         setPosts(responseData);
+
         if (responseData.length < 5) {
           setHasMore(false);
         }
@@ -79,7 +78,7 @@ const NoticeList = () => {
   }, []);
 
   const loadMoreData = async () => {
-    if (loading || !hasMore) return; // 로딩 중이거나 더 불러올 데이터가 없으면 실행하지 않음
+    if (loading || !hasMore) return;
     setLoading(true);
     try {
       const nextPage = page + 1;
@@ -89,7 +88,7 @@ const NoticeList = () => {
         },
         params: {
           page: nextPage,
-          size: 5,
+          size: 10,
         },
       });
       const responseData = response.data;
