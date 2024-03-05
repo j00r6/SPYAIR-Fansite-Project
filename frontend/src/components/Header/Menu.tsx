@@ -1,6 +1,6 @@
 import axios from "axios";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import Sns from "../Sns";
 
@@ -23,8 +23,8 @@ const accountList = [
 ];
 
 const Menu = ({ isOpen, toggleMenu }: MenuProps) => {
+  const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("accessToken") !== null;
-  console.log(isLoggedIn);
 
   const handleLogout = async () => {
     const accessToken = localStorage.getItem("accessToken");
@@ -42,7 +42,8 @@ const Menu = ({ isOpen, toggleMenu }: MenuProps) => {
 
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        window.location.href = "/";
+        navigate("/");
+        toggleMenu();
       } catch (error) {
         console.error("Logout error:", error);
       }
@@ -82,7 +83,6 @@ const Menu = ({ isOpen, toggleMenu }: MenuProps) => {
           ))
         )}
       </Account>
-
       <Sns />
     </MenuModal>
   );
