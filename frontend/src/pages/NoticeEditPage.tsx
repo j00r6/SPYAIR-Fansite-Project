@@ -1,5 +1,6 @@
 import NoticeEdit from "../components/Notice/NoticeEdit";
 import styled from "styled-components";
+
 const NoticeEditPage = () => {
   return (
     <Container>

@@ -4,7 +4,7 @@ import axios from "axios";
 import styled from "styled-components";
 import NavigationButtons from "../NavigationButtons";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 const accessToken = localStorage.getItem("accessToken");
 
 interface Post {
@@ -41,7 +41,6 @@ const NoticeDetail = () => {
           const parsedPayload = JSON.parse(decodedPayload);
           const roleArray = parsedPayload.roles ?? [];
           const role = roleArray.length > 0 ? roleArray[1].name : null;
-          console.log("Member Role:", role);
 
           if (role === "ROLE_ADMIN") {
             setIsAdmin(true);
@@ -51,18 +50,16 @@ const NoticeDetail = () => {
         console.error("토큰 디코딩 오류:", error);
       }
     }
-    console.log("어드민", isAdmin);
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${api}/notice/${id}`, {
+        const response = await axios.get(`${API_ENDPOINT}/notice/${id}`, {
           headers: {
             "ngrok-skip-browser-warning": "69420",
           },
         });
-        console.log("응답:", response.data);
         setPost(response.data);
       } catch (error) {
-        console.error("엥 실패ㅋㅋ:", error);
+        console.error("데이터 불러오기 실패:", error);
       }
     };
 
@@ -87,12 +84,11 @@ const NoticeDetail = () => {
 
     if (window.confirm("이 글을 삭제하시겠습니까?")) {
       try {
-        await axios.delete(`${api}/notice/${post.noticeNum}`, {
+        await axios.delete(`${API_ENDPOINT}/notice/${post.noticeNum}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log("글 삭제 완료");
         navigate("/notice");
       } catch (error) {
         console.error("글 삭제 실패:", error);

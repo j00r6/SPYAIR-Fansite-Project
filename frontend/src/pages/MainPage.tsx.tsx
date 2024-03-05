@@ -4,12 +4,6 @@ import RecentNotice from "../components/Main/RecentNotice";
 import styled from "styled-components";
 
 const MainPage = () => {
-  const accessToken = localStorage.getItem("accessToken");
-  const refreshToken = localStorage.getItem("refreshToken");
-
-  console.log("Access Token:", accessToken);
-  console.log("Refresh Token:", refreshToken);
-
   return (
     <Container>
       <Banner />

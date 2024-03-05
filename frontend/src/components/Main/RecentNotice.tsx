@@ -1,9 +1,9 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
 type Post = {
   noticeNum: number;
@@ -15,23 +15,20 @@ type Post = {
 const RecentNotice = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
-  const page = 1;
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`${api}/notice/page`, {
+        const response = await axios.get(`${API_ENDPOINT}/notice/page`, {
           headers: {
             "ngrok-skip-browser-warning": "69420",
           },
           params: {
-            page,
+            page: 1,
             size: 3,
           },
         });
-        const responseData = response.data;
-        setPosts(responseData);
-        console.log("데이터", responseData);
+        setPosts(response.data);
       } catch (error) {
         console.error("데이터를 불러오는 중 오류 발생", error);
       }
@@ -79,7 +76,7 @@ const Container = styled.div`
   margin-bottom: 5rem;
 `;
 
-const SectionTitle = styled.text`
+const SectionTitle = styled.div`
   margin-bottom: 1rem;
   font-size: 28px;
   font-weight: bold;

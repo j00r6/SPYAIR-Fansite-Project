@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
 interface FormValues {
   nickName: string;
@@ -14,6 +14,28 @@ interface FormValues {
   password: string;
   passwordConfirmation: string;
 }
+
+const schema = yup.object().shape({
+  nickName: yup
+    .string()
+    .min(2, "닉네임은 2글자 이상이어야 합니다.")
+    .required("닉네임은 필수입니다."),
+  email: yup
+    .string()
+    .email("이메일 형식으로 입력하세요.")
+    .required("이메일은 필수입니다."),
+  password: yup
+    .string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+      "영문자 대소문자, 숫자 조합 8글자 이상이어야 합니다."
+    )
+    .required("비밀번호는 필수입니다."),
+  passwordConfirmation: yup
+    .string()
+    .oneOf([yup.ref("password")], "비밀번호가 일치해야 합니다.")
+    .required("비밀번호 확인은 필수입니다."),
+});
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -30,11 +52,9 @@ const SignUp = () => {
   });
 
   const onSubmit = async (data: FormValues) => {
-    console.log(data.email, data.password, data.nickName);
-
     try {
       const response = await axios.post(
-        `${api}/members/register`,
+        `${API_ENDPOINT}/members/register`,
         {
           email: data.email,
           password: data.password,
@@ -47,13 +67,11 @@ const SignUp = () => {
           },
         }
       );
-      console.log("서버 응답:", response.data);
       if (response.status === 200) {
-        console.log("회원가입 성공!야호~");
         setSignUpSuccess(true);
         setUserName(data.nickName);
       } else {
-        console.log("회원가입 실패ㅜㅜ");
+        console.log("회원가입 실패");
       }
     } catch (error) {
       console.error("회원가입 에러 발생:", error);
@@ -61,18 +79,14 @@ const SignUp = () => {
   };
 
   const goToLoginPage = () => {
-    navigate("/login"); // '/login'은 로그인 페이지의 경로에 맞게 조정해야 합니다.
+    navigate("/login");
   };
 
   if (signUpSuccess) {
     return (
       <CongratsContainer>
-        <CongratsContainer>
-          {userName}님, 회원가입을 축하드립니다!
-          <LoginButton onClick={goToLoginPage}>
-            로그인 페이지로 이동
-          </LoginButton>
-        </CongratsContainer>
+        {userName}님, 회원가입을 축하드립니다!
+        <LoginButton onClick={goToLoginPage}>로그인 페이지로 이동</LoginButton>
       </CongratsContainer>
     );
   }
@@ -105,28 +119,6 @@ const SignUp = () => {
     </SignUpContainer>
   );
 };
-
-const schema = yup.object().shape({
-  nickName: yup
-    .string()
-    .min(2, "닉네임은 2글자 이상이어야 합니다.")
-    .required("닉네임은 필수입니다."),
-  email: yup
-    .string()
-    .email("이메일 형식으로 입력하세요.")
-    .required("이메일은 필수입니다."),
-  password: yup
-    .string()
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-      "영문자 대소문자, 숫자 조합 8글자 이상이어야 합니다."
-    )
-    .required("비밀번호는 필수입니다."),
-  passwordConfirmation: yup
-    .string()
-    .oneOf([yup.ref("password")], "비밀번호가 일치해야 합니다.")
-    .required("비밀번호 확인은 필수입니다."),
-});
 
 export default SignUp;
 

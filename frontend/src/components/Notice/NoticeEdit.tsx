@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
 const NoticeEdit = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const NoticeEdit = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${api}/notice/${id}`, {
+        const response = await axios.get(`${API_ENDPOINT}/notice/${id}`, {
           headers: {
             "Content-Type": `application/json`,
             "ngrok-skip-browser-warning": "69420",
@@ -34,7 +34,8 @@ const NoticeEdit = () => {
     }
   }, [id, isEditMode]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
       console.error("인증 토큰이 없습니다.");
@@ -43,9 +44,8 @@ const NoticeEdit = () => {
 
     try {
       if (isEditMode && id) {
-        // 글 수정 모드일 때의 서버 전송 로직
         await axios.patch(
-          `${api}/notice/${id}`,
+          `${API_ENDPOINT}/notice/${id}`,
           { title, content },
           {
             headers: {
@@ -55,9 +55,8 @@ const NoticeEdit = () => {
         );
         console.log("수정 완료");
       } else {
-        // 글 작성 모드일 때의 서버 전송 로직
         await axios.post(
-          `${api}/notice`,
+          `${API_ENDPOINT}/notice`,
           { title, content },
           {
             headers: {
@@ -77,25 +76,34 @@ const NoticeEdit = () => {
   return (
     <Container>
       <Title>{isEditMode ? "Edit Post" : "Write Post"}</Title>
-      <TitleInput
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="제목을 입력해주세요"
-      />
-      <ContentInput
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="내용을 입력하세요"
-      />
-      <SubmitButton onClick={handleSubmit}>
-        {isEditMode ? "수정 완료" : "글 등록"}
-      </SubmitButton>
+      <FormContainer onSubmit={handleSubmit}>
+        <TitleInput
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="제목을 입력해주세요"
+        />
+        <ContentInput
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="내용을 입력하세요"
+        />
+        <SubmitButton type="submit">
+          {isEditMode ? "수정 완료" : "글 등록"}
+        </SubmitButton>
+      </FormContainer>
     </Container>
   );
 };
 
 export default NoticeEdit;
 const Container = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const FormContainer = styled.form`
   width: 100%;
   display: flex;
   flex-direction: column;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 
 const images = [
@@ -9,7 +9,6 @@ const images = [
 
 const ImageSlider: React.FC = () => {
   const [index, setIndex] = useState(0);
-  const slideRef = useRef<HTMLDivElement>(null);
 
   const goToSlide = (slideIndex: number) => {
     setIndex(slideIndex);
@@ -24,10 +23,10 @@ const ImageSlider: React.FC = () => {
 
   return (
     <SliderContainer>
-      <ImageWrapper index={index} ref={slideRef}>
-        {images.map((img, i) => (
-          <ImageBox key={i}>
-            <img src={img} alt={`Slide ${i}`} />
+      <ImageWrapper index={index}>
+        {images.map((img) => (
+          <ImageBox key={img}>
+            <img src={img} alt={`Slide ${img}`} />
           </ImageBox>
         ))}
       </ImageWrapper>
@@ -85,13 +84,6 @@ const ImageBox = styled.div`
     width: 100%;
     height: auto;
   }
-
-  /* @media (max-width: 768px) {
-    img {
-      max-width: 100%;
-      object-fit: cover;
-    }
-  } */
 `;
 
 const Dots = styled.div`

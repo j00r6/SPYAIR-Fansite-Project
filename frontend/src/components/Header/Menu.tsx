@@ -1,10 +1,10 @@
 import axios from "axios";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import Sns from "../Sns";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
 interface MenuProps {
   isOpen: boolean;
@@ -23,15 +23,15 @@ const accountList = [
 ];
 
 const Menu = ({ isOpen, toggleMenu }: MenuProps) => {
+  const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("accessToken") !== null;
-  console.log(isLoggedIn);
 
   const handleLogout = async () => {
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       try {
         await axios.post(
-          `${api}/members/logout`,
+          `${API_ENDPOINT}/members/logout`,
           {},
           {
             headers: {
@@ -42,7 +42,8 @@ const Menu = ({ isOpen, toggleMenu }: MenuProps) => {
 
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        window.location.href = "/";
+        navigate("/");
+        toggleMenu();
       } catch (error) {
         console.error("Logout error:", error);
       }
@@ -82,7 +83,6 @@ const Menu = ({ isOpen, toggleMenu }: MenuProps) => {
           ))
         )}
       </Account>
-
       <Sns />
     </MenuModal>
   );
@@ -161,6 +161,10 @@ const MenuItem = styled(Link)`
 const Account = styled.div`
   margin-top: 1rem;
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 3rem;
+  }
 `;
 
 const AccountItem = styled.p`

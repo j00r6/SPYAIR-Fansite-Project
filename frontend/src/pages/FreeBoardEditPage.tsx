@@ -1,5 +1,6 @@
 import BoardEdit from "../components/FreeBoard/BoardEdit";
 import styled from "styled-components";
+
 const FreeBoardEditPage = () => {
   return (
     <Container>

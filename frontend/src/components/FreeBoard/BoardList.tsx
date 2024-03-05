@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
 type Post = {
   boardNum: number;
@@ -15,24 +15,23 @@ type Post = {
 
 const BoardList = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState<Post[]>([]); // 게시물 상태
-  const [page, setPage] = useState(1); // 페이지 상태
-  const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터가 있는지 확인하는 상태
-  const [loading, setLoading] = useState(false); //로딩 상태
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  //초기 데이터
   useEffect(() => {
     const fetchPosts = async () => {
       if (page !== 1) return;
       setLoading(true);
       try {
-        const response = await axios.get(`${api}/board/page`, {
+        const response = await axios.get(`${API_ENDPOINT}/board/page`, {
           headers: {
             "ngrok-skip-browser-warning": "69420",
           },
           params: {
             page,
-            size: 5,
+            size: 10,
           },
         });
         const responseData = response.data;
@@ -51,17 +50,17 @@ const BoardList = () => {
   }, []);
 
   const loadMoreData = async () => {
-    if (loading || !hasMore) return; // 로딩 중이거나 더 불러올 데이터가 없으면 실행하지 않음
+    if (loading || !hasMore) return;
     setLoading(true);
     try {
       const nextPage = page + 1;
-      const response = await axios.get(`${api}/board/page`, {
+      const response = await axios.get(`${API_ENDPOINT}/board/page`, {
         headers: {
           "ngrok-skip-browser-warning": "69420",
         },
         params: {
           page: nextPage,
-          size: 5,
+          size: 10,
         },
       });
       const responseData = response.data;
@@ -77,12 +76,10 @@ const BoardList = () => {
     }
   };
 
-  // 게시물 클릭 이벤트 핸들러
   const goToPost = (postId: number) => {
     navigate(`/free-board/${postId}`);
   };
 
-  // 글쓰기 버튼 클릭 이벤트 핸들러
   const handleWriteButtonClick = () => {
     const isLoggedIn = localStorage.getItem("accessToken") !== null;
     if (isLoggedIn) {
@@ -103,6 +100,7 @@ const BoardList = () => {
         scrollThreshold={0.9}
         hasMore={hasMore}
         loader={hasMore ? <Loader>Loading...</Loader> : <></>}
+        endMessage={<EndMessage>더 이상 게시물이 없습니다.</EndMessage>}
       >
         {posts.length > 0 ? (
           posts.map((post) => (
@@ -132,6 +130,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  margin-bottom: 3rem;
 `;
 
 const ButtonWrapper = styled.div`
@@ -160,6 +159,13 @@ const PostContainer = styled.div`
   &:first-child {
     border-top: 1px solid #333333;
   }
+`;
+
+const EndMessage = styled.div`
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 16px;
+  color: #ffffff;
 `;
 
 const Title = styled.div``;
