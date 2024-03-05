@@ -41,7 +41,6 @@ const NoticeDetail = () => {
           const parsedPayload = JSON.parse(decodedPayload);
           const roleArray = parsedPayload.roles ?? [];
           const role = roleArray.length > 0 ? roleArray[1].name : null;
-          console.log("Member Role:", role);
 
           if (role === "ROLE_ADMIN") {
             setIsAdmin(true);
@@ -51,7 +50,6 @@ const NoticeDetail = () => {
         console.error("토큰 디코딩 오류:", error);
       }
     }
-    console.log("어드민", isAdmin);
     const fetchPost = async () => {
       try {
         const response = await axios.get(`${API_ENDPOINT}/notice/${id}`, {
@@ -59,10 +57,9 @@ const NoticeDetail = () => {
             "ngrok-skip-browser-warning": "69420",
           },
         });
-        console.log("응답:", response.data);
         setPost(response.data);
       } catch (error) {
-        console.error("엥 실패ㅋㅋ:", error);
+        console.error("데이터 불러오기 실패:", error);
       }
     };
 
@@ -92,7 +89,6 @@ const NoticeDetail = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log("글 삭제 완료");
         navigate("/notice");
       } catch (error) {
         console.error("글 삭제 실패:", error);
