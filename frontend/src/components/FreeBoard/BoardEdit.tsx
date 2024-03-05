@@ -65,7 +65,6 @@ const BoardEdit = () => {
           { title, content },
           { headers }
         );
-        console.log("글 등록 완료");
       }
       navigate(-1);
     } catch (error) {
