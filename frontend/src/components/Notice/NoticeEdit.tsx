@@ -53,7 +53,6 @@ const NoticeEdit = () => {
             },
           }
         );
-        console.log("수정 완료");
       } else {
         await axios.post(
           `${API_ENDPOINT}/notice`,
@@ -65,7 +64,6 @@ const NoticeEdit = () => {
             },
           }
         );
-        console.log("글 등록 완료");
       }
       navigate(-1);
     } catch (error) {

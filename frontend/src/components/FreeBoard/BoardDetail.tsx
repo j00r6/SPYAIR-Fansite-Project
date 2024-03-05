@@ -47,7 +47,6 @@ const BoardDetail = () => {
             "ngrok-skip-browser-warning": "69420",
           },
         });
-        console.log("응답:", response.data);
         setPost(response.data);
       } catch (error) {
         console.error("글 불러오기 실패:", error);
