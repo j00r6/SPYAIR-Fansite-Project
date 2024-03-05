@@ -161,6 +161,10 @@ const MenuItem = styled(Link)`
 const Account = styled.div`
   margin-top: 1rem;
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 3rem;
+  }
 `;
 
 const AccountItem = styled.p`
