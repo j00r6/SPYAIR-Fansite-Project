@@ -4,13 +4,27 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { useState, useEffect } from "react";
+
 const api = import.meta.env.VITE_APP_API_ENDPOINT;
-console.log(api);
 
 interface FormValues {
   email: string;
   password: string;
 }
+
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .email("이메일 형식으로 입력하세요.")
+    .required("이메일은 필수입니다."),
+  password: yup
+    .string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+      "영문자 대소문자, 숫자 조합 8글자 이상이어야 합니다."
+    )
+    .required("비밀번호는 필수입니다."),
+});
 
 const Login = () => {
   const [loginError, setLoginError] = useState("");
@@ -20,20 +34,21 @@ const Login = () => {
     handleSubmit,
     watch,
     formState: { errors },
-    // setValue,
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
     mode: "onBlur",
   });
+
   const email = watch("email");
   const password = watch("password");
+
   useEffect(() => {
     if (email || password) {
       setLoginError("");
     }
   }, [email, password]);
+
   const onSubmit = async (data: FormValues) => {
-    console.log(data.email, data.password);
     try {
       const response = await axios.post(
         `${api}/members/login`,
@@ -48,15 +63,13 @@ const Login = () => {
           },
         }
       );
-      console.log("서버 응답:", response.data);
 
       if (response.status === 200) {
-        console.log("로그인 성공! 야호~");
         localStorage.setItem("accessToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
         window.location.href = "/";
       } else {
-        console.log("로그인 실패ㅜㅜ");
+        console.log("로그인 실패");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -93,20 +106,6 @@ const Login = () => {
     </LoginContainer>
   );
 };
-
-const schema = yup.object().shape({
-  email: yup
-    .string()
-    .email("이메일 형식으로 입력하세요.")
-    .required("이메일은 필수입니다."),
-  password: yup
-    .string()
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-      "영문자 대소문자, 숫자 조합 8글자 이상이어야 합니다."
-    )
-    .required("비밀번호는 필수입니다."),
-});
 
 export default Login;
 
