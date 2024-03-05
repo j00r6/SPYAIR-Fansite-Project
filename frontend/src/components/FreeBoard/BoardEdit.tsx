@@ -5,6 +5,11 @@ import styled from "styled-components";
 
 const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
+const defaultHeaders = {
+  "Content-Type": "application/json",
+  "ngrok-skip-browser-warning": "69420",
+};
+
 const BoardEdit = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -13,58 +18,52 @@ const BoardEdit = () => {
   const isEditMode = id !== "new";
 
   useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const response = await axios.get(`${API_ENDPOINT}/board/${id}`, {
-          headers: {
-            "Content-Type": `application/json`,
-            "ngrok-skip-browser-warning": "69420",
-          },
-        });
-        const postData = response.data;
-        setTitle(postData.title);
-        setContent(postData.content);
-      } catch (error) {
-        console.error("글 불러오기 실패:", error);
-      }
-    };
-
     if (isEditMode) {
+      const fetchPost = async () => {
+        try {
+          const response = await axios.get(`${API_ENDPOINT}/board/${id}`, {
+            headers: defaultHeaders,
+          });
+          setTitle(response.data.title);
+          setContent(response.data.content);
+        } catch (error) {
+          console.error("글 불러오기 실패:", error);
+        }
+      };
       fetchPost();
     }
   }, [id, isEditMode]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
       console.error("인증 토큰이 없습니다.");
       return;
     }
 
+    if (!title.trim() || !content.trim()) {
+      alert("제목과 내용을 모두 입력해주세요.");
+      return;
+    }
+
     try {
+      const headers = {
+        ...defaultHeaders,
+        Authorization: `Bearer ${accessToken}`,
+      };
       if (isEditMode && id) {
-        // 글 수정 모드일 때의 서버 전송 로직
         await axios.patch(
           `${API_ENDPOINT}/board/${id}`,
           { title, content },
-          {
-            headers: {
-              "ngrok-skip-browser-warning": "69420",
-            },
-          }
+          { headers }
         );
         console.log("수정 완료");
       } else {
-        // 글 작성 모드일 때의 서버 전송 로직
         await axios.post(
           `${API_ENDPOINT}/board`,
           { title, content },
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              "ngrok-skip-browser-warning": "69420",
-            },
-          }
+          { headers }
         );
         console.log("글 등록 완료");
       }
@@ -77,25 +76,34 @@ const BoardEdit = () => {
   return (
     <Container>
       <Title>{isEditMode ? "Edit Post" : "Write Post"}</Title>
-      <TitleInput
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="제목을 입력해주세요"
-      />
-      <ContentInput
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="내용을 입력하세요"
-      />
-      <SubmitButton onClick={handleSubmit}>
-        {isEditMode ? "수정 완료" : "글 등록"}
-      </SubmitButton>
+      <FormContainer onSubmit={handleSubmit}>
+        <TitleInput
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="제목을 입력해주세요"
+        />
+        <ContentInput
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="내용을 입력하세요"
+        />
+        <SubmitButton type="submit">
+          {isEditMode ? "수정 완료" : "글 등록"}
+        </SubmitButton>
+      </FormContainer>
     </Container>
   );
 };
 
 export default BoardEdit;
 const Container = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const FormContainer = styled.form`
   width: 100%;
   display: flex;
   flex-direction: column;
