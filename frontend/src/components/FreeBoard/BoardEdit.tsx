@@ -58,7 +58,6 @@ const BoardEdit = () => {
           { title, content },
           { headers }
         );
-        console.log("수정 완료");
       } else {
         await axios.post(
           `${API_ENDPOINT}/board`,
