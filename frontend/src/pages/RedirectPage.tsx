@@ -12,6 +12,9 @@ const RedirectPage = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("code");
     console.log("code: ", code);
+    const parsedHash = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = parsedHash.get("access_token");
+    console.log("엑셋,", accessToken);
     if (code) {
       axios
         .post(`${api}/auth/google`, { code })
