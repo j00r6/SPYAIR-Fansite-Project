@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 type Post = {
   noticeNum: number;
   title: string;
@@ -53,7 +53,7 @@ const NoticeList = () => {
       if (page !== 1) return;
       setLoading(true);
       try {
-        const response = await axios.get(`${api}/notice/page`, {
+        const response = await axios.get(`${API_ENDPOINT}/notice/page`, {
           headers: {
             "ngrok-skip-browser-warning": "69420",
           },
@@ -83,7 +83,7 @@ const NoticeList = () => {
     setLoading(true);
     try {
       const nextPage = page + 1;
-      const response = await axios.get(`${api}/notice/page`, {
+      const response = await axios.get(`${API_ENDPOINT}/notice/page`, {
         headers: {
           "ngrok-skip-browser-warning": "69420",
         },

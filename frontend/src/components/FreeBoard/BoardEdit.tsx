@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
 const BoardEdit = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const BoardEdit = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${api}/board/${id}`, {
+        const response = await axios.get(`${API_ENDPOINT}/board/${id}`, {
           headers: {
             "Content-Type": `application/json`,
             "ngrok-skip-browser-warning": "69420",
@@ -45,7 +45,7 @@ const BoardEdit = () => {
       if (isEditMode && id) {
         // 글 수정 모드일 때의 서버 전송 로직
         await axios.patch(
-          `${api}/board/${id}`,
+          `${API_ENDPOINT}/board/${id}`,
           { title, content },
           {
             headers: {
@@ -57,7 +57,7 @@ const BoardEdit = () => {
       } else {
         // 글 작성 모드일 때의 서버 전송 로직
         await axios.post(
-          `${api}/board`,
+          `${API_ENDPOINT}/board`,
           { title, content },
           {
             headers: {

@@ -3,7 +3,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
 const RedirectPage = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const RedirectPage = () => {
     console.log("엑셋,", accessToken);
     if (code) {
       axios
-        .post(`${api}/auth/google`, { code })
+        .post(`${API_ENDPOINT}/auth/google`, { code })
         .then((response) => {
           console.log("로그인 성공! : ", response.data);
           // localStorage.setItem("accessToken", response.data.accessToken);

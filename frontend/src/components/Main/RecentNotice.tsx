@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
 type Post = {
   noticeNum: number;
@@ -20,7 +20,7 @@ const RecentNotice = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`${api}/notice/page`, {
+        const response = await axios.get(`${API_ENDPOINT}/notice/page`, {
           headers: {
             "ngrok-skip-browser-warning": "69420",
           },

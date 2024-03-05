@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import Sns from "../Sns";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 
 interface MenuProps {
   isOpen: boolean;
@@ -31,7 +31,7 @@ const Menu = ({ isOpen, toggleMenu }: MenuProps) => {
     if (accessToken) {
       try {
         await axios.post(
-          `${api}/members/logout`,
+          `${API_ENDPOINT}/members/logout`,
           {},
           {
             headers: {

@@ -4,7 +4,7 @@ import axios from "axios";
 import styled from "styled-components";
 import NavigationButtons from "../NavigationButtons";
 
-const api = import.meta.env.VITE_APP_API_ENDPOINT;
+const API_ENDPOINT = import.meta.env.VITE_APP_API_ENDPOINT;
 const accessToken = localStorage.getItem("accessToken");
 
 interface Post {
@@ -54,7 +54,7 @@ const NoticeDetail = () => {
     console.log("어드민", isAdmin);
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`${api}/notice/${id}`, {
+        const response = await axios.get(`${API_ENDPOINT}/notice/${id}`, {
           headers: {
             "ngrok-skip-browser-warning": "69420",
           },
@@ -87,7 +87,7 @@ const NoticeDetail = () => {
 
     if (window.confirm("이 글을 삭제하시겠습니까?")) {
       try {
-        await axios.delete(`${api}/notice/${post.noticeNum}`, {
+        await axios.delete(`${API_ENDPOINT}/notice/${post.noticeNum}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
