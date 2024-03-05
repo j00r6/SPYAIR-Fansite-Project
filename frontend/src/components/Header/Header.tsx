@@ -10,14 +10,13 @@ const Header = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isMusicPlaying, setMusicPlaying] = useState(false);
+
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen);
   };
-
   const toggleSpeaker = () => {
     setMusicPlaying(!isMusicPlaying);
   };
-
   const handleLogoClick = () => {
     navigate("/");
   };
