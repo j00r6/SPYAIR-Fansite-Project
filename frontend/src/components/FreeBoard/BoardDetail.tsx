@@ -50,7 +50,7 @@ const BoardDetail = () => {
         console.log("응답:", response.data);
         setPost(response.data);
       } catch (error) {
-        console.error("엥 실패ㅋㅋ:", error);
+        console.error("글 불러오기 실패:", error);
       }
     };
 
@@ -80,15 +80,12 @@ const BoardDetail = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log("글 삭제 완료");
         navigate("/free-board");
       } catch (error) {
         console.error("글 삭제 실패:", error);
       }
     }
   };
-
-  console.log("토큰", currentMemberId);
 
   return (
     <Container>
