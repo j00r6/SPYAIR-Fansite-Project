@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_SERVER_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: &{GOOGLE_REDIRECT_URL_SERVER}
+            scope: profile, email
+jwt:
+  access-token-expiration-minutes: 3600000
+  oauth-access-token-expiration-minutes: 3600000
+  refresh-token-expiration-minutes: 14400000
+
+logging:
+  pattern:
+    console: "%white([%d{yyyy-MM-dd HH:mm:ss}]) %yellow([%thread]) %highlight([%-5level]) %white([%-35logger{35}]) %white(%msg  %n)"
+  level:
+    #    root: DEBUG
+    #    jpa: DEBUG
+    org:
+      springframework:
+        security: DEBUG
+#        orm:
+#          jpa: DEBUG
+
+file:
+  dir : "/images"
