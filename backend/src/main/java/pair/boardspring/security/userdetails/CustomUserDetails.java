@@ -1,5 +1,6 @@
 package pair.boardspring.security.userdetails;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,14 +9,16 @@ import pair.boardspring.member.entity.Member;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-
+@Getter
 public class CustomUserDetails implements UserDetails {
+
 
     private final Member member;
 
-    public CustomUserDetails(Member member){
+    public CustomUserDetails(Member member) {
         this.member = member;
     }
 
@@ -41,9 +44,13 @@ public class CustomUserDetails implements UserDetails {
         return member.getMemberId();
     }
 
-    public String getNickName() { return member.getNickName(); }
+    public String getNickName() {
+        return member.getNickName();
+    }
 
-    public List<Authority> getRoles() { return member.getRoles(); }
+    public List<Authority> getRoles() {
+        return member.getRoles();
+    }
 
     @Override
     public boolean isAccountNonExpired() {

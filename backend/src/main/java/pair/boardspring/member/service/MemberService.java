@@ -15,6 +15,7 @@ import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.repository.MemberRepository;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,16 +63,15 @@ public class MemberService {
         repository.save(member);
     }
 
-    public Member validateAccessToken (Long memberId) {
-        Member findMember = findVerifyMember(memberId);
-        Optional<Token> haveAccessToken = tokenRepository.findByMember(findMember);
-
-        if (haveAccessToken.isPresent()) {
-            return null;
-        } else {
-            throw new TokenExpiredException("토큰이 만료되었슴니당!");
-        }
-    }
+//    public Member validateAccessToken (Long memberId) {
+//        Member findMember = findVerifyMember(memberId);
+//        Optional<Token> haveAccessToken = tokenRepository.findByMember(findMember);
+//        if (haveAccessToken.isPresent()) {
+//            return null;
+//        } else {
+//            throw new TokenExpiredException("토큰이 만료되었슴니당!");
+//        }
+//    }
 
     public Member findVerifyMember(Long memberId) {
         Optional<Member> member = repository.findById(memberId);
@@ -84,5 +84,11 @@ public class MemberService {
             return null;
         }
         return optionalMember.get();
+    }
+
+    public void giveAdmin(Long memberId) {
+        Member findMember = repository.findByMemberId(memberId);
+        Authority giveAdmin = Authority.builder().name("ROLE_ADMIN").build();
+        findMember.setRoles(Collections.singletonList(giveAdmin));
     }
 }

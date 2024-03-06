@@ -8,8 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import pair.boardspring.global.exception.BadRequestException;
-//import pair.boardspring.exception.BusinessLogicException;
-//import pair.boardspring.exception.ExceptionCode;
 
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.repository.MemberRepository;

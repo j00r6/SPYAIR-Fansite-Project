@@ -3,9 +3,11 @@ package pair.boardspring.security.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 
@@ -20,20 +22,35 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import pair.boardspring.jwt.token.JwtFilter;
 import pair.boardspring.jwt.token.TokenProvider;
+import pair.boardspring.oauth2.handler.OAuth2LoginFailureHandler;
+import pair.boardspring.oauth2.handler.OAuth2MemberSuccessHandler;
 import pair.boardspring.oauth2.service.OAuth2Service;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-public class OAuth2LoginSecurityConfig {
+@RequiredArgsConstructor
+public class SecurityConfig {
+
     private final TokenProvider tokenProvider;
     private final OAuth2Service oauthService;
+    private final OAuth2MemberSuccessHandler oAuth2MemberSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+    @Value("${spring.security.debug:false}")
+    boolean webSecurityDebug;
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.debug(webSecurityDebug);
+    }
+
+
 
     /**
      * 필터체인 각 메서드 별 설명 참조 사이트
@@ -99,8 +116,10 @@ public class OAuth2LoginSecurityConfig {
 
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(oauthService)
-                        ))
+                                .userService(oauthService))
+                        .successHandler(oAuth2MemberSuccessHandler)
+                        .failureHandler(oAuth2LoginFailureHandler)
+                )
 
                 /**
                  * CORS 설정을 활용하는 방법중 가장 쉬운 방법이 CorsFilter 를 활용하는 방법
@@ -138,7 +157,7 @@ public class OAuth2LoginSecurityConfig {
                         .requestMatchers(HttpMethod.GET ,"/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH ,"/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE ,"/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
 
 
@@ -148,7 +167,7 @@ public class OAuth2LoginSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://620f-121-162-236-116.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://3354-121-162-236-138.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 직접입력
         configuration.setAllowedHeaders(Arrays.asList("*")); // 직접입력
         configuration.setExposedHeaders(Arrays.asList("*","Authorization","Refresh")); //직접입력

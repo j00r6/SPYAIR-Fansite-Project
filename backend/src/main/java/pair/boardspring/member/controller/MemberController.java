@@ -30,7 +30,7 @@ public class MemberController {
     public ResponseEntity resolverTest(@Valid @LoginMemberId @Positive Long memberId ) {
 
         Member findMember = service.findVerifyMember(memberId);
-        Member hasToken = service.validateAccessToken(memberId);
+//        Member hasToken = service.validateAccessToken(memberId);
 
         log.info("잘찾아오니 " + findMember.getEmail());
         if (findMember.getMemberId() == memberId) {
@@ -45,6 +45,14 @@ public class MemberController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(findMember);
+    }
+
+    @PatchMapping("admin/{member-id}")
+    public ResponseEntity giveAdmin(@PathVariable("member-id") @LoginMemberId Long memberId) {
+        service.giveAdmin(memberId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("권한 부여 완료");
     }
 
 }

@@ -28,4 +28,15 @@ public class NaverAuthUserinfo extends OauthUserInfo {
 
         return (String) response.get("NickName");
     }
+
+    @Override
+    public String getEmail() {
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
+        if (response == null) {
+            return null;
+        }
+
+        return (String) response.get("email");
+    }
 }

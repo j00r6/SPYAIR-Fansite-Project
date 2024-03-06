@@ -23,25 +23,27 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             redirect-uri: http://localhost:8080/login/oauth2/code/google
+#            redirect-uri: https://3354-121-162-236-138.ngrok-free.app/login/oauth2/code/google
             scope: profile, email
   redis:
     host: localhost
     port: 6379
 jwt:
   access-token-expiration-minutes: 3600000
+  oauth-access-token-expiration-minutes: 3600000
   refresh-token-expiration-minutes: 14400000
 
 logging:
   pattern:
     console: "%white([%d{yyyy-MM-dd HH:mm:ss}]) %yellow([%thread]) %highlight([%-5level]) %white([%-35logger{35}]) %white(%msg  %n)"
   level:
-    root: DEBUG
-    jpa: DEBUG
+#    root: DEBUG
+#    jpa: DEBUG
     org:
       springframework:
         security: DEBUG
-        orm:
-          jpa: DEBUG
+#        orm:
+#          jpa: DEBUG
 
 file:
   dir : "/images"

@@ -27,4 +27,11 @@ public class Token {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public Token EntityToTokenDto() {
+        return Token.builder()
+                .refreshToken(this.refreshToken)
+                .accessToken(this.accessToken)
+                .build();
+    }
 }
