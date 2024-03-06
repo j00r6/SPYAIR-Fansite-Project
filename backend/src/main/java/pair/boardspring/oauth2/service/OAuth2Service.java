@@ -1,6 +1,7 @@
 package pair.boardspring.oauth2.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -10,6 +11,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
+import pair.boardspring.global.exception.LoginIdDuplicateException;
 import pair.boardspring.member.entity.Authority;
 import pair.boardspring.member.entity.Member;
 import pair.boardspring.member.repository.MemberRepository;
@@ -19,9 +21,11 @@ import pair.boardspring.oauth2.oauthUser.CustomOauth2User;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final MemberRepository memberRepository;
@@ -44,13 +48,16 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
         OAuthAttributes extractAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
         Member createdMember = getUser(extractAttributes, socialType);
 
+        log.info("OAuthUser 멤버아이디 찾기 1 : " + createdMember.getMemberId());
+
         return new CustomOauth2User(
                 Collections.singleton(new SimpleGrantedAuthority(createdMember.getRoles().toString())),
                 attributes,
                 extractAttributes.getNameAttributeKey(),
                 createdMember.getEmail(),
                 createdMember.getRoles(),
-                createdMember.getNickName()
+                createdMember.getNickName(),
+                createdMember.getMemberId()
         );
     }
     private SocialType getSocialType(String registrationId) {
@@ -74,12 +81,18 @@ public class OAuth2Service implements OAuth2UserService<OAuth2UserRequest, OAuth
     }
 
     private Member saveMember(OAuthAttributes attributes, SocialType socialType) {
-        Member createMember = attributes.toEntity(socialType, attributes.getOauthUserInfo());
+        Member createOAuthMember = attributes.toEntity(socialType, attributes.getOauthUserInfo());
         Authority userRole = Authority.builder().name("ROLE_SOCIAL").build();
+        boolean findMemberEmail = memberRepository.existsByEmail(createOAuthMember.getEmail());
 
         if (socialType != null) {
-            createMember.setRoles(Collections.singletonList(userRole));
+            createOAuthMember.setRoles(Collections.singletonList(userRole));
         }
-        return memberRepository.save(createMember);
+
+        if (findMemberEmail){
+            throw new LoginIdDuplicateException("이미 존재하는 회원정보입니다!");
+        }
+
+        return memberRepository.save(createOAuthMember);
     }
 }

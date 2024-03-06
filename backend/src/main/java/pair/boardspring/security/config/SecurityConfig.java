@@ -25,6 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import pair.boardspring.jwt.token.JwtFilter;
 import pair.boardspring.jwt.token.TokenProvider;
+import pair.boardspring.oauth2.handler.OAuth2LoginFailureHandler;
 import pair.boardspring.oauth2.handler.OAuth2MemberSuccessHandler;
 import pair.boardspring.oauth2.service.OAuth2Service;
 
@@ -40,6 +41,7 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final OAuth2Service oauthService;
     private final OAuth2MemberSuccessHandler oAuth2MemberSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     @Value("${spring.security.debug:false}")
     boolean webSecurityDebug;
 
@@ -116,6 +118,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(oauthService))
                         .successHandler(oAuth2MemberSuccessHandler)
+                        .failureHandler(oAuth2LoginFailureHandler)
                 )
 
                 /**
@@ -164,7 +167,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://62e4-121-162-236-138.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:5173/", "http://localhost:8080","https://3354-121-162-236-138.ngrok-free.app", "http://3.35.193.208:8080", "http://pettalk-bucket.s3-website.ap-northeast-2.amazonaws.com")); //직접입력
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 직접입력
         configuration.setAllowedHeaders(Arrays.asList("*")); // 직접입력
         configuration.setExposedHeaders(Arrays.asList("*","Authorization","Refresh")); //직접입력

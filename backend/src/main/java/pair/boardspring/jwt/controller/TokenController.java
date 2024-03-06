@@ -20,7 +20,7 @@ public class TokenController {
     private final TokenProvider token;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto.response> memberLogin (@RequestBody LogInRequest request) {
+    public ResponseEntity<TokenDto.response> memberLogin (@RequestBody LogInRequest request) { //<TokenDto.response>
         TokenDto.response tokenDto = service.login(request);
         return ResponseEntity
                 .status(HttpStatus.OK)

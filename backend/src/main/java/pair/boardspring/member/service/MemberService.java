@@ -63,16 +63,15 @@ public class MemberService {
         repository.save(member);
     }
 
-    public Member validateAccessToken (Long memberId) {
-        Member findMember = findVerifyMember(memberId);
-        Optional<Token> haveAccessToken = tokenRepository.findByMember(findMember);
-
-        if (haveAccessToken.isPresent()) {
-            return null;
-        } else {
-            throw new TokenExpiredException("토큰이 만료되었슴니당!");
-        }
-    }
+//    public Member validateAccessToken (Long memberId) {
+//        Member findMember = findVerifyMember(memberId);
+//        Optional<Token> haveAccessToken = tokenRepository.findByMember(findMember);
+//        if (haveAccessToken.isPresent()) {
+//            return null;
+//        } else {
+//            throw new TokenExpiredException("토큰이 만료되었슴니당!");
+//        }
+//    }
 
     public Member findVerifyMember(Long memberId) {
         Optional<Member> member = repository.findById(memberId);

@@ -25,6 +25,18 @@ public class KaKaoAuthUserinfo extends OauthUserInfo {
         return (String) profile.get("nickname");
     }
 
+    @Override
+    public String getEmail() {
+        Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
+        Map<String, Object> profile = (Map<String, Object>) account.get("profile");
+
+        if (account == null || profile == null) {
+            return null;
+        }
+
+        return (String) profile.get("email");
+    }
+
 //    @Override
 //    public String getImageUrl() {
 //        Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");

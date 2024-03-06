@@ -39,12 +39,19 @@ public class TokenService {
         Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
 
         Token token = tokenProvider.createToken(authentication).TokenDtoToEntity();
+
         token.setMember(member);
 
-        if(!checkTokenDuplicate(tokenProvider.createAccessToken(authentication))) {
+        Member findMember = memberService.findVerifyMember(member.getMemberId());
+        Optional<Token> findTokenByMemberId = tokenRepository.findByMember(findMember);
+
+        if(findTokenByMemberId.isPresent()){
+            log.info("다시 로그인 했을때");
+            logoutAndRemoveToken(findMember.getMemberId());
             tokenRepository.save(token);
         } else {
-            throw new BadRequestException("토큰 중복!");
+            log.info("처음 로그인 했을때");
+            tokenRepository.save(token);
         }
         return tokenProvider.createToken(authentication);
     }
@@ -77,6 +84,7 @@ public class TokenService {
     }
 
     public boolean checkTokenDuplicate(String accessToken) {
+        //있으면 true 없으면 false
         return tokenRepository.existsByAccessToken(accessToken);
     }
 

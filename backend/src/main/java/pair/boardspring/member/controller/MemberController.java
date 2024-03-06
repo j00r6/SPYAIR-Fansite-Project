@@ -30,7 +30,7 @@ public class MemberController {
     public ResponseEntity resolverTest(@Valid @LoginMemberId @Positive Long memberId ) {
 
         Member findMember = service.findVerifyMember(memberId);
-        Member hasToken = service.validateAccessToken(memberId);
+//        Member hasToken = service.validateAccessToken(memberId);
 
         log.info("잘찾아오니 " + findMember.getEmail());
         if (findMember.getMemberId() == memberId) {
