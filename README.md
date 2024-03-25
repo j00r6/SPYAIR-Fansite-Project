@@ -1,5 +1,5 @@
 # SPYAIR-Fansite
-SPYAIR 공식 홈페이지를 클론하여 팬 사이트 구현
+SPYAIR 공식 홈페이지를 클론하여 구현한 SPYAIR 팬 사이트
 
 **배포 사이트**
 [🐳 Live Demo](http://toyporjects3.s3-website.ap-northeast-2.amazonaws.com/)
